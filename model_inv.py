@@ -2,9 +2,11 @@ import sys
 import sqlite3
 import tkinter as tk
 import tkinter.ttk as ttk
+import os
 
-database = r"F:\3D_Models.db"
-
+scriptpath = os.path.dirname(os.path.realpath(sys.argv[0])) + os.sep
+database = scriptpath + "3D_Models.db"
+print(database)
 
 def get_models(db):
     
