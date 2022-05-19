@@ -1,37 +1,15 @@
 import sys
-import sqlite3
 import tkinter as tk
 import tkinter.ttk as ttk
 import os
+
+import jbs.database.database as db
 
 scriptpath = os.path.dirname(os.path.realpath(sys.argv[0])) + os.sep
 database = scriptpath + "3D_Models.db"
 print(database)
 
-def get_models(db):
-    
-    con = None
-
-    try:
-        con = sqlite3.connect(db)
-        cur = con.cursor()
-        
-        cur.execute("SELECT Model_Name, Set_Name, Artist_Name, Source_Name "
-                    "FROM tblModel AS m "
-                    "INNER JOIN tblArtist AS a ON m.Artist = a.Artist_ID "
-                    "INNER JOIN tblSource AS s ON m.Source = s.Source_ID;"
-                    )
-
-        return cur.fetchall()
-
-    except sqlite3.Error as e:
-        print(f"Error {e.args[0]}")
-        sys.exit(1)
-
-    finally:
-        if con:
-            con.close()
-
+con = db.connect_database(database)
 
 window = tk.Tk()
 window.title("3D Models")
@@ -56,7 +34,7 @@ model_table.heading("Set", text="Set", anchor=tk.CENTER)
 model_table.heading("Artist", text="Artist", anchor=tk.CENTER)
 model_table.heading("Source", text="Source", anchor=tk.CENTER)
 
-rows = get_models(database)
+rows = db.get_all_models(con)
 for row in rows:
     model_table.insert('', tk.END, values=row)
 
@@ -65,3 +43,5 @@ model_table.pack(padx=10, pady=10, expand=True, fill=tk.BOTH)
 model_scroll.config(command=model_table.yview)
 
 window.mainloop()
+
+db.close_database(con)
