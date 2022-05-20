@@ -30,7 +30,6 @@ class Window:
 
         rows = db.get_all_models(self.con)
         for row in rows:
-            #self.table.insert('', tk.END, values=(row.model_name, row.set_name, row.artist_name, row.source_name))
             self.table.insert('', tk.END, values=(row.to_list()))
 
         self.table.pack(padx=10, pady=10, expand=True, fill=tk.BOTH)
