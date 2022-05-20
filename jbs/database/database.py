@@ -19,7 +19,8 @@ def get_all_models(connection):
     try:
         cur = connection.cursor()
         
-        cur.execute("SELECT Model_Name, Set_Name, Artist_Name, Source_Name "
+        cur.execute("SELECT Model_Name, Set_Name, Artist_Name, Source_Name, "
+                    "Source_Note, Supports, Format, Artist_Folder, Printed "
                     "FROM tblModel AS m "
                     "INNER JOIN tblArtist AS a ON m.Artist = a.Artist_ID "
                     "INNER JOIN tblSource AS s ON m.Source = s.Source_ID;"

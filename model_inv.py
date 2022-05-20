@@ -6,7 +6,6 @@ import jbs.gui.gui as gui
 def main():
     scriptpath = os.path.dirname(os.path.realpath(sys.argv[0])) + os.sep
     database = scriptpath + "3D_Models.db"
-    print(database)
 
     con = db.connect_database(database)
 
