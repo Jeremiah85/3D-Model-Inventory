@@ -4,10 +4,11 @@ import tkinter.ttk as ttk
 import jbs.database.database as db
 
 class Window:
-    def __init__(self, master, con):
+    def __init__(self, con):
         self.con = con
-        self.master = master
-        self.frame = tk.Frame(self.master)
+        self.root = tk.Tk()
+        self.root.title("3D Models")
+        self.frame = tk.Frame(self.root)
         self.frame.pack(fill=tk.BOTH, expand=tk.YES)
 
         self.scroll = tk.Scrollbar(self.frame)
@@ -29,7 +30,7 @@ class Window:
 
         rows = db.get_all_models(self.con)
         for row in rows:
-            self.table.insert('', tk.END, values=row)
+            self.table.insert('', tk.END, values=(row.to_list()))
 
         self.table.pack(padx=10, pady=10, expand=True, fill=tk.BOTH)
 

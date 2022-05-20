@@ -1,5 +1,6 @@
 import sqlite3
 import sys
+import jbs.model.model as mdl
 
 def connect_database(db):
     con = None
@@ -23,9 +24,16 @@ def get_all_models(connection):
                     "INNER JOIN tblArtist AS a ON m.Artist = a.Artist_ID "
                     "INNER JOIN tblSource AS s ON m.Source = s.Source_ID;"
                     )
+        
+        results = cur.fetchall()
 
-        return cur.fetchall()
+        models = []
 
+        for model in results:
+            models.append(mdl.Model(model))
+
+        return models
+        
     except sqlite3.Error as e:
         print(f"Error {e.args[0]}")
         sys.exit(1)
