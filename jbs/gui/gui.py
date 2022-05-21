@@ -13,7 +13,7 @@ class Window:
         self.tabs.pack(fill=tk.BOTH, expand=tk.YES)
 
         # Create and populate Model tab
-        self.model_frame = tk.Frame(self.tabs)
+        self.model_frame = tk.LabelFrame(self.tabs, text="Results")
         self.model_frame.pack(fill=tk.BOTH, expand=tk.YES)
 
         self.models = db.get_all_models(self.con)
@@ -22,7 +22,7 @@ class Window:
         self.tabs.add(self.model_frame, text="Models")
 
         # Create and populate Artist tab
-        self.artist_frame = tk.Frame(self.tabs)
+        self.artist_frame = tk.LabelFrame(self.tabs, text="Results")
         self.artist_frame.pack(fill=tk.BOTH, expand=tk.YES)
 
         self.artists = db.get_all_artists(self.con)
@@ -31,7 +31,7 @@ class Window:
         self.tabs.add(self.artist_frame, text="Artists")
 
         # Create and populate Source tab
-        self.source_frame = tk.Frame(self.tabs)
+        self.source_frame = tk.LabelFrame(self.tabs, text="Results")
         self.source_frame.pack(fill=tk.BOTH, expand=tk.YES)
 
         self.sources = db.get_all_sources(self.con)
