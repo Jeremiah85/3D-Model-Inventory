@@ -12,6 +12,11 @@ class Window:
         self.tabs = ttk.Notebook(self.root)
         self.tabs.pack(fill=tk.BOTH, expand=tk.YES)
 
+        # TODO: create frames for searches
+        # TODO: create frames for new entries
+        # TODO: write logic to refresh tables
+        # TODO: create ui for data entry
+        
         # Create and populate Model tab
         self.model_frame = tk.LabelFrame(self.tabs, text="Results")
         self.model_frame.pack(fill=tk.BOTH, expand=tk.YES)
@@ -40,6 +45,7 @@ class Window:
         self.tabs.add(self.source_frame, text="Sources")
 
     def create_table(self, frame, input_obj):
+        # TODO: Move table creation to its own class
         self.input_obj = input_obj
         self.column_names_temp = vars(input_obj[0])
         self.column_names = self.column_names_temp.keys()
