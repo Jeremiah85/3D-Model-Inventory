@@ -8,29 +8,61 @@ class Window:
         self.con = con
         self.root = tk.Tk()
         self.root.title("3D Models")
-        self.frame = tk.Frame(self.root)
-        self.frame.pack(fill=tk.BOTH, expand=tk.YES)
 
-        self.scroll = tk.Scrollbar(self.frame)
+        self.tabs = ttk.Notebook(self.root)
+        self.tabs.pack(fill=tk.BOTH, expand=tk.YES)
+
+        # Create and populate Model tab
+        self.model_frame = tk.Frame(self.tabs)
+        self.model_frame.pack(fill=tk.BOTH, expand=tk.YES)
+
+        self.models = db.get_all_models(self.con)
+        self.create_table(self.model_frame, self.models)
+
+        self.tabs.add(self.model_frame, text="Models")
+
+        # Create and populate Artist tab
+        self.artist_frame = tk.Frame(self.tabs)
+        self.artist_frame.pack(fill=tk.BOTH, expand=tk.YES)
+
+        self.artists = db.get_all_artists(self.con)
+        self.create_table(self.artist_frame, self.artists)
+
+        self.tabs.add(self.artist_frame, text="Artists")
+
+        # Create and populate Source tab
+        self.source_frame = tk.Frame(self.tabs)
+        self.source_frame.pack(fill=tk.BOTH, expand=tk.YES)
+
+        self.sources = db.get_all_sources(self.con)
+        self.create_table(self.source_frame, self.sources)
+
+        self.tabs.add(self.source_frame, text="Sources")
+
+    def create_table(self, frame, input_obj):
+        self.input_obj = input_obj
+        self.column_names_temp = vars(input_obj[0])
+        self.column_names = self.column_names_temp.keys()
+
+        self.scroll = tk.Scrollbar(frame)
         self.scroll.pack(side=tk.RIGHT, fill=tk.Y)
 
-        self.table = ttk.Treeview(self.frame, yscroll=self.scroll.set)
-        self.table['columns'] = ('Model', 'Set', 'Artist', 'Source')
+        self.table = ttk.Treeview(frame, yscroll=self.scroll.set)
+
+        self.columns = []
+        for self.name in self.column_names:
+            self.columns.append(self.name)
+
+        self.table['columns'] = self.columns
+
         self.table.column("#0", width=0, stretch=tk.NO)
-        self.table.column("Model", anchor=tk.W, width=80)
-        self.table.column("Set", anchor=tk.W, width=80)
-        self.table.column("Artist", anchor=tk.W, width=80)
-        self.table.column("Source", anchor=tk.W, width=80)
-
         self.table.heading("#0", text="", anchor=tk.CENTER)
-        self.table.heading("Model", text="Model", anchor=tk.CENTER)
-        self.table.heading("Set", text="Set", anchor=tk.CENTER)
-        self.table.heading("Artist", text="Artist", anchor=tk.CENTER)
-        self.table.heading("Source", text="Source", anchor=tk.CENTER)
+        for self.heading in self.column_names:
+            self.table.column(self.heading, anchor=tk.W, width=80)
+            self.table.heading(self.heading, text=self.heading.capitalize(), anchor=tk.CENTER)
 
-        rows = db.get_all_models(self.con)
-        for row in rows:
-            self.table.insert('', tk.END, values=(row.to_list()))
+        for self.row in self.input_obj:
+            self.table.insert('', tk.END, values=(self.row.to_list()))
 
         self.table.pack(padx=10, pady=10, expand=True, fill=tk.BOTH)
 
