@@ -64,6 +64,6 @@ class Window:
         for self.row in self.input_obj:
             self.table.insert('', tk.END, values=(self.row.to_list()))
 
-        self.table.pack(padx=10, pady=10, expand=True, fill=tk.BOTH)
+        self.table.pack(padx=5, pady=5, expand=True, fill=tk.BOTH)
 
         self.scroll.config(command=self.table.yview)
