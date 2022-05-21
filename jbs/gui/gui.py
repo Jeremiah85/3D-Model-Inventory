@@ -12,52 +12,35 @@ class Window:
         self.frame = tk.Frame(self.root)
         self.frame.pack(fill=tk.BOTH, expand=tk.YES)
 
-        # TODO: Separate table creation into its own method
-        self.scroll = tk.Scrollbar(self.frame)
-        self.scroll.pack(side=tk.RIGHT, fill=tk.Y)
+        self.rows = db.get_all_models(self.con)
+        self.create_table(self.frame, self.rows)
 
-        self.table = ttk.Treeview(self.frame, yscroll=self.scroll.set)
-        self.table['columns'] = ('Model', 'Set', 'Artist', 'Source', 'Source_Note', 'Supports', 'Format', 'Artist_Folder', 'Printed')
-        self.table.column("#0", width=0, stretch=tk.NO)
-        self.table.column("Model", anchor=tk.W, width=80)
-        self.table.column("Set", anchor=tk.W, width=80)
-        self.table.column("Artist", anchor=tk.W, width=80)
-        self.table.column("Source", anchor=tk.W, width=80)
-        self.table.column("Source_Note", anchor=tk.W, width=80)
-        self.table.column("Supports", anchor=tk.W, width=80)
-        self.table.column("Format", anchor=tk.W, width=80)
-        self.table.column("Artist_Folder", anchor=tk.W, width=80)
-        self.table.column("Printed", anchor=tk.W, width=80)
 
-        self.table.heading("#0", text="", anchor=tk.CENTER)
-        self.table.heading("Model", text="Model", anchor=tk.CENTER)
-        self.table.heading("Set", text="Set", anchor=tk.CENTER)
-        self.table.heading("Artist", text="Artist", anchor=tk.CENTER)
-        self.table.heading("Source", text="Source", anchor=tk.CENTER)
-        self.table.heading("Source_Note", text="Source Note", anchor=tk.CENTER)
-        self.table.heading("Supports", text="Supports", anchor=tk.CENTER)
-        self.table.heading("Format", text="Format", anchor=tk.CENTER)
-        self.table.heading("Artist_Folder", text="Folder", anchor=tk.CENTER)
-        self.table.heading("Printed", text="Printed", anchor=tk.CENTER)
+    def create_table(self, frame, input_obj):
+        self.input_obj = input_obj
+        self.column_names_temp = vars(input_obj[0])
+        self.column_names = self.column_names_temp.keys()
 
-        rows = db.get_all_models(self.con)
-        for row in rows:
-            self.table.insert('', tk.END, values=(row.to_list()))
-
-        self.table.pack(padx=10, pady=10, expand=True, fill=tk.BOTH)
-
-        self.scroll.config(command=self.table.yview)
-
-    def create_table(self, frame, **kargs):
-        # TODO: Replace kargs with object
-        # TODO: Extract one object to create columns and headings
         self.scroll = tk.Scrollbar(frame)
         self.scroll.pack(side=tk.RIGHT, fill=tk.Y)
 
         self.table = ttk.Treeview(frame, yscroll=self.scroll.set)
 
+        self.columns = []
+        for self.name in self.column_names:
+            self.columns.append(self.name)
+
+        self.table['columns'] = self.columns
+
         self.table.column("#0", width=0, stretch=tk.NO)
         self.table.heading("#0", text="", anchor=tk.CENTER)
-        # TODO: Add loop to create columns
+        for self.heading in self.column_names:
+            self.table.column(self.heading, anchor=tk.W, width=80)
+            self.table.heading(self.heading, text=self.heading.capitalize(), anchor=tk.CENTER)
 
-        # TODO: Populate the table
+        for self.row in self.input_obj:
+            self.table.insert('', tk.END, values=(self.row.to_list()))
+
+        self.table.pack(padx=10, pady=10, expand=True, fill=tk.BOTH)
+
+        self.scroll.config(command=self.table.yview)

@@ -36,16 +36,6 @@ def get_all_models(connection):
         print(f"Error {e.args[0]}")
         sys.exit(1)
 
-def close_database(connection):
-
-    try:
-        if connection:
-            connection.close()
-
-    except sqlite3.Error as e:
-        print(f"Error {e.args[0]}")
-        sys.exit(1)
-
 def get_all_artists(connection):
 
     try:
