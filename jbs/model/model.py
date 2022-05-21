@@ -1,3 +1,6 @@
+from cgitb import reset
+
+
 class Model:
     def __init__(self, args):
         self.model = args[0]
@@ -37,3 +40,17 @@ class Artist:
         result.append(self.website)
         result.append(self.email)
         result.append(self.folder)
+
+        return result
+
+class Source:
+    def __init__(self, args):
+        self.name = args[0]
+        self.website = args[1]
+
+    def to_list(self):
+        result = []
+        result.append(self.name)
+        result.append(self.website)
+
+        return result
