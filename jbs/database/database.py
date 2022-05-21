@@ -19,7 +19,7 @@ def get_all_models(connection):
     try:
         cur = connection.cursor()
         cur.execute("SELECT Model_Name, Set_Name, Artist_Name, Source_Name, "
-                    "Source_Note, Supports, Format, Artist_Folder, Printed "
+                        "Source_Note, Supports, Format, Artist_Folder, Printed "
                     "FROM tblModel AS m "
                     "INNER JOIN tblArtist AS a ON m.Artist = a.Artist_ID "
                     "INNER JOIN tblSource AS s ON m.Source = s.Source_ID;"
@@ -81,6 +81,8 @@ def get_all_sources(connection):
 # TODO: Add New Model
 # TODO: Add New Artist
 # TODO: Add New Source
+# Note: cur.execute("select * from people where name_last=:who and age=:age", {"who": who, "age": age})
+# Use vars to get the dict from the object?
 
 def close_database(connection):
 
