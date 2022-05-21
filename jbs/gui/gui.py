@@ -47,3 +47,17 @@ class Window:
         self.table.pack(padx=10, pady=10, expand=True, fill=tk.BOTH)
 
         self.scroll.config(command=self.table.yview)
+
+    def create_table(self, frame, **kargs):
+        # TODO: Replace kargs with object
+        # TODO: Extract one object to create columns and headings
+        self.scroll = tk.Scrollbar(frame)
+        self.scroll.pack(side=tk.RIGHT, fill=tk.Y)
+
+        self.table = ttk.Treeview(frame, yscroll=self.scroll.set)
+
+        self.table.column("#0", width=0, stretch=tk.NO)
+        self.table.heading("#0", text="", anchor=tk.CENTER)
+        # TODO: Add loop to create columns
+
+        # TODO: Populate the table
