@@ -48,3 +48,35 @@ def close_database(connection):
     except sqlite3.Error as e:
         print(f"Error {e.args[0]}")
         sys.exit(1)
+
+def get_all_artists(connection):
+
+    try:
+        cur = connection.cursor()
+        
+        cur.execute("SELECT Artist_Name, Artist_Website, Artist_Email, Artist_Folder "
+                    "FROM tblArtist"
+                    )
+        
+        results = cur.fetchall()
+
+        artists = []
+
+        for artist in results:
+            artists.append(mdl.Artist(artist))
+
+        return artists
+        
+    except sqlite3.Error as e:
+        print(f"Error {e.args[0]}")
+        sys.exit(1)
+
+def close_database(connection):
+
+    try:
+        if connection:
+            connection.close()
+
+    except sqlite3.Error as e:
+        print(f"Error {e.args[0]}")
+        sys.exit(1)
