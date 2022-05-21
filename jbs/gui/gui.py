@@ -5,16 +5,39 @@ import jbs.database.database as db
 
 class Window:
     def __init__(self, con):
-        # TODO: Add TTK Notebook for tabs
         self.con = con
         self.root = tk.Tk()
         self.root.title("3D Models")
-        self.frame = tk.Frame(self.root)
-        self.frame.pack(fill=tk.BOTH, expand=tk.YES)
 
-        self.rows = db.get_all_models(self.con)
-        self.create_table(self.frame, self.rows)
+        self.tabs = ttk.Notebook(self.root)
+        self.tabs.pack(fill=tk.BOTH, expand=tk.YES)
 
+        # Create and populate Model tab
+        self.model_frame = tk.Frame(self.tabs)
+        self.model_frame.pack(fill=tk.BOTH, expand=tk.YES)
+
+        self.models = db.get_all_models(self.con)
+        self.create_table(self.model_frame, self.models)
+
+        self.tabs.add(self.model_frame, text="Models")
+
+        # Create and populate Artist tab
+        self.artist_frame = tk.Frame(self.tabs)
+        self.artist_frame.pack(fill=tk.BOTH, expand=tk.YES)
+
+        self.artists = db.get_all_artists(self.con)
+        self.create_table(self.artist_frame, self.artists)
+
+        self.tabs.add(self.artist_frame, text="Artists")
+
+        # Create and populate Source tab
+        self.source_frame = tk.Frame(self.tabs)
+        self.source_frame.pack(fill=tk.BOTH, expand=tk.YES)
+
+        self.sources = db.get_all_sources(self.con)
+        self.create_table(self.source_frame, self.sources)
+
+        self.tabs.add(self.source_frame, text="Sources")
 
     def create_table(self, frame, input_obj):
         self.input_obj = input_obj
