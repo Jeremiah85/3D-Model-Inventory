@@ -5,12 +5,14 @@ import jbs.database.database as db
 
 class Window:
     def __init__(self, con):
+        # TODO: Add TTK Notebook for tabs
         self.con = con
         self.root = tk.Tk()
         self.root.title("3D Models")
         self.frame = tk.Frame(self.root)
         self.frame.pack(fill=tk.BOTH, expand=tk.YES)
 
+        # TODO: Separate table creation into its own method
         self.scroll = tk.Scrollbar(self.frame)
         self.scroll.pack(side=tk.RIGHT, fill=tk.Y)
 

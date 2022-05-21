@@ -84,6 +84,14 @@ def get_all_sources(connection):
         print(f"Error {e.args[0]}")
         sys.exit(1)
 
+# TODO: Add Model search
+# TODO: Add Artist search
+# TODO: Add Source search
+
+# TODO: Add New Model
+# TODO: Add New Artist
+# TODO: Add New Source
+
 def close_database(connection):
 
     try:

@@ -1,6 +1,3 @@
-from cgitb import reset
-
-
 class Model:
     def __init__(self, args):
         self.model = args[0]
