@@ -74,11 +74,26 @@ def get_all_sources(connection):
         print(f"Error {e.args[0]}")
         sys.exit(1)
 
+
 # TODO: Add Model search
 # TODO: Add Artist search
 # TODO: Add Source search
 
-# TODO: Add New Model
+
+def add_artist(connection, model):
+    # TODO: Convert supports and printed to 1/0 
+    # TODO: Lookup artist_id and source_id
+    # TODO: update object with IDs from lookups
+    try:
+        cur = connection.cursor()
+        cur.execute("INSERT INTO tblModel (Model_Name, Artist, Set_Name, Source, Source_Note, Supports, Format, Printed) "
+                    "VALUES (:model, :set, :artist, :source, :source_note, :supports, :format, :printed);", vars(model)
+                    )
+        connection.commit()
+    
+    except sqlite3.Error as e:
+        print(f"Error {e.args[0]}")
+        sys.exit(1)
 
 
 def add_artist(connection, artist):
@@ -105,6 +120,11 @@ def add_source(connection, source):
     except sqlite3.Error as e:
         print(f"Error {e.args[0]}")
         sys.exit(1)
+
+
+# TODO: Add artist_id lookup function
+# TODO: Add source_id lookup function
+# TODO: Look for a way to combine the lookups foro artist_id and source_id
 
 
 def close_database(connection):
