@@ -123,9 +123,34 @@ def add_source(connection, source):
         sys.exit(1)
 
 
-# TODO: Add artist_id lookup function
-# TODO: Add source_id lookup function
-# TODO: Look for a way to combine the lookups foro artist_id and source_id
+def get_artist_id(connection, artist_id):
+    try:
+        cur = connection.cursor()
+        cur.execute("SELECT Artist_ID "
+                    "FROM tblArtist "
+                    "WHERE Artist_Name = :artist;", {"artist": artist_id})
+        results = cur.fetchone()
+
+        return results[0]
+
+    except sqlite3.Error as e:
+        print(f"Error {e.args[0]}")
+        sys.exit(1)
+
+
+def get_source_id(connection, source_id):
+    try:
+        cur = connection.cursor()
+        cur.execute("SELECT Source_ID "
+                    "FROM tblSource "
+                    "WHERE Source_Name = :source;", {"source": source_id})
+        results = cur.fetchone()
+
+        return results[0]
+
+    except sqlite3.Error as e:
+        print(f"Error {e.args[0]}")
+        sys.exit(1)
 
 
 def close_database(connection):
