@@ -1,6 +1,7 @@
 import sqlite3
 import sys
 import jbs.model.model as mdl
+# TODO: consider splitting this file into database utilities and queries
 
 
 def connect_database(db):
