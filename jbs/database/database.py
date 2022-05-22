@@ -1,3 +1,4 @@
+from ast import match_case
 import sqlite3
 import sys
 import jbs.model.model as mdl
@@ -81,17 +82,39 @@ def get_all_sources(connection):
 # TODO: Add Source search
 
 
-def add_artist(connection, model):
-    # TODO: Convert supports and printed to 1/0 
-    # TODO: Lookup artist_id and source_id
-    # TODO: update object with IDs from lookups
+def add_model(connection, model):
+    supports = model.supports
+    match supports:
+        case True:
+            model.supports = 1
+        case False:
+            model.supports = 0
+        case _:
+            model.supports = 0
+
+    printed = model.printed
+    match printed:
+        case True:
+            model.printed = 1
+        case False:
+            model.printed = 0
+        case _:
+            model.printed = 0
+
+    artist_id = get_artist_id(connection, model.artist)
+    source_id = get_source_id(connection, model.source)
+
+    model.artist = artist_id
+    model.source = source_id
+
     try:
         cur = connection.cursor()
         cur.execute("INSERT INTO tblModel (Model_Name, Artist, Set_Name, Source, Source_Note, Supports, Format, Printed) "
                     "VALUES (:model, :set, :artist, :source, :source_note, :supports, :format, :printed);", vars(model)
                     )
         connection.commit()
-    
+        print(vars(model))
+
     except sqlite3.Error as e:
         print(f"Error {e.args[0]}")
         sys.exit(1)
