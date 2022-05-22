@@ -1,6 +1,9 @@
+from ast import match_case
 import sqlite3
 import sys
 import jbs.model.model as mdl
+# TODO: consider splitting this file into database utilities and queries
+
 
 def connect_database(db):
     con = None
@@ -15,11 +18,10 @@ def connect_database(db):
 
 
 def get_all_models(connection):
-
     try:
         cur = connection.cursor()
         cur.execute("SELECT Model_Name, Set_Name, Artist_Name, Source_Name, "
-                    "Source_Note, Supports, Format, Artist_Folder, Printed "
+                        "Source_Note, Supports, Format, Artist_Folder, Printed "
                     "FROM tblModel AS m "
                     "INNER JOIN tblArtist AS a ON m.Artist = a.Artist_ID "
                     "INNER JOIN tblSource AS s ON m.Source = s.Source_ID;"
@@ -36,8 +38,8 @@ def get_all_models(connection):
         print(f"Error {e.args[0]}")
         sys.exit(1)
 
-def get_all_artists(connection):
 
+def get_all_artists(connection):
     try:
         cur = connection.cursor()
         cur.execute("SELECT Artist_Name, Artist_Website, Artist_Email, Artist_Folder "
@@ -55,8 +57,8 @@ def get_all_artists(connection):
         print(f"Error {e.args[0]}")
         sys.exit(1)
 
-def get_all_sources(connection):
 
+def get_all_sources(connection):
     try:
         cur = connection.cursor()
         cur.execute("SELECT Source_Name, Source_Website "
@@ -74,16 +76,107 @@ def get_all_sources(connection):
         print(f"Error {e.args[0]}")
         sys.exit(1)
 
+
 # TODO: Add Model search
 # TODO: Add Artist search
 # TODO: Add Source search
 
-# TODO: Add New Model
-# TODO: Add New Artist
-# TODO: Add New Source
+
+def add_model(connection, model):
+    supports = model.supports
+    match supports:
+        case True:
+            model.supports = 1
+        case False:
+            model.supports = 0
+        case _:
+            model.supports = 0
+
+    printed = model.printed
+    match printed:
+        case True:
+            model.printed = 1
+        case False:
+            model.printed = 0
+        case _:
+            model.printed = 0
+
+    artist_id = get_artist_id(connection, model.artist)
+    source_id = get_source_id(connection, model.source)
+
+    model.artist = artist_id
+    model.source = source_id
+
+    try:
+        cur = connection.cursor()
+        cur.execute("INSERT INTO tblModel (Model_Name, Artist, Set_Name, Source, Source_Note, Supports, Format, Printed) "
+                    "VALUES (:model, :set, :artist, :source, :source_note, :supports, :format, :printed);", vars(model)
+                    )
+        connection.commit()
+        print(vars(model))
+
+    except sqlite3.Error as e:
+        print(f"Error {e.args[0]}")
+        sys.exit(1)
+
+
+def add_artist(connection, artist):
+    try:
+        cur = connection.cursor()
+        cur.execute("INSERT INTO tblArtist (Artist_Name, Artist_Website, Artist_Email, Artist_Folder) "
+                    "VALUES (:name, :website, :email, :folder);", vars(artist)
+                    )
+        connection.commit()
+    
+    except sqlite3.Error as e:
+        print(f"Error {e.args[0]}")
+        sys.exit(1)
+
+
+def add_source(connection, source):
+    try:
+        cur = connection.cursor()
+        cur.execute("INSERT INTO tblSource (Source_Name, Source_Website) "
+                    "VALUES (:name, :website);", vars(source)
+                    )
+        connection.commit()
+    
+    except sqlite3.Error as e:
+        print(f"Error {e.args[0]}")
+        sys.exit(1)
+
+
+def get_artist_id(connection, artist_id):
+    try:
+        cur = connection.cursor()
+        cur.execute("SELECT Artist_ID "
+                    "FROM tblArtist "
+                    "WHERE Artist_Name = :artist;", {"artist": artist_id})
+        results = cur.fetchone()
+
+        return results[0]
+
+    except sqlite3.Error as e:
+        print(f"Error {e.args[0]}")
+        sys.exit(1)
+
+
+def get_source_id(connection, source_id):
+    try:
+        cur = connection.cursor()
+        cur.execute("SELECT Source_ID "
+                    "FROM tblSource "
+                    "WHERE Source_Name = :source;", {"source": source_id})
+        results = cur.fetchone()
+
+        return results[0]
+
+    except sqlite3.Error as e:
+        print(f"Error {e.args[0]}")
+        sys.exit(1)
+
 
 def close_database(connection):
-
     try:
         if connection:
             connection.close()
