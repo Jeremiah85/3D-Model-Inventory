@@ -12,7 +12,6 @@ class Window:
         self.tabs = ttk.Notebook(self.root)
         self.tabs.pack(fill=tk.BOTH, expand=tk.YES)
 
-        # TODO: write logic to refresh tables
         # TODO: create ui for data entry
         
         # Create and populate Model tab
@@ -29,7 +28,7 @@ class Window:
         self.model_display_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES)
 
         self.models = db.get_all_models(self.con)
-        model_table = Table(self.model_display_frame, self.models)
+        self.model_table = Table(self.model_display_frame, self.models)
 
         self.tabs.add(self.model_frame, text="Models")
 
@@ -72,8 +71,9 @@ class Window:
 
 class Table:
     def __init__(self, frame, input_obj):
+        self.frame = frame
         self.input_obj = input_obj
-        self.scroll = tk.Scrollbar(frame)
+        self.scroll = tk.Scrollbar(self.frame)
         self.scroll.pack(side=tk.RIGHT, fill=tk.Y)
 
         self.table = ttk.Treeview(frame, yscroll=self.scroll.set)
@@ -110,3 +110,19 @@ class Table:
         self.input_obj = input_obj
         self.clear_table()
         self.add_rows(self.input_obj)
+
+
+class TextBox:
+    def __init__(self, frame):
+        self.frame = frame
+        
+        self.text_box = tk.Text(self.frame, height=1, width=30)
+        self.text_box.pack()
+
+    def get_text(self):
+        input = self.text_box.get(1.0, tk.END+"-1c")
+        return input
+
+    def clear_text(self):
+        self.text_box.delete(1.0, tk.END+"-1c")
+    
