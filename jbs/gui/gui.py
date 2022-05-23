@@ -120,9 +120,24 @@ class TextBox:
         self.text_box.pack()
 
     def get_text(self):
-        input = self.text_box.get(1.0, tk.END+"-1c")
-        return input
+        self.input = self.text_box.get(1.0, tk.END+"-1c")
+        return self.input
 
     def clear_text(self):
         self.text_box.delete(1.0, tk.END+"-1c")
-    
+
+
+class CheckBox:
+    def __init__(self, frame, text):
+        self.frame = frame
+        self.text = text
+        self.var = tk.BooleanVar()
+
+        self.checkbox = tk.Checkbutton(self.frame, text=self.text, onvalue=tk.TRUE, offvalue=tk.FALSE, variable=self.var)
+        self.checkbox.pack()
+
+    def get_selection(self):
+        return self.var.get()
+
+    def clear_selection(self):
+        self.checkbox.deselect()
