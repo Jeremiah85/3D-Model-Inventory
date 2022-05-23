@@ -13,19 +13,20 @@ class Window:
         self.tabs.pack(fill=tk.BOTH, expand=tk.YES)
 
         # TODO: create ui for data entry
-        
+        # TODO: create ui for searching
+
         # Create and populate Model tab
         self.model_frame = tk.Frame(self.tabs)
         self.model_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES)
 
+        self.model_display_frame = tk.LabelFrame(self.model_frame, text="Models")
+        self.model_display_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES, side=tk.BOTTOM)
+
         self.model_search_frame = tk.LabelFrame(self.model_frame, text="Search Models")
-        self.model_search_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES)
+        self.model_search_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES, side=tk.BOTTOM)
 
         self.model_newitem_frame = tk.LabelFrame(self.model_frame, text="Add Model")
-        self.model_newitem_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES)
-
-        self.model_display_frame = tk.LabelFrame(self.model_frame, text="Models")
-        self.model_display_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES)
+        self.model_newitem_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES, side=tk.BOTTOM)
 
         self.models = db.get_all_models(self.con)
         self.model_table = Table(self.model_display_frame, self.models)
@@ -36,17 +37,17 @@ class Window:
         self.artist_frame = tk.Frame(self.tabs)
         self.artist_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES)
 
+        self.artist_display_frame = tk.LabelFrame(self.artist_frame, text="Artists")
+        self.artist_display_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES, side=tk.BOTTOM)
+
         self.artist_search_frame = tk.LabelFrame(self.artist_frame, text="Search Artists")
-        self.artist_search_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES)
+        self.artist_search_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES, side=tk.LEFT)
 
         self.artist_newitem_frame = tk.LabelFrame(self.artist_frame, text="Add Artist")
-        self.artist_newitem_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES)
-
-        self.artist_display_frame = tk.LabelFrame(self.artist_frame, text="Artists")
-        self.artist_display_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES)
+        self.artist_newitem_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES, side=tk.LEFT)
 
         self.artists = db.get_all_artists(self.con)
-        artist_table = Table(self.artist_display_frame, self.artists)
+        self.artist_table = Table(self.artist_display_frame, self.artists)
 
         self.tabs.add(self.artist_frame, text="Artists")
 
@@ -54,19 +55,29 @@ class Window:
         self.source_frame = tk.Frame(self.tabs)
         self.source_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES)
 
+        self.source_display_frame = tk.LabelFrame(self.source_frame, text="Sources")
+        self.source_display_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES, side=tk.BOTTOM)
+
         self.source_search_frame = tk.LabelFrame(self.source_frame, text="Search Sources")
-        self.source_search_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES)
+        self.source_search_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES, side=tk.LEFT)
 
         self.source_newitem_frame = tk.LabelFrame(self.source_frame, text="Add Source")
-        self.source_newitem_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES)
-
-        self.source_display_frame = tk.LabelFrame(self.source_frame, text="Sources")
-        self.source_display_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES)
+        self.source_newitem_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES, side=tk.LEFT)
 
         self.sources = db.get_all_sources(self.con)
-        sources_table = Table(self.source_display_frame, self.sources)
+        self.sources_table = Table(self.source_display_frame, self.sources)
 
         self.tabs.add(self.source_frame, text="Sources")
+
+    def refresh_tables(self, con):
+        self.connection = con
+        self.updated_model_table = db.get_all_models(self.con)
+        self.updated_artist_table = db.get_all_artists(self.con)
+        self.updated_source_table = db.get_all_sources(self.con)
+
+        self.model_table.refresh_table(self.updated_model_table)
+        self.artist_table.refresh_table(self.updated_artist_table)
+        self.sources_table.refresh_table(self.updated_source_table)
 
 
 class Table:
@@ -115,7 +126,7 @@ class Table:
 class TextBox:
     def __init__(self, frame):
         self.frame = frame
-        
+
         self.text_box = tk.Text(self.frame, height=1, width=30)
         self.text_box.pack()
 
