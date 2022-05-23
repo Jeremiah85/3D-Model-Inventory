@@ -127,6 +127,27 @@ class TextBox:
         self.text_box.delete(1.0, tk.END+"-1c")
 
 
+class DropdownBox:
+    def __init__(self, frame, input_obj):
+        self.frame = frame
+        self.input_obj = input_obj
+        self.default = "Please select from list"
+        self.var = tk.StringVar(value=self.default)
+        self.options = []
+
+        for self.item in self.input_obj:
+            self.options.append(self.item.name)
+
+        self.dropdown = tk.OptionMenu(self.frame, self.var, self.default, *self.options)
+        self.dropdown.pack()
+
+    def get_selection(self):
+        return self.var.get()
+
+    def reset_selection(self):
+        self.var.set(self.default)
+
+
 class CheckBox:
     def __init__(self, frame, text):
         self.frame = frame
