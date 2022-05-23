@@ -73,13 +73,19 @@ class Window:
 class Table:
     def __init__(self, frame, input_obj):
         self.input_obj = input_obj
-        self.column_names_temp = vars(input_obj[0])
-        self.column_names = self.column_names_temp.keys()
-
         self.scroll = tk.Scrollbar(frame)
         self.scroll.pack(side=tk.RIGHT, fill=tk.Y)
 
         self.table = ttk.Treeview(frame, yscroll=self.scroll.set)
+        self.table.pack(padx=2, pady=2, expand=True, fill=tk.BOTH)
+        self.scroll.config(command=self.table.yview)
+
+        self.add_rows(self.input_obj)
+
+    def add_rows(self, input_obj):
+        self.input_obj = input_obj
+        self.column_names_temp = vars(input_obj[0])
+        self.column_names = self.column_names_temp.keys()
 
         self.columns = []
         for self.name in self.column_names:
@@ -96,6 +102,4 @@ class Table:
         for self.row in self.input_obj:
             self.table.insert('', tk.END, values=(self.row.to_list()))
 
-        self.table.pack(padx=5, pady=5, expand=True, fill=tk.BOTH)
-
-        self.scroll.config(command=self.table.yview)
+    # TODO: Add method for clearing the table
