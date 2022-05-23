@@ -22,7 +22,7 @@ class Window:
         self.model_frame.pack(fill=tk.BOTH, expand=tk.YES)
 
         self.models = db.get_all_models(self.con)
-        self.create_table(self.model_frame, self.models)
+        model_table = Table(self.model_frame, self.models)
 
         self.tabs.add(self.model_frame, text="Models")
 
@@ -31,7 +31,7 @@ class Window:
         self.artist_frame.pack(fill=tk.BOTH, expand=tk.YES)
 
         self.artists = db.get_all_artists(self.con)
-        self.create_table(self.artist_frame, self.artists)
+        artist_table = Table(self.artist_frame, self.artists)
 
         self.tabs.add(self.artist_frame, text="Artists")
 
@@ -40,12 +40,12 @@ class Window:
         self.source_frame.pack(fill=tk.BOTH, expand=tk.YES)
 
         self.sources = db.get_all_sources(self.con)
-        self.create_table(self.source_frame, self.sources)
+        sources_table = Table(self.source_frame, self.sources)
 
         self.tabs.add(self.source_frame, text="Sources")
 
-    def create_table(self, frame, input_obj):
-        # TODO: Move table creation to its own class
+class Table:
+    def __init__(self, frame, input_obj):
         self.input_obj = input_obj
         self.column_names_temp = vars(input_obj[0])
         self.column_names = self.column_names_temp.keys()

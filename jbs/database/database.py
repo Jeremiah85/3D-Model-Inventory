@@ -113,7 +113,6 @@ def add_model(connection, model):
                     "VALUES (:model, :set, :artist, :source, :source_note, :supports, :format, :printed);", vars(model)
                     )
         connection.commit()
-        print(vars(model))
 
     except sqlite3.Error as e:
         print(f"Error {e.args[0]}")
