@@ -105,3 +105,8 @@ class Table:
     def clear_table(self):
         for item in self.table.get_children():
             self.table.delete(item)
+
+    def refresh_table(self, input_obj):
+        self.input_obj = input_obj
+        self.clear_table()
+        self.add_rows(self.input_obj)
