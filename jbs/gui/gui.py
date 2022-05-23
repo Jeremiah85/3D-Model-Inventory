@@ -102,4 +102,6 @@ class Table:
         for self.row in self.input_obj:
             self.table.insert('', tk.END, values=(self.row.to_list()))
 
-    # TODO: Add method for clearing the table
+    def clear_table(self):
+        for item in self.table.get_children():
+            self.table.delete(item)
