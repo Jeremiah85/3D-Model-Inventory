@@ -164,7 +164,6 @@ class Window:
         #----------------------------------------------------------------------------------------------------
 
     def refresh_tables(self, con):
-        # TODO: add code to refresh dropdown boxes
         self.connection = con
         self.updated_model_table = db.get_all_models(self.connection)
         self.updated_artist_table = db.get_all_artists(self.connection)
@@ -258,10 +257,10 @@ class Table:
         self.table['columns'] = self.columns
 
         self.table.column("#0", width=0, stretch=tk.NO)
-        self.table.heading("#0", text="", anchor=tk.CENTER)
+        self.table.heading("#0", text="", anchor=tk.W)
         for self.heading in self.column_names:
             self.table.column(self.heading, anchor=tk.W, width=80)
-            self.table.heading(self.heading, text=self.heading.capitalize(), anchor=tk.CENTER)
+            self.table.heading(self.heading, text=self.heading.capitalize(), anchor=tk.W)
 
         for self.row in self.input_obj:
             self.table.insert('', tk.END, values=(self.row.to_list()))
@@ -294,7 +293,6 @@ class TextBox:
 
 
 class DropdownBox:
-    # TODO: Add refresh data method
     def __init__(self, frame, input_obj, side, anchor):
         self.frame = frame
         self.side = side
