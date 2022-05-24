@@ -101,6 +101,14 @@ class Window:
         self.artist_table.refresh_table(self.updated_artist_table)
         self.sources_table.refresh_table(self.updated_source_table)
 
+    def add_source(self):
+        # TODO: create add_source method
+        pass
+
+    def search_source(self):
+        # TODO: create search_source method
+        pass
+
 
 class Table:
     def __init__(self, frame, input_obj):
