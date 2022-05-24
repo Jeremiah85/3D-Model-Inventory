@@ -1,7 +1,6 @@
 import tkinter as tk
 import tkinter.ttk as ttk
 
-from setuptools import Command
 import jbs.database.database as db
 import jbs.model.model as mdl
 
@@ -219,9 +218,9 @@ class Window:
         self.new_source = mdl.Source(self.new_source_entry)
         db.add_source(self.con, self.new_source)
 
-    def search_models(self, search_column):
+    def search_models(self):
         # TODO: create search model method
-        self = search_column
+        pass
 
     def search_artist(self):
         # TODO: create search_artist method
@@ -229,8 +228,11 @@ class Window:
 
     def search_source(self):
         # TODO: create search_source method
-        pass
+        self.source_search_term = self.source_search_textbox.get_text()
+        self.source_search_textbox.clear_text()
 
+        self.search_results = db.search_source(self.con, self.source_search_term)
+        self.sources_table.refresh_table(self.search_results)
 
 class Table:
     def __init__(self, frame, input_obj):
