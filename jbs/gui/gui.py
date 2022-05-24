@@ -16,6 +16,7 @@ class Window:
         # TODO: create ui for searching
 
         # Create and populate Model tab
+        #----------------------------------------------------------------------------------------------------
         self.model_frame = tk.Frame(self.tabs)
         self.model_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES)
 
@@ -32,8 +33,10 @@ class Window:
         self.model_table = Table(self.model_display_frame, self.models)
 
         self.tabs.add(self.model_frame, text="Models")
+        #---------------------------------------------------------------------------------------------------- 
 
         # Create and populate Artist tab
+        #----------------------------------------------------------------------------------------------------
         self.artist_frame = tk.Frame(self.tabs)
         self.artist_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES)
 
@@ -50,24 +53,43 @@ class Window:
         self.artist_table = Table(self.artist_display_frame, self.artists)
 
         self.tabs.add(self.artist_frame, text="Artists")
+        #----------------------------------------------------------------------------------------------------
 
         # Create and populate Source tab
+        #----------------------------------------------------------------------------------------------------
         self.source_frame = tk.Frame(self.tabs)
         self.source_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES)
 
+        # Fill results table
         self.source_display_frame = tk.LabelFrame(self.source_frame, text="Sources")
         self.source_display_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES, side=tk.BOTTOM)
-
-        self.source_search_frame = tk.LabelFrame(self.source_frame, text="Search Sources")
-        self.source_search_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES, side=tk.LEFT)
-
-        self.source_newitem_frame = tk.LabelFrame(self.source_frame, text="Add Source")
-        self.source_newitem_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES, side=tk.LEFT)
 
         self.sources = db.get_all_sources(self.con)
         self.sources_table = Table(self.source_display_frame, self.sources)
 
+        # Fill Source Search section
+        self.source_search_frame = tk.LabelFrame(self.source_frame, text="Search Sources")
+        self.source_search_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES, side=tk.LEFT)
+
+        self.source_search_textbox = TextBox(self.source_search_frame, tk.LEFT, tk.W)
+        self.source_search_button = tk.Button(self.source_search_frame, text="Search", command=lambda: self.search_source())
+        self.source_search_button.pack(padx=2, pady=2, side=tk.LEFT, anchor=tk.W)
+
+        # Fill Add Source section
+        self.source_newitem_frame = tk.LabelFrame(self.source_frame, text="Add Source")
+        self.source_newitem_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES, side=tk.LEFT)
+
+        self.source_name_label = tk.Label(self.source_newitem_frame, text="Name")
+        self.source_name_label.pack(side=tk.TOP, anchor=tk.W)
+        self.source_name_textbox = TextBox(self.source_newitem_frame, tk.TOP, tk.W)
+        self.source_website_label = tk.Label(self.source_newitem_frame, text="Website")
+        self.source_website_label.pack(side=tk.TOP,anchor=tk.W)
+        self.source_website_textbox = TextBox(self.source_newitem_frame, tk.TOP, tk.W)
+        self.source_submit_button = tk.Button(self.source_newitem_frame, text="Submit", command=lambda: self.add_source())
+        self.source_submit_button.pack(padx=2, pady=2, side=tk.TOP, anchor=tk.W)
+
         self.tabs.add(self.source_frame, text="Sources")
+        #----------------------------------------------------------------------------------------------------
 
     def refresh_tables(self, con):
         self.connection = con
@@ -124,11 +146,13 @@ class Table:
 
 
 class TextBox:
-    def __init__(self, frame):
+    def __init__(self, frame, side, anchor):
         self.frame = frame
+        self.side = side
+        self.anchor = anchor
 
         self.text_box = tk.Text(self.frame, height=1, width=30)
-        self.text_box.pack()
+        self.text_box.pack(padx=2, pady=2, side=self.side, anchor=self.anchor)
 
     def get_text(self):
         self.input = self.text_box.get(1.0, tk.END+"-1c")
@@ -139,8 +163,10 @@ class TextBox:
 
 
 class DropdownBox:
-    def __init__(self, frame, input_obj):
+    def __init__(self, frame, input_obj, side, anchor):
         self.frame = frame
+        self.side = side
+        self.anchor = anchor
         self.input_obj = input_obj
         self.default = "Please select from list"
         self.var = tk.StringVar(value=self.default)
@@ -150,7 +176,7 @@ class DropdownBox:
             self.options.append(self.item.name)
 
         self.dropdown = tk.OptionMenu(self.frame, self.var, self.default, *self.options)
-        self.dropdown.pack()
+        self.dropdown.pack(padx=2, pady=2, self=self.side, anchor=self.anchor)
 
     def get_selection(self):
         return self.var.get()
@@ -160,13 +186,15 @@ class DropdownBox:
 
 
 class CheckBox:
-    def __init__(self, frame, text):
+    def __init__(self, frame, text, side, anchor):
         self.frame = frame
+        self.side = side
+        self.anchor = anchor
         self.text = text
         self.var = tk.BooleanVar()
 
         self.checkbox = tk.Checkbutton(self.frame, text=self.text, onvalue=tk.TRUE, offvalue=tk.FALSE, variable=self.var)
-        self.checkbox.pack()
+        self.checkbox.pack(padx=2, pady=2, side=self.side, anchor=self.anchor)
 
     def get_selection(self):
         return self.var.get()
