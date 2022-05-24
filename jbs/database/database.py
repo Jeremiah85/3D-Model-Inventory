@@ -1,4 +1,3 @@
-from ast import match_case
 import sqlite3
 import sys
 import jbs.model.model as mdl
@@ -77,9 +76,73 @@ def get_all_sources(connection):
         sys.exit(1)
 
 
-# TODO: Add Model search
-# TODO: Add Artist search
-# TODO: Add Source search
+def search_model(connection, field, search_text):
+    search_term = {'keyword': '%' + search_text + '%'}
+
+    try:
+        cur = connection.cursor()
+        cur.execute("SELECT Model_Name, Set_Name, Artist_Name, Source_Name, "
+                        "Source_Note, Supports, Format, Artist_Folder, Printed "
+                    "FROM tblModel AS m "
+                    "INNER JOIN tblArtist AS a ON m.Artist = a.Artist_ID "
+                    "INNER JOIN tblSource AS s ON m.Source = s.Source_ID "
+                    f"WHERE m.{field} LIKE :keyword;", search_term
+                    )
+        results = cur.fetchall()
+
+        models = []
+        for model in results:
+            models.append(mdl.Model(model))
+
+        return models
+        
+    except sqlite3.Error as e:
+        print(f"Error {e.args[0]}")
+        sys.exit(1)
+
+
+def search_artist(connection, search_text):
+    search_term = {'keyword': '%' + search_text + '%'}
+
+    try:
+        cur = connection.cursor()
+        cur.execute("SELECT Artist_Name, Artist_Website, Artist_Email, Artist_Folder "
+                    "FROM tblArtist "
+                    "WHERE Artist_Name LIKE :keyword OR Artist_Website LIKE :keyword OR Artist_Email LIKE :keyword;", search_term
+                    )
+        results = cur.fetchall()
+
+        sources = []
+        for source in results:
+            sources.append(mdl.Source(source))
+
+        return sources
+        
+    except sqlite3.Error as e:
+        print(f"Error {e.args[0]}")
+        sys.exit(1)
+
+
+def search_source(connection, search_text):
+    search_term = {'keyword': '%' + search_text + '%'}
+
+    try:
+        cur = connection.cursor()
+        cur.execute("SELECT Source_Name, Source_Website "
+                    "FROM tblSource "
+                    "WHERE Source_Name LIKE :keyword OR Source_Website LIKE :keyword;", search_term
+                    )
+        results = cur.fetchall()
+
+        sources = []
+        for source in results:
+            sources.append(mdl.Source(source))
+
+        return sources
+        
+    except sqlite3.Error as e:
+        print(f"Error {e.args[0]}")
+        sys.exit(1)
 
 
 def add_model(connection, model):
@@ -113,7 +176,6 @@ def add_model(connection, model):
                     "VALUES (:model, :set, :artist, :source, :source_note, :supports, :format, :printed);", vars(model)
                     )
         connection.commit()
-        print(vars(model))
 
     except sqlite3.Error as e:
         print(f"Error {e.args[0]}")
