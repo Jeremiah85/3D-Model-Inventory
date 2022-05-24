@@ -14,8 +14,7 @@ class Window:
         self.tabs = ttk.Notebook(self.root)
         self.tabs.pack(fill=tk.BOTH, expand=tk.YES)
 
-        # Create and populate Model tab
-        #----------------------------------------------------------------------------------------------------
+        # Create and populate Model tab --------------------------------------------------------------------------------
         self.model_frame = tk.Frame(self.tabs)
         self.model_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES)
 
@@ -33,9 +32,16 @@ class Window:
         self.model_search_textbox = TextBox(self.model_search_frame, tk.LEFT, tk.W)
         self.model_search_selected = tk.StringVar()
 
-        self.model_search_combobox = tk.OptionMenu(self.model_search_frame, self.model_search_selected, "Please select an option", *self.model_search_options)
+        self.model_search_combobox = tk.OptionMenu(self.model_search_frame,
+                                                   self.model_search_selected,
+                                                   "Please select an option",
+                                                   *self.model_search_options
+                                                  )
         self.model_search_combobox.pack(side=tk.LEFT, anchor=tk.W)
-        self.model_search_button = tk.Button(self.model_search_frame, text="Search", command=lambda: self.search_models())
+        self.model_search_button = tk.Button(self.model_search_frame,
+                                             text="Search",
+                                             command=lambda: self.search_models()
+                                            )
         self.model_search_button.pack(padx=2, pady=2, side=tk.LEFT, anchor=tk.W)
 
         # Fill add model section
@@ -76,10 +82,9 @@ class Window:
         self.model_submit_button.pack(padx=2, pady=2, side=tk.LEFT, anchor=tk.W)
 
         self.tabs.add(self.model_frame, text="Models")
-        #---------------------------------------------------------------------------------------------------- 
+        #--------------------------------------------------------------------------------------------------------------- 
 
-        # Create and populate Artist tab
-        #----------------------------------------------------------------------------------------------------
+        # Create and populate Artist tab -------------------------------------------------------------------------------
         self.artist_frame = tk.Frame(self.tabs)
         self.artist_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES)
 
@@ -95,7 +100,10 @@ class Window:
         self.artist_search_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES, side=tk.LEFT)
 
         self.artist_search_textbox = TextBox(self.artist_search_frame, tk.LEFT, tk.W)
-        self.artist_search_button = tk.Button(self.artist_search_frame, text="Search", command=lambda: self.search_artist())
+        self.artist_search_button = tk.Button(self.artist_search_frame,
+                                              text="Search",
+                                              command=lambda: self.search_artist()
+                                             )
         self.artist_search_button.pack(padx=2, pady=2, side=tk.LEFT, anchor=tk.W)
 
         # Fill Add Artist section
@@ -118,14 +126,16 @@ class Window:
         self.artist_folder_label.pack(side=tk.TOP,anchor=tk.W)
         self.artist_folder_textbox = TextBox(self.artist_newitem_frame, tk.TOP, tk.W)
 
-        self.artist_submit_button = tk.Button(self.artist_newitem_frame, text="Submit", command=lambda: self.add_artist())
+        self.artist_submit_button = tk.Button(self.artist_newitem_frame,
+                                              text="Submit",
+                                              command=lambda: self.add_artist()
+                                             )
         self.artist_submit_button.pack(padx=2, pady=2, side=tk.TOP, anchor=tk.W)
 
         self.tabs.add(self.artist_frame, text="Artists")
-        #----------------------------------------------------------------------------------------------------
+        #---------------------------------------------------------------------------------------------------------------
 
-        # Create and populate Source tab
-        #----------------------------------------------------------------------------------------------------
+        # Create and populate Source tab -------------------------------------------------------------------------------
         self.source_frame = tk.Frame(self.tabs)
         self.source_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES)
 
@@ -141,7 +151,10 @@ class Window:
         self.source_search_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES, side=tk.LEFT)
 
         self.source_search_textbox = TextBox(self.source_search_frame, tk.LEFT, tk.W)
-        self.source_search_button = tk.Button(self.source_search_frame, text="Search", command=lambda: self.search_source())
+        self.source_search_button = tk.Button(self.source_search_frame,
+                                              text="Search",
+                                              command=lambda: self.search_source()
+                                             )
         self.source_search_button.pack(padx=2, pady=2, side=tk.LEFT, anchor=tk.W)
 
         # Fill Add Source section
@@ -156,11 +169,14 @@ class Window:
         self.source_website_label.pack(side=tk.TOP,anchor=tk.W)
         self.source_website_textbox = TextBox(self.source_newitem_frame, tk.TOP, tk.W)
 
-        self.source_submit_button = tk.Button(self.source_newitem_frame, text="Submit", command=lambda: self.add_source())
+        self.source_submit_button = tk.Button(self.source_newitem_frame,
+                                              text="Submit",
+                                              command=lambda: self.add_source()
+                                             )
         self.source_submit_button.pack(padx=2, pady=2, side=tk.TOP, anchor=tk.W)
 
         self.tabs.add(self.source_frame, text="Sources")
-        #----------------------------------------------------------------------------------------------------
+        #---------------------------------------------------------------------------------------------------------------
 
     def refresh_tables(self, con):
         self.connection = con
@@ -187,7 +203,7 @@ class Window:
         self.new_model_entry.append(self.model_source_note_textbox.get_text())
         self.new_model_entry.append(self.model_supports_chkbox.get_selection())
         self.new_model_entry.append(self.model_format_textbox.get_text())
-        self.new_model_entry.append("") # Adds a placeholder because a new model does not need to insert a folder
+        self.new_model_entry.append('') # Adds a placeholder because a new model does not need to insert a folder
         self.new_model_entry.append(self.model_printed_chkbox.get_selection())
 
         self.new_model = mdl.Model(self.new_model_entry)
@@ -264,8 +280,8 @@ class Table:
 
         self.table['columns'] = self.columns
 
-        self.table.column("#0", width=0, stretch=tk.NO)
-        self.table.heading("#0", text="", anchor=tk.W)
+        self.table.column('#0', width=0, stretch=tk.NO)
+        self.table.heading('#0', text="", anchor=tk.W)
         for self.heading in self.column_names:
             self.table.column(self.heading, anchor=tk.W, width=80)
             self.table.heading(self.heading, text=self.heading.capitalize(), anchor=tk.W)
@@ -293,11 +309,11 @@ class TextBox:
         self.text_box.pack(padx=2, pady=2, side=self.side, anchor=self.anchor)
 
     def get_text(self):
-        self.input = self.text_box.get(1.0, tk.END+"-1c")
+        self.input = self.text_box.get(1.0, tk.END+'-1c')
         return self.input
 
     def clear_text(self):
-        self.text_box.delete(1.0, tk.END+"-1c")
+        self.text_box.delete(1.0, tk.END+'-1c')
 
 
 class DropdownBox:
@@ -336,7 +352,12 @@ class CheckBox:
         self.text = text
         self.var = tk.BooleanVar()
 
-        self.checkbox = tk.Checkbutton(self.frame, text=self.text, onvalue=tk.TRUE, offvalue=tk.FALSE, variable=self.var)
+        self.checkbox = tk.Checkbutton(self.frame, 
+                                       text=self.text,
+                                       onvalue=tk.TRUE,
+                                       offvalue=tk.FALSE,
+                                       variable=self.var
+                                      )
         self.checkbox.pack(padx=2, pady=2, side=self.side, anchor=self.anchor)
 
     def get_selection(self):
