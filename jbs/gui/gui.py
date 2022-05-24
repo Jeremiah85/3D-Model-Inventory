@@ -1,6 +1,7 @@
 import tkinter as tk
 import tkinter.ttk as ttk
 import jbs.database.database as db
+import jbs.model.model as mdl
 
 
 class Window:
@@ -173,29 +174,35 @@ class Window:
         self.artist_table.refresh_table(self.updated_artist_table)
         self.sources_table.refresh_table(self.updated_source_table)
 
-    def add_source(self):
-        # TODO: create add_source method
-        pass
-
-    def search_source(self):
-        # TODO: create search_source method
+    def add_model(self):
+        # TODO: create add_model method
         pass
 
     def add_artist(self):
         # TODO: create add_artist method
         pass
 
-    def search_artist(self):
-        # TODO: create search_artist method
-        pass
+    def add_source(self):
+        self.new_source_entry = []
+        self.new_source_entry.append(self.source_name_textbox.get_text())
+        self.source_name_textbox.clear_text()
+        self.new_source_entry.append(self.source_website_textbox.get_text())
+        self.source_website_textbox.clear_text()
 
-    def add_model(self):
-        # TODO: create add_model method
-        pass
+        self.new_source = mdl.Source(self.new_source_entry)
+        db.add_source(self.con, self.new_source)
 
     def search_models(self, search_column):
         # TODO: create search model method
         self = search_column
+
+    def search_artist(self):
+        # TODO: create search_artist method
+        pass
+
+    def search_source(self):
+        # TODO: create search_source method
+        pass
 
 
 class Table:
