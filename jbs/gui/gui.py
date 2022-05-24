@@ -1,5 +1,7 @@
 import tkinter as tk
 import tkinter.ttk as ttk
+
+from setuptools import Command
 import jbs.database.database as db
 import jbs.model.model as mdl
 
@@ -172,6 +174,11 @@ class Window:
         self.artist_table.refresh_table(self.updated_artist_table)
         self.sources_table.refresh_table(self.updated_source_table)
 
+        self.refreshed_artists = db.get_all_artists(self.con)
+        self.model_artist_dropdown.refresh_options(self.refreshed_artists)
+        self.refreshed_sources = db.get_all_sources(self.con)
+        self.model_source_dropdown.refresh_options(self.refreshed_sources)
+
     def add_model(self):
         self.new_model_entry = []
         self.new_model_entry.append(self.model_name_textbox.get_text())
@@ -187,6 +194,7 @@ class Window:
 
         self.new_model = mdl.Model(self.new_model_entry)
         db.add_model(self.con, self.new_model)
+        self.refresh_tables(self.con)
 
     def add_artist(self):
         self.new_artist_entry = []
@@ -292,14 +300,13 @@ class DropdownBox:
         self.side = side
         self.anchor = anchor
         self.input_obj = input_obj
-        self.default = "Please select from list"
-        self.var = tk.StringVar(value=self.default)
+        self.var = tk.StringVar()
         self.options = []
 
         for self.item in self.input_obj:
             self.options.append(self.item.name)
 
-        self.dropdown = tk.OptionMenu(self.frame, self.var, self.default, *self.options)
+        self.dropdown = tk.OptionMenu(self.frame, self.var, None, *self.options)
         self.dropdown.pack(padx=2, pady=2, side=self.side, anchor=self.anchor)
 
     def get_selection(self):
@@ -307,6 +314,12 @@ class DropdownBox:
 
     def reset_selection(self):
         self.var.set(self.default)
+
+    def refresh_options(self, input):
+        self.input_obj = input
+        self.dropdown['menu'].delete(0, tk.END)
+        for item in self.input_obj:
+            self.dropdown['menu'].add_command(label=item.name, command=lambda value=item.name: self.var.set(value))
 
 
 class CheckBox:
