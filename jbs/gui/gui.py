@@ -13,9 +13,6 @@ class Window:
         self.tabs = ttk.Notebook(self.root)
         self.tabs.pack(fill=tk.BOTH, expand=tk.YES)
 
-        # TODO: create ui for data entry
-        # TODO: create ui for searching
-
         # Create and populate Model tab
         #----------------------------------------------------------------------------------------------------
         self.model_frame = tk.Frame(self.tabs)
@@ -165,22 +162,45 @@ class Window:
         #----------------------------------------------------------------------------------------------------
 
     def refresh_tables(self, con):
+        # TODO: add code to refresh dropdown boxes
         self.connection = con
-        self.updated_model_table = db.get_all_models(self.con)
-        self.updated_artist_table = db.get_all_artists(self.con)
-        self.updated_source_table = db.get_all_sources(self.con)
+        self.updated_model_table = db.get_all_models(self.connection)
+        self.updated_artist_table = db.get_all_artists(self.connection)
+        self.updated_source_table = db.get_all_sources(self.connection)
 
         self.model_table.refresh_table(self.updated_model_table)
         self.artist_table.refresh_table(self.updated_artist_table)
         self.sources_table.refresh_table(self.updated_source_table)
 
     def add_model(self):
-        # TODO: create add_model method
-        pass
+        self.new_model_entry = []
+        self.new_model_entry.append(self.model_name_textbox.get_text())
+        self.model_name_textbox.clear_text()
+        self.new_model_entry.append(self.model_set_textbox.get_text())
+        self.new_model_entry.append(self.model_artist_dropdown.get_selection())
+        self.new_model_entry.append(self.model_source_dropdown.get_selection())
+        self.new_model_entry.append(self.model_source_note_textbox.get_text())
+        self.new_model_entry.append(self.model_supports_chkbox.get_selection())
+        self.new_model_entry.append(self.model_format_textbox.get_text())
+        self.new_model_entry.append("") # Adds a placeholder because a new model does not need to insert a folder
+        self.new_model_entry.append(self.model_printed_chkbox.get_selection())
+
+        self.new_model = mdl.Model(self.new_model_entry)
+        db.add_model(self.con, self.new_model)
 
     def add_artist(self):
-        # TODO: create add_artist method
-        pass
+        self.new_artist_entry = []
+        self.new_artist_entry.append(self.artist_name_textbox.get_text())
+        self.artist_name_textbox.clear_text()
+        self.new_source_entry.append(self.artist_website_textbox.get_text())
+        self.artist_website_textbox.clear_text()
+        self.new_source_entry.append(self.artist_email_textbox.get_text())
+        self.artist_email_textbox.clear_text()
+        self.new_source_entry.append(self.artist_folder_textbox.get_text())
+        self.artist_folder_textbox.clear_text()
+
+        self.new_artist = mdl.Artist(self.new_artist_entry)
+        db.add_artist(self.con, self.new_artist)
 
     def add_source(self):
         self.new_source_entry = []
@@ -266,6 +286,7 @@ class TextBox:
 
 
 class DropdownBox:
+    # TODO: Add refresh data method
     def __init__(self, frame, input_obj, side, anchor):
         self.frame = frame
         self.side = side
