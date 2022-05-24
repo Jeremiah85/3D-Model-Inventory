@@ -35,13 +35,11 @@ class Window:
         self.model_search_combobox = tk.OptionMenu(self.model_search_frame,
                                                    self.model_search_selected,
                                                    "Please select an option",
-                                                   *self.model_search_options
-                                                  )
+                                                   *self.model_search_options)
         self.model_search_combobox.pack(side=tk.LEFT, anchor=tk.W)
         self.model_search_button = tk.Button(self.model_search_frame,
                                              text="Search",
-                                             command=lambda: self.search_models()
-                                            )
+                                             command=lambda: self.search_models())
         self.model_search_button.pack(padx=2, pady=2, side=tk.LEFT, anchor=tk.W)
 
         # Fill add model section
@@ -102,8 +100,7 @@ class Window:
         self.artist_search_textbox = TextBox(self.artist_search_frame, tk.LEFT, tk.W)
         self.artist_search_button = tk.Button(self.artist_search_frame,
                                               text="Search",
-                                              command=lambda: self.search_artist()
-                                             )
+                                              command=lambda: self.search_artist())
         self.artist_search_button.pack(padx=2, pady=2, side=tk.LEFT, anchor=tk.W)
 
         # Fill Add Artist section
@@ -128,8 +125,7 @@ class Window:
 
         self.artist_submit_button = tk.Button(self.artist_newitem_frame,
                                               text="Submit",
-                                              command=lambda: self.add_artist()
-                                             )
+                                              command=lambda: self.add_artist())
         self.artist_submit_button.pack(padx=2, pady=2, side=tk.TOP, anchor=tk.W)
 
         self.tabs.add(self.artist_frame, text="Artists")
@@ -153,8 +149,7 @@ class Window:
         self.source_search_textbox = TextBox(self.source_search_frame, tk.LEFT, tk.W)
         self.source_search_button = tk.Button(self.source_search_frame,
                                               text="Search",
-                                              command=lambda: self.search_source()
-                                             )
+                                              command=lambda: self.search_source())
         self.source_search_button.pack(padx=2, pady=2, side=tk.LEFT, anchor=tk.W)
 
         # Fill Add Source section
@@ -171,8 +166,7 @@ class Window:
 
         self.source_submit_button = tk.Button(self.source_newitem_frame,
                                               text="Submit",
-                                              command=lambda: self.add_source()
-                                             )
+                                              command=lambda: self.add_source())
         self.source_submit_button.pack(padx=2, pady=2, side=tk.TOP, anchor=tk.W)
 
         self.tabs.add(self.source_frame, text="Sources")
@@ -356,8 +350,7 @@ class CheckBox:
                                        text=self.text,
                                        onvalue=tk.TRUE,
                                        offvalue=tk.FALSE,
-                                       variable=self.var
-                                      )
+                                       variable=self.var)
         self.checkbox.pack(padx=2, pady=2, side=self.side, anchor=self.anchor)
 
     def get_selection(self):
