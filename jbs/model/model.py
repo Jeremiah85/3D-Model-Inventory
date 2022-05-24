@@ -24,6 +24,7 @@ class Model:
 
         return result
 
+
 class Artist:
     def __init__(self, args):
         self.name = args[0]
@@ -39,6 +40,7 @@ class Artist:
         result.append(self.folder)
 
         return result
+
 
 class Source:
     def __init__(self, args):
