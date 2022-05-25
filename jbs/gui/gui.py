@@ -39,9 +39,11 @@ class Window:
             *self.model_search_options
             )
         self.model_search_combobox.pack(side=tk.LEFT, anchor=tk.W)
-        self.model_search_button = tk.Button(self.model_search_frame,
-                                             text="Search",
-                                             command=lambda: self.search_models())
+        self.model_search_button = tk.Button(
+            self.model_search_frame,
+            text="Search",
+            command=lambda: self.search_models()
+            )
         self.model_search_button.pack(padx=2, pady=2, side=tk.LEFT, anchor=tk.W)
 
         # Fill add model section
