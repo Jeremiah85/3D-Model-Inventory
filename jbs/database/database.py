@@ -1,6 +1,6 @@
 import sqlite3
 import sys
-import jbs.model.model as mdl
+import jbs.inventory as inv
 # TODO: consider splitting this file into database utilities and queries
 
 
@@ -48,7 +48,7 @@ def get_all_models(connection):
 
         models = []
         for model in results:
-            models.append(mdl.Model(model))
+            models.append(inv.Model(model))
 
         return models
         
@@ -79,7 +79,7 @@ def get_all_artists(connection):
 
         artists = []
         for artist in results:
-            artists.append(mdl.Artist(artist))
+            artists.append(inv.Artist(artist))
 
         return artists
         
@@ -110,7 +110,7 @@ def get_all_sources(connection):
 
         sources = []
         for source in results:
-            sources.append(mdl.Source(source))
+            sources.append(inv.Source(source))
 
         return sources
         
@@ -150,7 +150,7 @@ def search_model(connection, field, search_text):
 
         models = []
         for model in results:
-            models.append(mdl.Model(model))
+            models.append(inv.Model(model))
 
         return models
         
@@ -187,7 +187,7 @@ def search_artist(connection, search_text):
 
         sources = []
         for source in results:
-            sources.append(mdl.Source(source))
+            sources.append(inv.Source(source))
 
         return sources
         
@@ -222,7 +222,7 @@ def search_source(connection, search_text):
 
         sources = []
         for source in results:
-            sources.append(mdl.Source(source))
+            sources.append(inv.Source(source))
 
         return sources
         

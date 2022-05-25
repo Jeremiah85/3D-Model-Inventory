@@ -2,7 +2,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 
 import jbs.database.database as db
-import jbs.model.model as mdl
+import jbs.inventory as inv
 
 
 class Window:
@@ -239,7 +239,7 @@ class Window:
         self.new_model_entry.append('')
         self.new_model_entry.append(self.model_printed_chkbox.get_selection())
 
-        self.new_model = mdl.Model(self.new_model_entry)
+        self.new_model = inv.Model(self.new_model_entry)
         db.add_model(self.con, self.new_model)
         self.refresh_tables(self.con)
 
@@ -261,7 +261,7 @@ class Window:
         self.new_source_entry.append(self.artist_folder_textbox.get_text())
         self.artist_folder_textbox.clear_text()
 
-        self.new_artist = mdl.Artist(self.new_artist_entry)
+        self.new_artist = inv.Artist(self.new_artist_entry)
         db.add_artist(self.con, self.new_artist)
 
     def add_source(self):
@@ -278,7 +278,7 @@ class Window:
         self.new_source_entry.append(self.source_website_textbox.get_text())
         self.source_website_textbox.clear_text()
 
-        self.new_source = mdl.Source(self.new_source_entry)
+        self.new_source = inv.Source(self.new_source_entry)
         db.add_source(self.con, self.new_source)
 
     def search_models(self):
