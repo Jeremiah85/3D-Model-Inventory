@@ -5,6 +5,13 @@ import jbs.model.model as mdl
 
 
 def connect_database(db):
+    """Connects to a specified sqlite database.
+
+    Args:
+        db: A path to a sqlite database file. String
+    Returns:
+        A sqlite3 database connection object.
+    """
     con = None
 
     try:
@@ -17,6 +24,17 @@ def connect_database(db):
 
 
 def get_all_models(connection):
+    """Returns a list of all model objects from the database.
+
+    Queries the database and retrieves all of the models then converts that
+    list to a list of model objects.
+
+    Args:
+        connection: A sqlite database connection.
+
+    Returns:
+        A list of all model objects in the database.
+    """
     try:
         cur = connection.cursor()
         cur.execute(
@@ -40,6 +58,17 @@ def get_all_models(connection):
 
 
 def get_all_artists(connection):
+    """Returns a list of all artist objects from the database.
+
+    Queries the database and retrieves all of the artists then converts that
+    list to a list of artist objects.
+
+    Args:
+        connection: A sqlite database connection.
+
+    Returns:
+        A list of all artist objects in the database.
+    """
     try:
         cur = connection.cursor()
         cur.execute(
@@ -60,6 +89,17 @@ def get_all_artists(connection):
 
 
 def get_all_sources(connection):
+    """Returns a list of all source objects from the database.
+
+    Queries the database and retrieves all of the sources then converts that
+    list to a list of source objects.
+
+    Args:
+        connection: A sqlite database connection.
+
+    Returns:
+        A list of all source objects in the database.
+    """
     try:
         cur = connection.cursor()
         cur.execute(
@@ -80,6 +120,20 @@ def get_all_sources(connection):
 
 
 def search_model(connection, field, search_text):
+    """Retrieves all model objects matching a user query.
+
+    Connects to the database and searches a user supplied field for a user
+    supplied string and returns a list of matching items as a list of model
+    objects.
+
+    Args:
+        connection: A sqlite database connection.
+        field: The field in the model table to search.
+        search_text: the text to search for.
+
+    Returns:
+        A list of model objects matching the user's query.
+    """
     search_term = {'keyword': '%' + search_text + '%'}
 
     try:
@@ -106,6 +160,18 @@ def search_model(connection, field, search_text):
 
 
 def search_artist(connection, search_text):
+    """Retrieves all artist objects matching a user query.
+
+    Connects to the database and searches for a user supplied string and
+    returns a list of matching items as a list of artist objects.
+
+    Args:
+        connection: A sqlite database connection.
+        search_text: the text to search for.
+
+    Returns:
+        A list of artist objects matching the user's query.
+    """
     search_term = {'keyword': '%' + search_text + '%'}
 
     try:
@@ -131,6 +197,18 @@ def search_artist(connection, search_text):
 
 
 def search_source(connection, search_text):
+    """Retrieves all source objects matching a user query.
+
+    Connects to the database and searches for a user supplied string and
+    returns a list of matching items as a list of source objects.
+
+    Args:
+        connection: A sqlite database connection.
+        search_text: the text to search for.
+
+    Returns:
+        A list of source objects matching the user's query.
+    """
     search_term = {'keyword': '%' + search_text + '%'}
 
     try:
@@ -154,6 +232,15 @@ def search_source(connection, search_text):
 
 
 def add_model(connection, model):
+    """Adds a supplied model object to the database
+
+    Takes a model object and extracts the attributes to insert them into the
+    database.
+
+    Args:
+        connection: A sqlite database connection.
+        model: A model object to add to the database.
+    """
     supports = model.supports
     match supports:
         case True:
@@ -192,6 +279,15 @@ def add_model(connection, model):
 
 
 def add_artist(connection, artist):
+    """Adds a supplied artist object to the database
+
+    Takes a artist object and extracts the attributes to insert them into the
+    database.
+
+    Args:
+        connection: A sqlite database connection.
+        artist: A artist object to add to the database.
+    """
     try:
         cur = connection.cursor()
         cur.execute(
@@ -206,6 +302,15 @@ def add_artist(connection, artist):
 
 
 def add_source(connection, source):
+    """Adds a supplied source object to the database
+
+    Takes a source object and extracts the attributes to insert them into the
+    database.
+
+    Args:
+        connection: A sqlite database connection.
+        source: A source object to add to the database.
+    """
     try:
         cur = connection.cursor()
         cur.execute(
@@ -219,13 +324,24 @@ def add_source(connection, source):
         sys.exit(1)
 
 
-def get_artist_id(connection, artist_id):
+def get_artist_id(connection, artist_name):
+    """Gets the ID for a supplied artist name.
+
+    Takes a artist name and gets its ID from the database.
+
+    Args:
+        connection: A sqlite database connection.
+        artist_name: The artist's name to look up.
+
+    Returns:
+        An integer containing the artist ID for the supplied artist.
+    """
     try:
         cur = connection.cursor()
         cur.execute(
             'SELECT Artist_ID '
             'FROM tblArtist '
-            'WHERE Artist_Name = :artist;', {'artist': artist_id}
+            'WHERE Artist_Name = :artist;', {'artist': artist_name}
             )
         results = cur.fetchone()
 
@@ -236,13 +352,24 @@ def get_artist_id(connection, artist_id):
         sys.exit(1)
 
 
-def get_source_id(connection, source_id):
+def get_source_id(connection, source_name):
+    """Gets the ID for a supplied source name.
+
+    Takes a source name and gets its ID from the database.
+
+    Args:
+        connection: A sqlite database connection.
+        source_name: The artist's name to look up.
+
+    Returns:
+        An integer containing the source ID for the supplied source.
+    """
     try:
         cur = connection.cursor()
         cur.execute(
             'SELECT Source_ID '
             'FROM tblSource '
-            'WHERE Source_Name = :source;', {'source': source_id}
+            'WHERE Source_Name = :source;', {'source': source_name}
             )
         results = cur.fetchone()
 
@@ -254,6 +381,11 @@ def get_source_id(connection, source_id):
 
 
 def close_database(connection):
+    """Closes the database connection.
+
+    Args:
+        connection: The database connection to close.
+    """
     try:
         if connection:
             connection.close()
