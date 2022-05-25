@@ -1,5 +1,19 @@
 class Model:
+    """A object representing a 3D model.
+
+    Attributes:
+        model: The model's name. String
+        set: The model's set. String
+        artist: The model's artist. String
+        source: The model's source. String
+        source_note: And note about the model's source. String
+        supports: Whether the model is supported. Boolean
+        format: What formats the model is in. String
+        folder: What base folder the model is in. String 
+        printed: Whether the model has been printed. Boolean
+    """
     def __init__(self, args):
+        """Takes a list of values and creates the object"""
         self.model = args[0]
         self.set = args[1]
         self.artist = args[2]
@@ -11,6 +25,11 @@ class Model:
         self.printed = bool(args[8])
 
     def to_list(self):
+        """Creates a list from the object's values.
+
+        Returns:
+            Returns a list of the objects attribute values.
+        """
         result = []
         result.append(self.model)
         result.append(self.set)
@@ -26,13 +45,27 @@ class Model:
 
 
 class Artist:
+    """A object representing an artist.
+
+    Attributes:
+        name: The artist's name. String
+        website: The artist's website. String
+        email: The artists's email. String
+        folder: What base folder the artist's models are in. String 
+    """
     def __init__(self, args):
+        """Takes a list of values and creates the object"""
         self.name = args[0]
         self.website = args[1]
         self.email = args[2]
         self.folder = args[3]
 
     def to_list(self):
+        """Creates a list from the object's values.
+
+        Returns:
+            Returns a list of the objects attribute values.
+        """
         result = []
         result.append(self.name)
         result.append(self.website)
@@ -43,11 +76,23 @@ class Artist:
 
 
 class Source:
+    """A object representing a source.
+
+    Attributes:
+        name: The source's name. String
+        website: The source's website. String
+    """
     def __init__(self, args):
+        """Takes a list of values and creates the object"""
         self.name = args[0]
         self.website = args[1]
 
     def to_list(self):
+        """Creates a list from the object's values.
+
+        Returns:
+            Returns a list of the objects attribute values.
+        """
         result = []
         result.append(self.name)
         result.append(self.website)
