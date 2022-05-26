@@ -1,8 +1,8 @@
 import sys
 import os
 
-import jbs.database.database as db
-import jbs.gui.gui as gui
+import jbs.database.database_utils as db
+import jbs.gui as gui
 
 def main():
     # This assumes that the database is in the same directory as the script.

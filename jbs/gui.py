@@ -1,8 +1,8 @@
 import tkinter as tk
 import tkinter.ttk as ttk
 
-import jbs.database.database as db
-import jbs.model.model as mdl
+import jbs.database.database_queries as dbqueries
+import jbs.inventory as inv
 
 
 class Window:
@@ -12,14 +12,14 @@ class Window:
     tabs, frames, and form widgets. This class receives a SQLite3 database
     connection.
     """
-    def __init__(self, con):
+    def __init__(self, connection):
         """Initializes the Window class.
 
         Creates three tabs: Models, Artists, and Sources, each with a search,
         add, and display section. The database connection is used to populate
         various UI elements.
         """
-        self.con = con
+        self.connection = connection
         self.root = tk.Tk()
         self.root.title("3D Models")
 
@@ -34,7 +34,7 @@ class Window:
         self.model_display_frame = tk.LabelFrame(self.model_frame, text="Models")
         self.model_display_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES, side=tk.BOTTOM)
 
-        self.models = db.get_all_models(self.con)
+        self.models = dbqueries.get_all_models(self.connection)
         self.model_table = Table(self.model_display_frame, self.models)
 
         # Fill Model search section
@@ -47,7 +47,6 @@ class Window:
         self.model_search_combobox = tk.OptionMenu(
             self.model_search_frame,
             self.model_search_selected,
-            "Please select an option",
             *self.model_search_options
             )
         self.model_search_combobox.pack(side=tk.LEFT, anchor=tk.W)
@@ -72,13 +71,23 @@ class Window:
 
         self.model_artist_label = tk.Label(self.model_newitem_frame, text="Artist")
         self.model_artist_label.pack(side=tk.LEFT, anchor=tk.W)
-        self.artist_selection_obj = db.get_all_artists(con)
-        self.model_artist_dropdown = DropdownBox(self.model_newitem_frame, self.artist_selection_obj, tk.LEFT, tk.W)
+        self.artist_selection_obj = dbqueries.get_all_artists(self.connection)
+        self.model_artist_dropdown = DropdownBox(
+            self.model_newitem_frame,
+            self.artist_selection_obj,
+            tk.LEFT,
+            tk.W
+            )
 
         self.model_source_label = tk.Label(self.model_newitem_frame, text="Source")
         self.model_source_label.pack(side=tk.LEFT, anchor=tk.W)
-        self.source_selection_obj = db.get_all_artists(con)
-        self.model_source_dropdown = DropdownBox(self.model_newitem_frame, self.source_selection_obj, tk.LEFT, tk.W)
+        self.source_selection_obj = dbqueries.get_all_artists(self.connection)
+        self.model_source_dropdown = DropdownBox(
+            self.model_newitem_frame,
+            self.source_selection_obj,
+            tk.LEFT,
+            tk.W
+            )
 
         self.model_source_note_label = tk.Label(self.model_newitem_frame, text="Source Note")
         self.model_source_note_label.pack(side=tk.LEFT, anchor=tk.W)
@@ -92,7 +101,11 @@ class Window:
 
         self.model_printed_chkbox = CheckBox(self.model_newitem_frame, "Printed", tk.LEFT, tk.W)
 
-        self.model_submit_button = tk.Button(self.model_newitem_frame, text="Submit", command=lambda: self.add_model())
+        self.model_submit_button = tk.Button(
+            self.model_newitem_frame,
+            text="Submit",
+            command=lambda: self.add_model()
+            )
         self.model_submit_button.pack(padx=2, pady=2, side=tk.LEFT, anchor=tk.W)
 
         self.tabs.add(self.model_frame, text="Models")
@@ -106,7 +119,7 @@ class Window:
         self.artist_display_frame = tk.LabelFrame(self.artist_frame, text="Artists")
         self.artist_display_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES, side=tk.BOTTOM)
 
-        self.artists = db.get_all_artists(self.con)
+        self.artists = dbqueries.get_all_artists(self.connection)
         self.artist_table = Table(self.artist_display_frame, self.artists)
 
         # Fill Artist search section
@@ -158,7 +171,7 @@ class Window:
         self.source_display_frame = tk.LabelFrame(self.source_frame, text="Sources")
         self.source_display_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES, side=tk.BOTTOM)
 
-        self.sources = db.get_all_sources(self.con)
+        self.sources = dbqueries.get_all_sources(self.connection)
         self.sources_table = Table(self.source_display_frame, self.sources)
 
         # Fill Source Search section
@@ -195,27 +208,23 @@ class Window:
         self.tabs.add(self.source_frame, text="Sources")
         #--------------------------------------------------------------------------------------------------------------
 
-    def refresh_tables(self, con):
+    def refresh_tables(self):
         """Replaces the tables and dropdowns with new data from the database.
 
         Pulls the latest data from the database and repopulates the three
         tables and the two model dropdowns.
-
-        Args:
-            con: A SQLite3 database connection.
         """
-        self.connection = con
-        self.updated_model_table = db.get_all_models(self.connection)
-        self.updated_artist_table = db.get_all_artists(self.connection)
-        self.updated_source_table = db.get_all_sources(self.connection)
+        self.updated_model_table = dbqueries.get_all_models(self.connection)
+        self.updated_artist_table = dbqueries.get_all_artists(self.connection)
+        self.updated_source_table = dbqueries.get_all_sources(self.connection)
 
         self.model_table.refresh_table(self.updated_model_table)
         self.artist_table.refresh_table(self.updated_artist_table)
         self.sources_table.refresh_table(self.updated_source_table)
 
-        self.refreshed_artists = db.get_all_artists(self.con)
+        self.refreshed_artists = dbqueries.get_all_artists(self.connection)
         self.model_artist_dropdown.refresh_options(self.refreshed_artists)
-        self.refreshed_sources = db.get_all_sources(self.con)
+        self.refreshed_sources = dbqueries.get_all_sources(self.connection)
         self.model_source_dropdown.refresh_options(self.refreshed_sources)
 
     def add_model(self):
@@ -239,9 +248,9 @@ class Window:
         self.new_model_entry.append('')
         self.new_model_entry.append(self.model_printed_chkbox.get_selection())
 
-        self.new_model = mdl.Model(self.new_model_entry)
-        db.add_model(self.con, self.new_model)
-        self.refresh_tables(self.con)
+        self.new_model = inv.Model(self.new_model_entry)
+        dbqueries.add_model(self.connection, self.new_model)
+        self.refresh_tables()
 
     def add_artist(self):
         """Adds a new artist to the database.
@@ -261,8 +270,9 @@ class Window:
         self.new_source_entry.append(self.artist_folder_textbox.get_text())
         self.artist_folder_textbox.clear_text()
 
-        self.new_artist = mdl.Artist(self.new_artist_entry)
-        db.add_artist(self.con, self.new_artist)
+        self.new_artist = inv.Artist(self.new_artist_entry)
+        dbqueries.add_artist(self.connection, self.new_artist)
+        self.refresh_tables()
 
     def add_source(self):
         """Adds a new source to the database.
@@ -278,8 +288,9 @@ class Window:
         self.new_source_entry.append(self.source_website_textbox.get_text())
         self.source_website_textbox.clear_text()
 
-        self.new_source = mdl.Source(self.new_source_entry)
-        db.add_source(self.con, self.new_source)
+        self.new_source = inv.Source(self.new_source_entry)
+        dbqueries.add_source(self.connection, self.new_source)
+        self.refresh_tables()
 
     def search_models(self):
         """Searches the database for models matching a search term.
@@ -295,7 +306,11 @@ class Window:
         self.model_search_textbox.clear_text()
         self.model_search_field = self.model_search_selected.get()
 
-        self.model_results = db.search_model(self.con, self.model_search_field, self.model_search_term)
+        self.model_results = dbqueries.search_model(
+            self.connection,
+            self.model_search_field,
+            self.model_search_term
+            )
         self.model_table.refresh_table(self.model_results)
         
     def search_artist(self):
@@ -311,7 +326,7 @@ class Window:
         self.artist_search_term = self.artist_search_textbox.get_text()
         self.artist_search_textbox.clear_text()
 
-        self.artist_results = db.search_artist(self.con, self.artist_search_term)
+        self.artist_results = dbqueries.search_artist(self.connection, self.artist_search_term)
         self.artist_table.refresh_table(self.artist_results)
 
     def search_source(self):
@@ -327,7 +342,7 @@ class Window:
         self.source_search_term = self.source_search_textbox.get_text()
         self.source_search_textbox.clear_text()
 
-        self.search_results = db.search_source(self.con, self.source_search_term)
+        self.search_results = dbqueries.search_source(self.connection, self.source_search_term)
         self.sources_table.refresh_table(self.search_results)
 
 class Table:
@@ -499,7 +514,10 @@ class DropdownBox:
         self.input_obj = input
         self.dropdown['menu'].delete(0, tk.END)
         for item in self.input_obj:
-            self.dropdown['menu'].add_command(label=item.name, command=lambda value=item.name: self.var.set(value))
+            self.dropdown['menu'].add_command(
+                label=item.name,
+                command=lambda value=item.name: self.var.set(value)
+                )
 
 
 class CheckBox:
