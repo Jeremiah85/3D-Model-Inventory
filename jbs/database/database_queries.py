@@ -1,26 +1,6 @@
 import sqlite3
 import sys
 import jbs.inventory as inv
-# TODO: consider splitting this file into database utilities and queries
-
-
-def connect_database(db):
-    """Connects to a specified sqlite database.
-
-    Args:
-        db: A path to a sqlite database file. String
-    Returns:
-        A sqlite3 database connection object.
-    """
-    con = None
-
-    try:
-        con = sqlite3.connect(db)
-        return con
-
-    except sqlite3.Error as e:
-        print(f"Error {e.args[0]}")
-        sys.exit(1)
 
 
 def get_all_models(connection):
@@ -374,21 +354,6 @@ def get_source_id(connection, source_name):
         results = cur.fetchone()
 
         return results[0]
-
-    except sqlite3.Error as e:
-        print(f"Error {e.args[0]}")
-        sys.exit(1)
-
-
-def close_database(connection):
-    """Closes the database connection.
-
-    Args:
-        connection: The database connection to close.
-    """
-    try:
-        if connection:
-            connection.close()
 
     except sqlite3.Error as e:
         print(f"Error {e.args[0]}")

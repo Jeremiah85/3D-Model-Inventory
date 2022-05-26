@@ -1,7 +1,7 @@
 import tkinter as tk
 import tkinter.ttk as ttk
 
-import jbs.database.database as db
+import jbs.database.database_queries as dbqueries
 import jbs.inventory as inv
 
 
@@ -34,7 +34,7 @@ class Window:
         self.model_display_frame = tk.LabelFrame(self.model_frame, text="Models")
         self.model_display_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES, side=tk.BOTTOM)
 
-        self.models = db.get_all_models(self.connection)
+        self.models = dbqueries.get_all_models(self.connection)
         self.model_table = Table(self.model_display_frame, self.models)
 
         # Fill Model search section
@@ -71,7 +71,7 @@ class Window:
 
         self.model_artist_label = tk.Label(self.model_newitem_frame, text="Artist")
         self.model_artist_label.pack(side=tk.LEFT, anchor=tk.W)
-        self.artist_selection_obj = db.get_all_artists(self.connection)
+        self.artist_selection_obj = dbqueries.get_all_artists(self.connection)
         self.model_artist_dropdown = DropdownBox(
             self.model_newitem_frame,
             self.artist_selection_obj,
@@ -81,7 +81,7 @@ class Window:
 
         self.model_source_label = tk.Label(self.model_newitem_frame, text="Source")
         self.model_source_label.pack(side=tk.LEFT, anchor=tk.W)
-        self.source_selection_obj = db.get_all_artists(self.connection)
+        self.source_selection_obj = dbqueries.get_all_artists(self.connection)
         self.model_source_dropdown = DropdownBox(
             self.model_newitem_frame,
             self.source_selection_obj,
@@ -119,7 +119,7 @@ class Window:
         self.artist_display_frame = tk.LabelFrame(self.artist_frame, text="Artists")
         self.artist_display_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES, side=tk.BOTTOM)
 
-        self.artists = db.get_all_artists(self.connection)
+        self.artists = dbqueries.get_all_artists(self.connection)
         self.artist_table = Table(self.artist_display_frame, self.artists)
 
         # Fill Artist search section
@@ -171,7 +171,7 @@ class Window:
         self.source_display_frame = tk.LabelFrame(self.source_frame, text="Sources")
         self.source_display_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES, side=tk.BOTTOM)
 
-        self.sources = db.get_all_sources(self.connection)
+        self.sources = dbqueries.get_all_sources(self.connection)
         self.sources_table = Table(self.source_display_frame, self.sources)
 
         # Fill Source Search section
@@ -214,17 +214,17 @@ class Window:
         Pulls the latest data from the database and repopulates the three
         tables and the two model dropdowns.
         """
-        self.updated_model_table = db.get_all_models(self.connection)
-        self.updated_artist_table = db.get_all_artists(self.connection)
-        self.updated_source_table = db.get_all_sources(self.connection)
+        self.updated_model_table = dbqueries.get_all_models(self.connection)
+        self.updated_artist_table = dbqueries.get_all_artists(self.connection)
+        self.updated_source_table = dbqueries.get_all_sources(self.connection)
 
         self.model_table.refresh_table(self.updated_model_table)
         self.artist_table.refresh_table(self.updated_artist_table)
         self.sources_table.refresh_table(self.updated_source_table)
 
-        self.refreshed_artists = db.get_all_artists(self.connection)
+        self.refreshed_artists = dbqueries.get_all_artists(self.connection)
         self.model_artist_dropdown.refresh_options(self.refreshed_artists)
-        self.refreshed_sources = db.get_all_sources(self.connection)
+        self.refreshed_sources = dbqueries.get_all_sources(self.connection)
         self.model_source_dropdown.refresh_options(self.refreshed_sources)
 
     def add_model(self):
@@ -249,7 +249,7 @@ class Window:
         self.new_model_entry.append(self.model_printed_chkbox.get_selection())
 
         self.new_model = inv.Model(self.new_model_entry)
-        db.add_model(self.connection, self.new_model)
+        dbqueries.add_model(self.connection, self.new_model)
         self.refresh_tables()
 
     def add_artist(self):
@@ -271,7 +271,7 @@ class Window:
         self.artist_folder_textbox.clear_text()
 
         self.new_artist = inv.Artist(self.new_artist_entry)
-        db.add_artist(self.connection, self.new_artist)
+        dbqueries.add_artist(self.connection, self.new_artist)
         self.refresh_tables()
 
     def add_source(self):
@@ -289,7 +289,7 @@ class Window:
         self.source_website_textbox.clear_text()
 
         self.new_source = inv.Source(self.new_source_entry)
-        db.add_source(self.connection, self.new_source)
+        dbqueries.add_source(self.connection, self.new_source)
         self.refresh_tables()
 
     def search_models(self):
@@ -306,7 +306,7 @@ class Window:
         self.model_search_textbox.clear_text()
         self.model_search_field = self.model_search_selected.get()
 
-        self.model_results = db.search_model(
+        self.model_results = dbqueries.search_model(
             self.connection,
             self.model_search_field,
             self.model_search_term
@@ -326,7 +326,7 @@ class Window:
         self.artist_search_term = self.artist_search_textbox.get_text()
         self.artist_search_textbox.clear_text()
 
-        self.artist_results = db.search_artist(self.connection, self.artist_search_term)
+        self.artist_results = dbqueries.search_artist(self.connection, self.artist_search_term)
         self.artist_table.refresh_table(self.artist_results)
 
     def search_source(self):
@@ -342,7 +342,7 @@ class Window:
         self.source_search_term = self.source_search_textbox.get_text()
         self.source_search_textbox.clear_text()
 
-        self.search_results = db.search_source(self.connection, self.source_search_term)
+        self.search_results = dbqueries.search_source(self.connection, self.source_search_term)
         self.sources_table.refresh_table(self.search_results)
 
 class Table:

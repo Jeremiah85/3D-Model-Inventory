@@ -1,7 +1,7 @@
 import sys
 import os
 
-import jbs.database.database as db
+import jbs.database.database_utils as db
 import jbs.gui as gui
 
 def main():
