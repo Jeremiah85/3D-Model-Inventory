@@ -1,26 +1,6 @@
 import sqlite3
 import sys
-import jbs.model.model as mdl
-# TODO: consider splitting this file into database utilities and queries
-
-
-def connect_database(db):
-    """Connects to a specified sqlite database.
-
-    Args:
-        db: A path to a sqlite database file. String
-    Returns:
-        A sqlite3 database connection object.
-    """
-    con = None
-
-    try:
-        con = sqlite3.connect(db)
-        return con
-
-    except sqlite3.Error as e:
-        print(f"Error {e.args[0]}")
-        sys.exit(1)
+import jbs.inventory as inv
 
 
 def get_all_models(connection):
@@ -46,12 +26,20 @@ def get_all_models(connection):
             )
         results = cur.fetchall()
 
-        models = []
-        for model in results:
-            models.append(mdl.Model(model))
+        if results:
+            models = []
+            for model in results:
+                models.append(inv.Model(model))
 
-        return models
-        
+            return models
+
+        else:
+            models = []
+            model = ['empty', 'empty', 'empty', 'empty', 'empty', False, 'empty', 'empty', False]
+            models.append(inv.Model(model))
+
+            return models
+
     except sqlite3.Error as e:
         print(f"Error {e.args[0]}")
         sys.exit(1)
@@ -77,12 +65,20 @@ def get_all_artists(connection):
             )
         results = cur.fetchall()
 
-        artists = []
-        for artist in results:
-            artists.append(mdl.Artist(artist))
+        if results:
+            artists = []
+            for artist in results:
+                artists.append(inv.Artist(artist))
 
-        return artists
-        
+            return artists
+
+        else:
+            artists = []
+            artist = ['empty', 'empty', 'empty', 'empty']
+            artists.append(inv.Artist(artist))
+
+            return artists
+
     except sqlite3.Error as e:
         print(f"Error {e.args[0]}")
         sys.exit(1)
@@ -108,12 +104,20 @@ def get_all_sources(connection):
             )
         results = cur.fetchall()
 
-        sources = []
-        for source in results:
-            sources.append(mdl.Source(source))
+        if results:
+            sources = []
+            for source in results:
+                sources.append(inv.Source(source))
 
-        return sources
-        
+            return sources
+
+        else:
+            sources = []
+            source = ['empty', 'empty']
+            sources.append(inv.Source(source))
+
+            return sources
+
     except sqlite3.Error as e:
         print(f"Error {e.args[0]}")
         sys.exit(1)
@@ -150,7 +154,7 @@ def search_model(connection, field, search_text):
 
         models = []
         for model in results:
-            models.append(mdl.Model(model))
+            models.append(inv.Model(model))
 
         return models
         
@@ -187,7 +191,7 @@ def search_artist(connection, search_text):
 
         sources = []
         for source in results:
-            sources.append(mdl.Source(source))
+            sources.append(inv.Source(source))
 
         return sources
         
@@ -222,7 +226,7 @@ def search_source(connection, search_text):
 
         sources = []
         for source in results:
-            sources.append(mdl.Source(source))
+            sources.append(inv.Source(source))
 
         return sources
         
@@ -374,21 +378,6 @@ def get_source_id(connection, source_name):
         results = cur.fetchone()
 
         return results[0]
-
-    except sqlite3.Error as e:
-        print(f"Error {e.args[0]}")
-        sys.exit(1)
-
-
-def close_database(connection):
-    """Closes the database connection.
-
-    Args:
-        connection: The database connection to close.
-    """
-    try:
-        if connection:
-            connection.close()
 
     except sqlite3.Error as e:
         print(f"Error {e.args[0]}")
