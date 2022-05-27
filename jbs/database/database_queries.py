@@ -38,9 +38,8 @@ def get_all_models(connection):
             return models
 
         else:
-            models = []
             model = ['empty', 'empty', 'empty', 'empty', 'empty', False, 'empty', 'empty', False]
-            models.append(inv.Model(model))
+            models = inv.Model(model)
 
             return models
 
@@ -77,9 +76,8 @@ def get_all_artists(connection):
             return artists
 
         else:
-            artists = []
             artist = ['empty', 'empty', 'empty', 'empty']
-            artists.append(inv.Artist(artist))
+            artists = inv.Artist(artist)
 
             return artists
 
@@ -116,9 +114,8 @@ def get_all_sources(connection):
             return sources
 
         else:
-            sources = []
             source = ['empty', 'empty']
-            sources.append(inv.Source(source))
+            sources = inv.Source(source)
 
             return sources
 
@@ -156,11 +153,28 @@ def search_model(connection, field, search_text):
             )
         results = cur.fetchall()
 
-        models = []
-        for model in results:
-            models.append(inv.Model(model))
+        if results:
+            models = []
+            for model in results:
+                models.append(inv.Model(model))
 
-        return models
+            return models
+
+        else:
+            model = [
+                'Not Found',
+                'Not Found',
+                'Not Found',
+                'Not Found',
+                'Not Found',
+                False,
+                'Not Found',
+                'Not Found',
+                False
+                ]
+            models = inv.Model(model)
+
+            return models
         
     except sqlite3.Error as e:
         print(f"Error {e.args[0]}")
@@ -193,11 +207,18 @@ def search_artist(connection, search_text):
             )
         results = cur.fetchall()
 
-        sources = []
-        for source in results:
-            sources.append(inv.Source(source))
+        if results:
+            artists = []
+            for artist in results:
+                artists.append(inv.Artist(artist))
 
-        return sources
+            return artists
+
+        else:
+            artist = ['Not Found', 'Not Found', 'Not Found', 'Not Found']
+            artists = inv.Artist(artist)
+
+            return artists
         
     except sqlite3.Error as e:
         print(f"Error {e.args[0]}")
@@ -228,11 +249,18 @@ def search_source(connection, search_text):
             )
         results = cur.fetchall()
 
-        sources = []
-        for source in results:
-            sources.append(inv.Source(source))
+        if results:
+            sources = []
+            for source in results:
+                sources.append(inv.Source(source))
 
-        return sources
+            return sources
+
+        else:
+            source = ['Not Found', 'Not Found']
+            sources = inv.Source(source)
+
+            return sources
         
     except sqlite3.Error as e:
         print(f"Error {e.args[0]}")

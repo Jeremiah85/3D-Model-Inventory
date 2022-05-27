@@ -85,7 +85,7 @@ class Window:
 
         self.model_source_label = tk.Label(self.model_newitem_frame, text="Source")
         self.model_source_label.pack(side=tk.LEFT, anchor=tk.W)
-        self.source_selection_obj = dbqueries.get_all_artists(self.connection)
+        self.source_selection_obj = dbqueries.get_all_sources(self.connection)
         self.model_source_dropdown = DropdownBox(
             self.model_newitem_frame,
             self.source_selection_obj,
@@ -389,7 +389,13 @@ class Table:
             input_obj: A list of model, artist, or source objects.
         """
         self.input_obj = input_obj
-        self.column_names_temp = vars(input_obj[0])
+        # Checking to see if self.input_obj is a list or an individual object
+        # before proceeding.
+        try:
+            self.column_names_temp = vars(self.input_obj[0])
+        except (IndexError, TypeError):
+            self.column_names_temp = vars(self.input_obj)
+
         self.column_names = self.column_names_temp.keys()
 
         self.columns = []
@@ -404,8 +410,13 @@ class Table:
             self.table.column(self.heading, anchor=tk.W, width=80)
             self.table.heading(self.heading, text=self.heading.capitalize(), anchor=tk.W)
 
-        for self.row in self.input_obj:
-            self.table.insert('', tk.END, values=(self.row.to_list()))
+        # Checking to see if self.input_obj is a list or an individual object
+        # before proceeding.
+        try:
+            for self.row in self.input_obj:
+                self.table.insert('', tk.END, values=(self.row.to_list()))
+        except (IndexError, TypeError):
+            self.table.insert('', tk.END, values=(self.input_obj.to_list()))
 
     def clear_table(self):
         """Clears the data from the table."""
@@ -486,8 +497,11 @@ class DropdownBox:
         self.var = tk.StringVar()
         self.options = []
 
-        for self.item in self.input_obj:
-            self.options.append(self.item.name)
+        try:
+            for self.item in self.input_obj:
+                self.options.append(self.item.name)
+        except (IndexError, TypeError):
+            self.options.append(self.input_obj.name)
 
         self.dropdown = tk.OptionMenu(self.frame, self.var, None, *self.options)
         self.dropdown.pack(padx=2, pady=2, side=self.side, anchor=self.anchor)
