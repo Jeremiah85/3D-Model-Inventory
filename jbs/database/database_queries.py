@@ -26,12 +26,20 @@ def get_all_models(connection):
             )
         results = cur.fetchall()
 
-        models = []
-        for model in results:
+        if results:
+            models = []
+            for model in results:
+                models.append(inv.Model(model))
+
+            return models
+
+        else:
+            models = []
+            model = ['empty', 'empty', 'empty', 'empty', 'empty', False, 'empty', 'empty', False]
             models.append(inv.Model(model))
 
-        return models
-        
+            return models
+
     except sqlite3.Error as e:
         print(f"Error {e.args[0]}")
         sys.exit(1)
@@ -57,12 +65,20 @@ def get_all_artists(connection):
             )
         results = cur.fetchall()
 
-        artists = []
-        for artist in results:
+        if results:
+            artists = []
+            for artist in results:
+                artists.append(inv.Artist(artist))
+
+            return artists
+
+        else:
+            artists = []
+            artist = ['empty', 'empty', 'empty', 'empty']
             artists.append(inv.Artist(artist))
 
-        return artists
-        
+            return artists
+
     except sqlite3.Error as e:
         print(f"Error {e.args[0]}")
         sys.exit(1)
@@ -88,12 +104,20 @@ def get_all_sources(connection):
             )
         results = cur.fetchall()
 
-        sources = []
-        for source in results:
+        if results:
+            sources = []
+            for source in results:
+                sources.append(inv.Source(source))
+
+            return sources
+
+        else:
+            sources = []
+            source = ['empty', 'empty']
             sources.append(inv.Source(source))
 
-        return sources
-        
+            return sources
+
     except sqlite3.Error as e:
         print(f"Error {e.args[0]}")
         sys.exit(1)
