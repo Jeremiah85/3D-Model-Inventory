@@ -17,8 +17,8 @@ def main():
         configuration = config.get_config(default_config)
         connection = db.connect_database(configuration['database'])
     else:
-        connection = db.connect_database(database)
-        db.modify_database_schema(con, sql_schema_new)
+        connection = db.connect_database(default_database)
+        db.modify_database_schema(connection, sql_schema_new)
         
     app = gui.Window(connection)
     app.root.mainloop()
