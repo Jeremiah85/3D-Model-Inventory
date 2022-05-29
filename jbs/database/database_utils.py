@@ -5,6 +5,31 @@
 import sqlite3
 import sys
 
+
+def check_database_schema(connection):
+    """Gets the database schema of the current database
+
+    Args:
+        connection: A sqlite3 database connection
+
+    Returns:
+        integer: the current database schema version
+    """
+    try:
+        cur = sqlite3.Cursor(connection)
+        cur.execute('SELECT version '
+            'FROM tblSchema '
+            'WHERE label = "current";'
+            )
+        
+        result = cur.fetchone()
+        return result[0]
+
+    except sqlite3.Error as e:
+        print(f"Error {e.args[0]}")
+        sys.exit(1)
+
+
 def modify_database_schema(connection, sql_file):
     """Takes a sql file and runs it against a database.
 
