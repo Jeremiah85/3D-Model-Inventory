@@ -4,6 +4,7 @@
 
 import sqlite3
 import sys
+
 import jbs.inventory as inv
 
 
@@ -37,6 +38,8 @@ def get_all_models(connection):
 
             return models
 
+        # If there is nothing in the database a dummy object is created so that
+        # gui objects can display without issue.
         else:
             model = ['empty', 'empty', 'empty', 'empty', 'empty', False, 'empty', 'empty', False]
             models = inv.Model(model)
@@ -75,6 +78,8 @@ def get_all_artists(connection):
 
             return artists
 
+        # If there is nothing in the database a dummy object is created so that
+        # gui objects can display without issue.
         else:
             artist = ['empty', 'empty', 'empty', 'empty']
             artists = inv.Artist(artist)
@@ -113,6 +118,8 @@ def get_all_sources(connection):
 
             return sources
 
+        # If there is nothing in the database a dummy object is created so that
+        # gui objects can display without issue.
         else:
             source = ['empty', 'empty']
             sources = inv.Source(source)
@@ -160,6 +167,8 @@ def search_model(connection, field, search_text):
 
             return models
 
+        # If there is nothing in the database a dummy object is created so that
+        # gui objects can display without issue.
         else:
             model = [
                 'Not Found',
@@ -214,6 +223,8 @@ def search_artist(connection, search_text):
 
             return artists
 
+        # If there is nothing in the database a dummy object is created so that
+        # gui objects can display without issue.
         else:
             artist = ['Not Found', 'Not Found', 'Not Found', 'Not Found']
             artists = inv.Artist(artist)
@@ -256,6 +267,8 @@ def search_source(connection, search_text):
 
             return sources
 
+        # If there is nothing in the database a dummy object is created so that
+        # gui objects can display without issue.
         else:
             source = ['Not Found', 'Not Found']
             sources = inv.Source(source)

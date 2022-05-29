@@ -2,8 +2,8 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-import sys
 import os
+import sys
 
 import jbs.config as config
 import jbs.database.database_utils as db
@@ -11,7 +11,7 @@ import jbs.gui as gui
 
 scriptpath = os.path.dirname(os.path.realpath(sys.argv[0])) + os.sep
 default_database = scriptpath + "3D_Models.db"
-sql_schema_new = scriptpath + r'sql\empty_database.sql'
+sql_schema_new = scriptpath + 'sql' + os.sep +'empty_database.sql'
 default_config = scriptpath + "config.json"
 
 def main():
@@ -23,7 +23,7 @@ def main():
     else:
         connection = db.connect_database(default_database)
         db.modify_database_schema(connection, sql_schema_new)
-        
+
     app = gui.Window(connection)
     app.root.mainloop()
 

@@ -8,7 +8,6 @@ import sys
 def modify_database_schema(connection, sql_file):
     """Takes a sql file and runs it against a database.
 
-
     This method updates a database with the contents of a sql file.
     Args:
         connection: A sqlite3 database connection

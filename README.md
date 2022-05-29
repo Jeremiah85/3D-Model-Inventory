@@ -4,8 +4,9 @@ Simple inventory app for 3D Models written using Python and SQLite
 
 ## Table of Contents
 
-* [General info](#general-info)
+* [General Info](#general-info)
 * [Technologies](#technologies)
+* [Requirements](#requirements)
 * [Setup](#setup)
 * [Status](#status)
 * [License](#license)
@@ -24,6 +25,11 @@ since my only other experience with writing code is with Powershell.
 * SQLite 3
 * Tkinter
 
+## Requirements
+
+* Python > 3.10.4
+* Tkinter (Included in the Windows and Mac Python Installers)
+
 ## Setup
 
 To run this project, navigate to the application's directory and execute
@@ -31,6 +37,14 @@ model_inv.py:
 
 ```python
 $ py model_inv.py
+```
+
+If  you are running Linux you may need to install tkinter. On Ubuntu, run:
+
+```
+$ sudo apt-get install python3-tk
+$ python3 model_inv.py
+
 ```
 
 ## Status
