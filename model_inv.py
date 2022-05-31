@@ -19,28 +19,28 @@ default_config = scriptpath + "config.json"
 def main():
     # Determine how to connect to the database. Either default location, 
     # location specified in the config file, or create a new database
-    if os.path.exists(default_database):
-        connection = db.connect_database(default_database)
-    elif os.path.exists(default_config):
-        configuration = config.get_config(default_config)
-        connection = db.connect_database(configuration['database'])
+    if os.path.exists(path=default_database):
+        connection = db.connect_database(database=default_database)
+    elif os.path.exists(path=default_config):
+        configuration = config.get_config(config_file=default_config)
+        connection = db.connect_database(database=configuration['database'])
     else:
-        connection = db.connect_database(default_database)
-        db.modify_database_schema(connection, sql_schema_new)
+        connection = db.connect_database(database=default_database)
+        db.modify_database_schema(connection=connection, sql_file=sql_schema_new)
 
 # Check if a database update is needed
-    file_version = config.get_update_version(sql_update_version)
-    db_version = db.check_database_schema(connection)
+    file_version = config.get_update_version(update_version_file=sql_update_version)
+    db_version = db.check_database_schema(connection=connection)
 
     if file_version > db_version:
-        db.modify_database_schema(connection, sql_schema_update)
+        db.modify_database_schema(connection=connection, sql_file=sql_schema_update)
     else:
         pass
 
     app = gui.Window(connection)
     app.root.mainloop()
 
-    db.close_database(connection)
+    db.close_database(connection=connection)
 
 if __name__ == '__main__':
     main()

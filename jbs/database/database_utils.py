@@ -39,7 +39,7 @@ def modify_database_schema(connection, sql_file):
         sql_file: a file path to a sql file containing sql commands
     """
     cur = sqlite3.Cursor(connection)
-    with open(sql_file, 'r') as sql:
+    with open(file=sql_file, mode='r') as sql:
         sql_query = sql.read()
 
     try:
@@ -51,7 +51,7 @@ def modify_database_schema(connection, sql_file):
         sys.exit(1)
 
 
-def connect_database(db):
+def connect_database(database):
     """Connects to a specified sqlite database.
 
     Args:
@@ -62,7 +62,7 @@ def connect_database(db):
     con = None
 
     try:
-        con = sqlite3.connect(db)
+        con = sqlite3.connect(database)
         return con
 
     except sqlite3.Error as e:

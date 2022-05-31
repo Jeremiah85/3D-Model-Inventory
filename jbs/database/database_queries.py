@@ -308,8 +308,8 @@ def add_model(connection, model):
         case _:
             model.printed = 0
 
-    artist_id = get_artist_id(connection, model.artist)
-    source_id = get_source_id(connection, model.source)
+    artist_id = get_artist_id(connection=connection, artist_name=model.artist)
+    source_id = get_source_id(connection=connection, source_name=model.source)
 
     model.artist = artist_id
     model.source = source_id

@@ -15,7 +15,7 @@ def get_config(config_file):
         dictionary: a dictionary containing the key:value pairs from the 
         config file
     """
-    with open(config_file, 'r') as config_temp:
+    with open(file=config_file, mode='r') as config_temp:
         config = json.load(config_temp)
 
     return config
@@ -31,7 +31,7 @@ def get_update_version(update_version_file):
     Returns:
         integer: an integer with the version of the most up to date schema
     """
-    with open(update_version_file, 'r') as version_temp:
+    with open(file=update_version_file, mode='r') as version_temp:
         schema_version = json.load(version_temp)
 
     return schema_version['version']
