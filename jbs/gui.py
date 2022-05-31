@@ -3,6 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 import tkinter as tk
+import tkinter.messagebox as tkm
 import tkinter.ttk as ttk
 
 import jbs.database.database_queries as dbqueries
@@ -61,6 +62,7 @@ class Window:
             sticky=tk.S
             )
         self.model_search_selected = tk.StringVar()
+        self.model_search_selected.set(self.model_search_options[0])
 
         self.model_search_combobox = tk.OptionMenu(
             self.model_search_frame,
@@ -391,7 +393,31 @@ class Window:
         self.new_model_entry.append(self.model_name_textbox.get_text())
         self.model_name_textbox.clear_text()
         self.new_model_entry.append(self.model_set_textbox.get_text())
-        self.new_model_entry.append(self.model_artist_dropdown.get_selection())
+
+        self._artist = self.model_artist_dropdown.get_selection()
+        if self._artist:
+            self.new_model_entry.append(self._artist)
+        else:
+            tkm.showwarning(
+                title="Missing Artist",
+                message="Please select an artist from the dropdown. If you "
+                "need to enter a new artist, please do so from the Artist tab "
+                "first."
+                )
+            return
+
+        self._source = self.model_source_dropdown.get_selection()
+        if self._source:
+            self.new_model_entry.append(self._source)
+        else:
+            tkm.showwarning(
+                title="Missing Source",
+                message="Please select a source from the dropdown. If you "
+                "need to enter a new source, please do so from the Source tab "
+                "first."
+                )
+            return
+
         self.new_model_entry.append(self.model_source_dropdown.get_selection())
         self.new_model_entry.append(self.model_source_note_textbox.get_text())
         self.new_model_entry.append(self.model_supports_chkbox.get_selection())
@@ -458,13 +484,21 @@ class Window:
         self.model_search_textbox.clear_text()
         self.model_search_field = self.model_search_selected.get()
 
-        self.model_results = dbqueries.search_model(
-            connection=self.connection,
-            field=self.model_search_field,
-            search_text=self.model_search_term
-            )
-        self.model_table.refresh_table(input_obj=self.model_results)
-        
+        if self.model_search_field:
+            self.model_results = dbqueries.search_model(
+                connection=self.connection,
+                field=self.model_search_field,
+                search_text=self.model_search_term
+                )
+            self.model_table.refresh_table(input_obj=self.model_results)
+        else:
+            tkm.showwarning(
+                title="Missing Field",
+                message="The search field is missing. "
+                    "Please select a search field from the dropdown box and "
+                    "try again."
+                )
+
     def search_artist(self):
         """Searches the database for artists matching a search term.
 
@@ -671,6 +705,7 @@ class DropdownBox:
         self.sticky = sticky
         self.input_obj = input_obj
         self.var = tk.StringVar()
+        self.var.set("Please Select")
         self.options = []
 
         try:
@@ -679,7 +714,7 @@ class DropdownBox:
         except (IndexError, TypeError):
             self.options.append(self.input_obj.name)
 
-        self.dropdown = tk.OptionMenu(self.frame, self.var, None, *self.options)
+        self.dropdown = tk.OptionMenu(self.frame, self.var, *self.options)
         self.dropdown.grid(
             padx=2,
             pady=2,
@@ -696,7 +731,11 @@ class DropdownBox:
         Returns:
             A string containing the user's selection.
         """
-        return self.var.get()
+        self.value = self.var.get()
+        if self.value == "Please Select":
+            return None
+        else:
+            return self.var.get()
 
     def reset_selection(self):
         """Resets the dropdown box back to the default selection."""
