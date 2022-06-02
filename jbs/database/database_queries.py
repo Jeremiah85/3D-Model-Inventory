@@ -2,10 +2,14 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
+import logging
 import sqlite3
 import sys
 
 import jbs.inventory as inv
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.NOTSET)
 
 
 def get_all_models(connection):
@@ -31,6 +35,8 @@ def get_all_models(connection):
             )
         results = cur.fetchall()
 
+        logger.debug(f"Query returned {len(results)} models")
+
         if results:
             models = []
             for model in results:
@@ -41,13 +47,24 @@ def get_all_models(connection):
         # If there is nothing in the database a dummy object is created so that
         # gui objects can display without issue.
         else:
-            model = ['empty', 'empty', 'empty', 'empty', 'empty', False, 'empty', 'empty', False]
+            logger.info("No results, creating dummy model object instead")
+            model = [
+                'empty',
+                'empty',
+                'empty',
+                'empty',
+                'empty',
+                False,
+                'empty',
+                'empty',
+                False
+                ]
             models = inv.Model(model)
 
             return models
 
     except sqlite3.Error as e:
-        print(f"Error {e.args[0]}")
+        logger.error(e)
         sys.exit(1)
 
 
@@ -71,6 +88,8 @@ def get_all_artists(connection):
             )
         results = cur.fetchall()
 
+        logger.debug(f"Query returned {len(results)} artists")
+
         if results:
             artists = []
             for artist in results:
@@ -81,13 +100,14 @@ def get_all_artists(connection):
         # If there is nothing in the database a dummy object is created so that
         # gui objects can display without issue.
         else:
+            logger.info("No results, creating dummy artist object instead")
             artist = ['empty', 'empty', 'empty', 'empty']
             artists = inv.Artist(artist)
 
             return artists
 
     except sqlite3.Error as e:
-        print(f"Error {e.args[0]}")
+        logger.error(e)
         sys.exit(1)
 
 
@@ -111,6 +131,8 @@ def get_all_sources(connection):
             )
         results = cur.fetchall()
 
+        logger.debug(f"Query returned {len(results)} sources")
+
         if results:
             sources = []
             for source in results:
@@ -121,13 +143,14 @@ def get_all_sources(connection):
         # If there is nothing in the database a dummy object is created so that
         # gui objects can display without issue.
         else:
+            logger.info("No results, creating dummy source object instead")
             source = ['empty', 'empty']
             sources = inv.Source(source)
 
             return sources
 
     except sqlite3.Error as e:
-        print(f"Error {e.args[0]}")
+        logger.error(e)
         sys.exit(1)
 
 
@@ -160,6 +183,8 @@ def search_model(connection, field, search_text):
             )
         results = cur.fetchall()
 
+        logger.debug(f"Query returned {len(results)} models")
+
         if results:
             models = []
             for model in results:
@@ -170,6 +195,7 @@ def search_model(connection, field, search_text):
         # If there is nothing in the database a dummy object is created so that
         # gui objects can display without issue.
         else:
+            logger.info("No results, creating dummy model object instead")
             model = [
                 'Not Found',
                 'Not Found',
@@ -186,7 +212,7 @@ def search_model(connection, field, search_text):
             return models
         
     except sqlite3.Error as e:
-        print(f"Error {e.args[0]}")
+        logger.error(e)
         sys.exit(1)
 
 
@@ -216,6 +242,8 @@ def search_artist(connection, search_text):
             )
         results = cur.fetchall()
 
+        logger.debug(f"Query returned {len(results)} artists")
+
         if results:
             artists = []
             for artist in results:
@@ -226,13 +254,14 @@ def search_artist(connection, search_text):
         # If there is nothing in the database a dummy object is created so that
         # gui objects can display without issue.
         else:
+            logger.info("No results, creating dummy artist object instead")
             artist = ['Not Found', 'Not Found', 'Not Found', 'Not Found']
             artists = inv.Artist(artist)
 
             return artists
         
     except sqlite3.Error as e:
-        print(f"Error {e.args[0]}")
+        logger.error(e)
         sys.exit(1)
 
 
@@ -260,6 +289,8 @@ def search_source(connection, search_text):
             )
         results = cur.fetchall()
 
+        logger.debug(f"Query returned {len(results)} sources")
+
         if results:
             sources = []
             for source in results:
@@ -270,13 +301,14 @@ def search_source(connection, search_text):
         # If there is nothing in the database a dummy object is created so that
         # gui objects can display without issue.
         else:
+            logger.info("No results, creating dummy source object instead")
             source = ['Not Found', 'Not Found']
             sources = inv.Source(source)
 
             return sources
         
     except sqlite3.Error as e:
-        print(f"Error {e.args[0]}")
+        logger.error(e)
         sys.exit(1)
 
 
@@ -308,7 +340,9 @@ def add_model(connection, model):
         case _:
             model.printed = 0
 
+    logger.info("Resolving artist name to artist ID")
     artist_id = get_artist_id(connection=connection, artist_name=model.artist)
+    logger.info("Resolving source name to source ID")
     source_id = get_source_id(connection=connection, source_name=model.source)
 
     model.artist = artist_id
@@ -316,6 +350,7 @@ def add_model(connection, model):
 
     try:
         cur = connection.cursor()
+        logger.info("Adding model to the database")
         cur.execute(
             'INSERT INTO tblModel (Model_Name, Artist, Set_Name, Source, Source_Note, Supports, Format, Printed) '
             'VALUES (:model, :set, :artist, :source, :source_note, :supports, :format, :printed);', vars(model)
@@ -323,7 +358,7 @@ def add_model(connection, model):
         connection.commit()
 
     except sqlite3.Error as e:
-        print(f"Error {e.args[0]}")
+        logger.error(e)
         sys.exit(1)
 
 
@@ -339,6 +374,7 @@ def add_artist(connection, artist):
     """
     try:
         cur = connection.cursor()
+        logger.info("Adding artist to the database")
         cur.execute(
             'INSERT INTO tblArtist (Artist_Name, Artist_Website, Artist_Email, Artist_Folder) '
             'VALUES (:name, :website, :email, :folder);', vars(artist)
@@ -346,7 +382,7 @@ def add_artist(connection, artist):
         connection.commit()
     
     except sqlite3.Error as e:
-        print(f"Error {e.args[0]}")
+        logger.error(e)
         sys.exit(1)
 
 
@@ -362,6 +398,7 @@ def add_source(connection, source):
     """
     try:
         cur = connection.cursor()
+        logger.info("Adding source to the database")
         cur.execute(
             'INSERT INTO tblSource (Source_Name, Source_Website) '
             'VALUES (:name, :website);', vars(source)
@@ -369,7 +406,7 @@ def add_source(connection, source):
         connection.commit()
     
     except sqlite3.Error as e:
-        print(f"Error {e.args[0]}")
+        logger.error(e)
         sys.exit(1)
 
 
@@ -394,10 +431,11 @@ def get_artist_id(connection, artist_name):
             )
         results = cur.fetchone()
 
+        logger.debug(f"{artist_name} equals {results[0]}")
         return results[0]
 
     except sqlite3.Error as e:
-        print(f"Error {e.args[0]}")
+        logger.error(e)
         sys.exit(1)
 
 
@@ -422,8 +460,9 @@ def get_source_id(connection, source_name):
             )
         results = cur.fetchone()
 
+        logger.debug(f"{source_name} equals {results[0]}")
         return results[0]
 
     except sqlite3.Error as e:
-        print(f"Error {e.args[0]}")
+        logger.error(e)
         sys.exit(1)

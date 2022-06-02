@@ -2,9 +2,12 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
+import logging
 import sqlite3
 import sys
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.NOTSET)
 
 def check_database_schema(connection):
     """Gets the database schema of the current database
@@ -23,10 +26,11 @@ def check_database_schema(connection):
             )
         
         result = cur.fetchone()
+
         return result[0]
 
     except sqlite3.Error as e:
-        print(f"Error {e.args[0]}")
+        logger.error(e)
         sys.exit(1)
 
 
@@ -45,9 +49,10 @@ def modify_database_schema(connection, sql_file):
     try:
         cur.executescript(sql_query)
         connection.commit()
+        logger.info("Schema has been updated")
 
     except sqlite3.Error as e:
-        print(f"Error {e.args[0]}")
+        logger.error(e)
         sys.exit(1)
 
 
@@ -63,10 +68,11 @@ def connect_database(database):
 
     try:
         con = sqlite3.connect(database)
+        logger.info("Successfully connected to the database")
         return con
 
     except sqlite3.Error as e:
-        print(f"Error {e.args[0]}")
+        logger.error(e)
         sys.exit(1)
 
 
@@ -79,7 +85,8 @@ def close_database(connection):
     try:
         if connection:
             connection.close()
+        logger.info("Database connection closed")
 
     except sqlite3.Error as e:
-        print(f"Error {e.args[0]}")
+        logger.error(e)
         sys.exit(1)

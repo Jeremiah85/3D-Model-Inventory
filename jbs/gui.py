@@ -2,12 +2,16 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
+import logging
 import tkinter as tk
 import tkinter.messagebox as tkm
 import tkinter.ttk as ttk
 
 import jbs.database.database_queries as dbqueries
 import jbs.inventory as inv
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.NOTSET)
 
 
 class Window:
@@ -43,6 +47,7 @@ class Window:
         self.model_display_frame = tk.LabelFrame(master=self.model_frame, text="Models")
         self.model_display_frame.grid(row=1, column=0, columnspan=2, sticky=tk.NSEW)
 
+        logger.info("Populating model table")
         self.models = dbqueries.get_all_models(connection=self.connection)
         self.model_table = Table(frame=self.model_display_frame, input_obj=self.models)
 
@@ -112,6 +117,7 @@ class Window:
 
         self.model_artist_label = tk.Label(master=self.model_newitem_frame, text="Artist")
         self.model_artist_label.grid(row=0, column=2, sticky=tk.SE)
+        logger.info("Populating artist dropdown for adding model")
         self.artist_selection_obj = dbqueries.get_all_artists(connection=self.connection)
         self.model_artist_dropdown = DropdownBox(
             frame=self.model_newitem_frame,
@@ -123,6 +129,7 @@ class Window:
 
         self.model_source_label = tk.Label(master=self.model_newitem_frame, text="Source")
         self.model_source_label.grid(row=1, column=2, sticky=tk.NE)
+        logger.info("Populating source dropdown for adding model")
         self.source_selection_obj = dbqueries.get_all_sources(connection=self.connection)
         self.model_source_dropdown = DropdownBox(
             frame=self.model_newitem_frame,
@@ -195,6 +202,7 @@ class Window:
         self.artist_display_frame = tk.LabelFrame(master=self.artist_frame, text="Artists")
         self.artist_display_frame.grid(row=1, column=0, columnspan=2, sticky=tk.NSEW)
 
+        logger.info("Populating artist table")
         self.artists = dbqueries.get_all_artists(connection=self.connection)
         self.artist_table = Table(frame=self.artist_display_frame, input_obj=self.artists)
 
@@ -293,6 +301,7 @@ class Window:
         self.source_display_frame = tk.LabelFrame(master=self.source_frame, text="Sources")
         self.source_display_frame.grid(row=1, column=0, columnspan=2, sticky=tk.NSEW)
 
+        logger.info("Populating source table")
         self.sources = dbqueries.get_all_sources(connection=self.connection)
         self.sources_table = Table(frame=self.source_display_frame, input_obj=self.sources)
 
@@ -368,16 +377,21 @@ class Window:
         Pulls the latest data from the database and repopulates the three
         tables and the two model dropdowns.
         """
+        logger.debug("Updating model list")
         self.updated_model_table = dbqueries.get_all_models(connection=self.connection)
+        logger.debug("Updating artist list")
         self.updated_artist_table = dbqueries.get_all_artists(connection=self.connection)
+        logger.debug("Updating source list")
         self.updated_source_table = dbqueries.get_all_sources(connection=self.connection)
 
         self.model_table.refresh_table(input_obj=self.updated_model_table)
         self.artist_table.refresh_table(input_obj=self.updated_artist_table)
         self.sources_table.refresh_table(input_obj=self.updated_source_table)
 
+        logger.debug("Updating artist dropdown")
         self.refreshed_artists = dbqueries.get_all_artists(connection=self.connection)
         self.model_artist_dropdown.refresh_options(input=self.refreshed_artists)
+        logger.debug("Updating source dropdown")
         self.refreshed_sources = dbqueries.get_all_sources(connection=self.connection)
         self.model_source_dropdown.refresh_options(input=self.refreshed_sources)
 
@@ -427,6 +441,7 @@ class Window:
         self.new_model_entry.append(self.model_printed_chkbox.get_selection())
 
         self.new_model = inv.Model(self.new_model_entry)
+        logger.info("Adding model to the database")
         dbqueries.add_model(connection=self.connection, model=self.new_model)
         self.refresh_tables()
 
@@ -449,6 +464,7 @@ class Window:
         self.artist_folder_textbox.clear_text()
 
         self.new_artist = inv.Artist(self.new_artist_entry)
+        logger.info("Adding artist to the database")
         dbqueries.add_artist(connection=self.connection, artist=self.new_artist)
         self.refresh_tables()
 
@@ -467,6 +483,7 @@ class Window:
         self.source_website_textbox.clear_text()
 
         self.new_source = inv.Source(self.new_source_entry)
+        logger.info("Adding source to the database")
         dbqueries.add_source(connection=self.connection, source=self.new_source)
         self.refresh_tables()
 
@@ -485,6 +502,8 @@ class Window:
         self.model_search_field = self.model_search_selected.get()
 
         if self.model_search_field:
+            logger.info("Searching models")
+            logger.debug(f"{self.model_search_term} in {self.model_search_field}")
             self.model_results = dbqueries.search_model(
                 connection=self.connection,
                 field=self.model_search_field,
@@ -492,6 +511,7 @@ class Window:
                 )
             self.model_table.refresh_table(input_obj=self.model_results)
         else:
+            logger.warning("Missing search field")
             tkm.showwarning(
                 title="Missing Field",
                 message="The search field is missing. "
@@ -512,6 +532,7 @@ class Window:
         self.artist_search_term = self.artist_search_textbox.get_text()
         self.artist_search_textbox.clear_text()
 
+        logger.info("Searching artists")
         self.artist_results = dbqueries.search_artist(
             connection=self.connection,
             search_text=self.artist_search_term
@@ -531,6 +552,7 @@ class Window:
         self.source_search_term = self.source_search_textbox.get_text()
         self.source_search_textbox.clear_text()
 
+        logger.info("Searching sources")
         self.search_results = dbqueries.search_source(
             connection=self.connection,
             search_text=self.source_search_term

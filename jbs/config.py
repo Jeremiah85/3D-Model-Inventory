@@ -3,7 +3,10 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 import json
+import logging
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.NOTSET)
 
 def get_config(config_file):
     """Gets the contents of a specified JSON file
@@ -17,6 +20,9 @@ def get_config(config_file):
     """
     with open(file=config_file, mode='r') as config_temp:
         config = json.load(config_temp)
+
+    logger.info('Opened config file')
+    logger.debug(config_file)
 
     return config
 
@@ -33,5 +39,8 @@ def get_update_version(update_version_file):
     """
     with open(file=update_version_file, mode='r') as version_temp:
         schema_version = json.load(version_temp)
+
+    logger.info('Opened schema config file')
+    logger.debug(update_version_file)
 
     return schema_version['version']
