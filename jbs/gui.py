@@ -432,7 +432,6 @@ class Window:
                 )
             return
 
-        self.new_model_entry.append(self.model_source_dropdown.get_selection())
         self.new_model_entry.append(self.model_source_note_textbox.get_text())
         self.new_model_entry.append(self.model_supports_chkbox.get_selection())
         self.new_model_entry.append(self.model_format_textbox.get_text())

@@ -353,7 +353,7 @@ def add_model(connection, model):
         logger.info("Adding model to the database")
         cur.execute(
             'INSERT INTO tblModel (Model_Name, Artist, Set_Name, Source, Source_Note, Supports, Format, Printed) '
-            'VALUES (:model, :set, :artist, :source, :source_note, :supports, :format, :printed);', vars(model)
+            'VALUES (:model, :artist, :set, :source, :source_note, :supports, :format, :printed);', vars(model)
             )
         connection.commit()
 
