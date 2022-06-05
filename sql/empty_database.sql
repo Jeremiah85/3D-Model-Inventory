@@ -1,12 +1,10 @@
 BEGIN TRANSACTION;
-DROP TABLE IF EXISTS "tblSource";
 CREATE TABLE IF NOT EXISTS "tblSource" (
 	"Source_ID"	INTEGER UNIQUE,
 	"Source_Name"	TEXT,
 	"Source_Website"	TEXT,
 	PRIMARY KEY("Source_ID" AUTOINCREMENT)
 );
-DROP TABLE IF EXISTS "tblArtist";
 CREATE TABLE IF NOT EXISTS "tblArtist" (
 	"Artist_ID"	INTEGER UNIQUE,
 	"Artist_Name"	TEXT,
@@ -15,7 +13,6 @@ CREATE TABLE IF NOT EXISTS "tblArtist" (
 	"Artist_Folder"	TEXT,
 	PRIMARY KEY("Artist_ID" AUTOINCREMENT)
 );
-DROP TABLE IF EXISTS "tblModel";
 CREATE TABLE IF NOT EXISTS "tblModel" (
 	"Model_ID"	INTEGER UNIQUE,
 	"Model_Name"	TEXT,
@@ -28,4 +25,9 @@ CREATE TABLE IF NOT EXISTS "tblModel" (
 	"Printed"	INTEGER,
 	PRIMARY KEY("Model_ID" AUTOINCREMENT)
 );
+CREATE TABLE IF NOT EXISTS "tblSchema" (
+	"label"	TEXT NOT NULL,
+	"version"	INTEGER NOT NULL
+);
+INSERT INTO "tblSchema" ("label","version") VALUES ("current", 2);
 COMMIT;

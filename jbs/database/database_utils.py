@@ -2,8 +2,37 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
+import logging
 import sqlite3
 import sys
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.NOTSET)
+
+def check_database_schema(connection):
+    """Gets the database schema of the current database
+
+    Args:
+        connection: A sqlite3 database connection
+
+    Returns:
+        integer: the current database schema version
+    """
+    try:
+        cur = sqlite3.Cursor(connection)
+        cur.execute('SELECT version '
+            'FROM tblSchema '
+            'WHERE label = "current";'
+            )
+        
+        result = cur.fetchone()
+
+        return result[0]
+
+    except sqlite3.Error as e:
+        logger.error(e)
+        sys.exit(1)
+
 
 def modify_database_schema(connection, sql_file):
     """Takes a sql file and runs it against a database.
@@ -14,19 +43,20 @@ def modify_database_schema(connection, sql_file):
         sql_file: a file path to a sql file containing sql commands
     """
     cur = sqlite3.Cursor(connection)
-    with open(sql_file, 'r') as sql:
+    with open(file=sql_file, mode='r') as sql:
         sql_query = sql.read()
 
     try:
         cur.executescript(sql_query)
         connection.commit()
+        logger.info("Schema has been updated")
 
     except sqlite3.Error as e:
-        print(f"Error {e.args[0]}")
+        logger.error(e)
         sys.exit(1)
 
 
-def connect_database(db):
+def connect_database(database):
     """Connects to a specified sqlite database.
 
     Args:
@@ -37,11 +67,12 @@ def connect_database(db):
     con = None
 
     try:
-        con = sqlite3.connect(db)
+        con = sqlite3.connect(database)
+        logger.info("Successfully connected to the database")
         return con
 
     except sqlite3.Error as e:
-        print(f"Error {e.args[0]}")
+        logger.error(e)
         sys.exit(1)
 
 
@@ -54,7 +85,8 @@ def close_database(connection):
     try:
         if connection:
             connection.close()
+        logger.info("Database connection closed")
 
     except sqlite3.Error as e:
-        print(f"Error {e.args[0]}")
+        logger.error(e)
         sys.exit(1)

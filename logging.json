@@ -1,0 +1,23 @@
+{ 
+    "version": 1,
+    "root": {
+        "handlers": ["default"],
+        "level": "WARNING",
+        "propagate": false
+    },
+    "formatters": { 
+        "standard": { 
+            "format": "%(asctime)s:%(levelname)s:%(name)s:%(funcName)s:%(lineno)d - %(message)s"
+        }
+    },
+    "handlers": { 
+        "default": { 
+            "level": "DEBUG",
+            "formatter": "standard",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": "get_from_variable",
+            "backupCount": 5,
+            "maxBytes": 10240
+        }
+    }
+}

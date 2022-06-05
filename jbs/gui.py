@@ -2,11 +2,16 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
+import logging
 import tkinter as tk
+import tkinter.messagebox as tkm
 import tkinter.ttk as ttk
 
 import jbs.database.database_queries as dbqueries
 import jbs.inventory as inv
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.NOTSET)
 
 
 class Window:
@@ -27,189 +32,343 @@ class Window:
         self.root = tk.Tk()
         self.root.title("3D Models")
 
-        self.tabs = ttk.Notebook(self.root)
+        self.tabs = ttk.Notebook(master=self.root)
         self.tabs.pack(fill=tk.BOTH, expand=tk.YES)
 
         # Create and populate Model tab -------------------------------------------------------------------------------
-        self.model_frame = tk.Frame(self.tabs)
+        self.model_frame = tk.Frame(master=self.tabs)
         self.model_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES)
+        self.model_frame.columnconfigure(index=0, weight=1)
+        self.model_frame.columnconfigure(index=1, weight=5)
+        self.model_frame.rowconfigure(index=0, weight=1, uniform="model")
+        self.model_frame.rowconfigure(index=1, weight=5, uniform="model")
 
         # Fill results table
-        self.model_display_frame = tk.LabelFrame(self.model_frame, text="Models")
-        self.model_display_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES, side=tk.BOTTOM)
+        self.model_display_frame = tk.LabelFrame(master=self.model_frame, text="Models")
+        self.model_display_frame.grid(row=1, column=0, columnspan=2, sticky=tk.NSEW)
 
-        self.models = dbqueries.get_all_models(self.connection)
-        self.model_table = Table(self.model_display_frame, self.models)
+        logger.info("Populating model table")
+        self.models = dbqueries.get_all_models(connection=self.connection)
+        self.model_table = Table(frame=self.model_display_frame, input_obj=self.models)
 
         # Fill Model search section
-        self.model_search_frame = tk.LabelFrame(self.model_frame, text="Search Models")
-        self.model_search_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES, side=tk.BOTTOM)
+        self.model_search_frame = tk.LabelFrame(master=self.model_frame, text="Search Models")
+        self.model_search_frame.grid(row=0, column=0, sticky=tk.NSEW)
+        self.model_search_frame.columnconfigure(index=0, weight=1)
+        self.model_search_frame.rowconfigure(index=0, weight=1, uniform="model_search")
+        self.model_search_frame.rowconfigure(index=1, weight=1, uniform="model_search")
+        self.model_search_frame.rowconfigure(index=2, weight=1, uniform="model_search")
+
         self.model_search_options = ["Model_Name", "Set_Name", "Source_Note"]
-        self.model_search_textbox = TextBox(self.model_search_frame, tk.LEFT, tk.W)
+        self.model_search_textbox = TextBox(
+            frame=self.model_search_frame,
+            row=0,
+            column=0,
+            sticky=tk.S
+            )
         self.model_search_selected = tk.StringVar()
+        self.model_search_selected.set(self.model_search_options[0])
 
         self.model_search_combobox = tk.OptionMenu(
             self.model_search_frame,
             self.model_search_selected,
             *self.model_search_options
             )
-        self.model_search_combobox.pack(side=tk.LEFT, anchor=tk.W)
+        self.model_search_combobox.grid(row=1, column=0, sticky=None)
         self.model_search_button = tk.Button(
-            self.model_search_frame,
+            master=self.model_search_frame,
             text="Search",
             command=lambda: self.search_models()
             )
-        self.model_search_button.pack(padx=2, pady=2, side=tk.LEFT, anchor=tk.W)
+        self.model_search_button.grid(padx=2, pady=2, row=2, column=0, sticky=tk.N)
 
         # Fill add model section
-        self.model_newitem_frame = tk.LabelFrame(self.model_frame, text="Add Model")
-        self.model_newitem_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES, side=tk.BOTTOM)
+        self.model_newitem_frame = tk.LabelFrame(master=self.model_frame, text="Add Model")
+        self.model_newitem_frame.grid(row=0, column=1, sticky=tk.NSEW)
+        self.model_newitem_frame.columnconfigure(index=0, weight=1)
+        self.model_newitem_frame.columnconfigure(index=1, weight=1)
+        self.model_newitem_frame.columnconfigure(index=2, weight=1)
+        self.model_newitem_frame.columnconfigure(index=3, weight=1)
+        self.model_newitem_frame.columnconfigure(index=4, weight=1)
+        self.model_newitem_frame.columnconfigure(index=5, weight=1)
+        self.model_newitem_frame.columnconfigure(index=6, weight=1)
+        self.model_newitem_frame.columnconfigure(index=7, weight=1)
+        self.model_newitem_frame.rowconfigure(index=0, weight=1, uniform="model_add")
+        self.model_newitem_frame.rowconfigure(index=1, weight=1, uniform="model_add")
+        self.model_newitem_frame.rowconfigure(index=2, weight=1, uniform="model_add")
 
-        self.model_name_label = tk.Label(self.model_newitem_frame, text="Name")
-        self.model_name_label.pack(side=tk.LEFT, anchor=tk.W)
-        self.model_name_textbox = TextBox(self.model_newitem_frame, tk.LEFT, tk.W)
+        self.model_name_label = tk.Label(master=self.model_newitem_frame, text="Name")
+        self.model_name_label.grid(row=0, column=0, sticky=tk.SE)
+        self.model_name_textbox = TextBox(
+            frame=self.model_newitem_frame,
+            row=0,
+            column=1,
+            sticky=tk.SW
+            )
 
-        self.model_set_label = tk.Label(self.model_newitem_frame, text="Set")
-        self.model_set_label.pack(side=tk.LEFT, anchor=tk.W)
-        self.model_set_textbox = TextBox(self.model_newitem_frame, tk.LEFT, tk.W)
+        self.model_set_label = tk.Label(master=self.model_newitem_frame, text="Set")
+        self.model_set_label.grid(row=1, column=0, sticky=tk.NE)
+        self.model_set_textbox = TextBox(
+            frame=self.model_newitem_frame,
+            row=1,
+            column=1,
+            sticky=tk.NW
+            )
 
-        self.model_artist_label = tk.Label(self.model_newitem_frame, text="Artist")
-        self.model_artist_label.pack(side=tk.LEFT, anchor=tk.W)
-        self.artist_selection_obj = dbqueries.get_all_artists(self.connection)
+        self.model_artist_label = tk.Label(master=self.model_newitem_frame, text="Artist")
+        self.model_artist_label.grid(row=0, column=2, sticky=tk.SE)
+        logger.info("Populating artist dropdown for adding model")
+        self.artist_selection_obj = dbqueries.get_all_artists(connection=self.connection)
         self.model_artist_dropdown = DropdownBox(
-            self.model_newitem_frame,
-            self.artist_selection_obj,
-            tk.LEFT,
-            tk.W
+            frame=self.model_newitem_frame,
+            input_obj=self.artist_selection_obj,
+            row=0,
+            column=3,
+            sticky=tk.SW
             )
 
-        self.model_source_label = tk.Label(self.model_newitem_frame, text="Source")
-        self.model_source_label.pack(side=tk.LEFT, anchor=tk.W)
-        self.source_selection_obj = dbqueries.get_all_sources(self.connection)
+        self.model_source_label = tk.Label(master=self.model_newitem_frame, text="Source")
+        self.model_source_label.grid(row=1, column=2, sticky=tk.NE)
+        logger.info("Populating source dropdown for adding model")
+        self.source_selection_obj = dbqueries.get_all_sources(connection=self.connection)
         self.model_source_dropdown = DropdownBox(
-            self.model_newitem_frame,
-            self.source_selection_obj,
-            tk.LEFT,
-            tk.W
+            frame=self.model_newitem_frame,
+            input_obj=self.source_selection_obj,
+            row=1,
+            column=3,
+            sticky=tk.NW
             )
 
-        self.model_source_note_label = tk.Label(self.model_newitem_frame, text="Source Note")
-        self.model_source_note_label.pack(side=tk.LEFT, anchor=tk.W)
-        self.model_source_note_textbox = TextBox(self.model_newitem_frame, tk.LEFT, tk.W)
+        self.model_source_note_label = tk.Label(master=self.model_newitem_frame, text="Source Note")
+        self.model_source_note_label.grid(row=0, column=4, sticky=tk.SE)
+        self.model_source_note_textbox = TextBox(
+            frame=self.model_newitem_frame,
+            row=0,
+            column=5,
+            sticky=tk.SW
+            )
 
-        self.model_supports_chkbox = CheckBox(self.model_newitem_frame, "Supports", tk.LEFT, tk.W)
+        self.model_supports_chkbox = CheckBox(
+            frame=self.model_newitem_frame,
+            text="Supports",
+            row=1,
+            column=5,
+            sticky=tk.N
+            )
 
-        self.model_format_label = tk.Label(self.model_newitem_frame, text="Format")
-        self.model_format_label.pack(side=tk.LEFT, anchor=tk.W)
-        self.model_format_textbox = TextBox(self.model_newitem_frame, tk.LEFT, tk.W)
+        self.model_format_label = tk.Label(master=self.model_newitem_frame, text="Format")
+        self.model_format_label.grid(row=0, column=6, sticky=tk.SE)
+        self.model_format_textbox = TextBox(
+            frame=self.model_newitem_frame,
+            row=0,
+            column=7,
+            sticky=tk.SW
+            )
 
-        self.model_printed_chkbox = CheckBox(self.model_newitem_frame, "Printed", tk.LEFT, tk.W)
+        self.model_printed_chkbox = CheckBox(
+            frame=self.model_newitem_frame,
+            text="Printed",
+            row=1,
+            column=7,
+            sticky=tk.N
+            )
 
         self.model_submit_button = tk.Button(
-            self.model_newitem_frame,
+            master=self.model_newitem_frame,
             text="Submit",
             command=lambda: self.add_model()
             )
-        self.model_submit_button.pack(padx=2, pady=2, side=tk.LEFT, anchor=tk.W)
+        self.model_submit_button.grid(
+            padx=2,
+            pady=2,
+            row=2,
+            column=0,
+            columnspan=8,
+            sticky=tk.N
+            )
 
-        self.tabs.add(self.model_frame, text="Models")
+        self.tabs.add(child=self.model_frame, text="Models")
         #--------------------------------------------------------------------------------------------------------------
 
         # Create and populate Artist tab ------------------------------------------------------------------------------
-        self.artist_frame = tk.Frame(self.tabs)
+        self.artist_frame = tk.Frame(master=self.tabs)
         self.artist_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES)
+        self.artist_frame.columnconfigure(index=0, weight=1)
+        self.artist_frame.columnconfigure(index=1, weight=5)
+        self.artist_frame.rowconfigure(index=0, weight=1, uniform="artist")
+        self.artist_frame.rowconfigure(index=1, weight=5, uniform="artist")
 
         # Fill results table
-        self.artist_display_frame = tk.LabelFrame(self.artist_frame, text="Artists")
-        self.artist_display_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES, side=tk.BOTTOM)
+        self.artist_display_frame = tk.LabelFrame(master=self.artist_frame, text="Artists")
+        self.artist_display_frame.grid(row=1, column=0, columnspan=2, sticky=tk.NSEW)
 
-        self.artists = dbqueries.get_all_artists(self.connection)
-        self.artist_table = Table(self.artist_display_frame, self.artists)
+        logger.info("Populating artist table")
+        self.artists = dbqueries.get_all_artists(connection=self.connection)
+        self.artist_table = Table(frame=self.artist_display_frame, input_obj=self.artists)
 
         # Fill Artist search section
-        self.artist_search_frame = tk.LabelFrame(self.artist_frame, text="Search Artists")
-        self.artist_search_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES, side=tk.LEFT)
+        self.artist_search_frame = tk.LabelFrame(master=self.artist_frame, text="Search Artists")
+        self.artist_search_frame.grid(row=0, column=0, sticky=tk.NSEW)
+        self.artist_search_frame.columnconfigure(index=0, weight=1)
+        self.artist_search_frame.rowconfigure(index=0, weight=1, uniform="artist_search")
+        self.artist_search_frame.rowconfigure(index=1, weight=1, uniform="artist_search")
 
-        self.artist_search_textbox = TextBox(self.artist_search_frame, tk.LEFT, tk.W)
+        self.artist_search_textbox = TextBox(
+            frame=self.artist_search_frame,
+            row=0,
+            column=0,
+            sticky=tk.S
+            )
         self.artist_search_button = tk.Button(
-            self.artist_search_frame,
+            master=self.artist_search_frame,
             text="Search",
             command=lambda: self.search_artist())
-        self.artist_search_button.pack(padx=2, pady=2, side=tk.LEFT, anchor=tk.W)
+        self.artist_search_button.grid(padx=2, pady=2, row=1, column=0, sticky=tk.N)
 
         # Fill Add Artist section
-        self.artist_newitem_frame = tk.LabelFrame(self.artist_frame, text="Add Artist")
-        self.artist_newitem_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES, side=tk.LEFT)
+        self.artist_newitem_frame = tk.LabelFrame(master=self.artist_frame, text="Add Artist")
+        self.artist_newitem_frame.grid(row=0, column=1, sticky=tk.NSEW)
+        self.artist_newitem_frame.columnconfigure(index=0, weight=1)
+        self.artist_newitem_frame.columnconfigure(index=1, weight=1)
+        self.artist_newitem_frame.columnconfigure(index=2, weight=1)
+        self.artist_newitem_frame.columnconfigure(index=3, weight=1)
+        self.artist_newitem_frame.rowconfigure(index=0, weight=1, uniform="artist_add")
+        self.artist_newitem_frame.rowconfigure(index=1, weight=1, uniform="artist_add")
+        self.artist_newitem_frame.rowconfigure(index=2, weight=1, uniform="artist_add")
 
-        self.artist_name_label = tk.Label(self.artist_newitem_frame, text="Name")
-        self.artist_name_label.pack(side=tk.TOP, anchor=tk.W)
-        self.artist_name_textbox = TextBox(self.artist_newitem_frame, tk.TOP, tk.W)
+        self.artist_name_label = tk.Label(master=self.artist_newitem_frame, text="Name")
+        self.artist_name_label.grid(row=0, column=0, sticky=tk.SE)
+        self.artist_name_textbox = TextBox(
+            frame=self.artist_newitem_frame,
+            row=0,
+            column=1,
+            sticky=tk.SW
+            )
 
-        self.artist_website_label = tk.Label(self.artist_newitem_frame, text="Website")
-        self.artist_website_label.pack(side=tk.TOP,anchor=tk.W)
-        self.artist_website_textbox = TextBox(self.artist_newitem_frame, tk.TOP, tk.W)
+        self.artist_website_label = tk.Label(master=self.artist_newitem_frame, text="Website")
+        self.artist_website_label.grid(row=0, column=2, sticky=tk.SE)
+        self.artist_website_textbox = TextBox(
+            frame=self.artist_newitem_frame,
+            row=0,
+            column=3,
+            sticky=tk.SW
+            )
 
-        self.artist_email_label = tk.Label(self.artist_newitem_frame, text="Email")
-        self.artist_email_label.pack(side=tk.TOP, anchor=tk.W)
-        self.artist_email_textbox = TextBox(self.artist_newitem_frame, tk.TOP, tk.W)
+        self.artist_email_label = tk.Label(master=self.artist_newitem_frame, text="Email")
+        self.artist_email_label.grid(row=1, column=0, sticky=tk.NE)
+        self.artist_email_textbox = TextBox(
+            frame=self.artist_newitem_frame,
+            row=1,
+            column=1,
+            sticky=tk.NW
+            )
 
-        self.artist_folder_label = tk.Label(self.artist_newitem_frame, text="Folder")
-        self.artist_folder_label.pack(side=tk.TOP,anchor=tk.W)
-        self.artist_folder_textbox = TextBox(self.artist_newitem_frame, tk.TOP, tk.W)
+        self.artist_folder_label = tk.Label(master=self.artist_newitem_frame, text="Folder")
+        self.artist_folder_label.grid(row=1, column=2, sticky=tk.NE)
+        self.artist_folder_textbox = TextBox(
+            frame=self.artist_newitem_frame,
+            row=1,
+            column=3,
+            sticky=tk.NW
+            )
 
         self.artist_submit_button = tk.Button(
-            self.artist_newitem_frame,
+            master=self.artist_newitem_frame,
             text="Submit",
             command=lambda: self.add_artist()
             )
-        self.artist_submit_button.pack(padx=2, pady=2, side=tk.TOP, anchor=tk.W)
+        self.artist_submit_button.grid(
+            padx=2,
+            pady=2,
+            row=2,
+            column=0,
+            columnspan=4,
+            sticky=tk.N
+            )
 
-        self.tabs.add(self.artist_frame, text="Artists")
+        self.tabs.add(child=self.artist_frame, text="Artists")
         #---------------------------------------------------------------------------------------------------------------
 
         # Create and populate Source tab -------------------------------------------------------------------------------
-        self.source_frame = tk.Frame(self.tabs)
+        self.source_frame = tk.Frame(master=self.tabs)
         self.source_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES)
+        self.source_frame.columnconfigure(index=0, weight=1)
+        self.source_frame.columnconfigure(index=1, weight=5)
+        self.source_frame.rowconfigure(index=0, weight=1, uniform="source")
+        self.source_frame.rowconfigure(index=1, weight=5, uniform="source")
 
         # Fill results table
-        self.source_display_frame = tk.LabelFrame(self.source_frame, text="Sources")
-        self.source_display_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES, side=tk.BOTTOM)
+        self.source_display_frame = tk.LabelFrame(master=self.source_frame, text="Sources")
+        self.source_display_frame.grid(row=1, column=0, columnspan=2, sticky=tk.NSEW)
 
-        self.sources = dbqueries.get_all_sources(self.connection)
-        self.sources_table = Table(self.source_display_frame, self.sources)
+        logger.info("Populating source table")
+        self.sources = dbqueries.get_all_sources(connection=self.connection)
+        self.sources_table = Table(frame=self.source_display_frame, input_obj=self.sources)
 
         # Fill Source Search section
-        self.source_search_frame = tk.LabelFrame(self.source_frame, text="Search Sources")
-        self.source_search_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES, side=tk.LEFT)
+        self.source_search_frame = tk.LabelFrame(master=self.source_frame, text="Search Sources")
+        self.source_search_frame.grid(row=0, column=0, sticky=tk.NSEW)
+        self.source_search_frame.columnconfigure(index=0, weight=1)
+        self.source_search_frame.rowconfigure(index=0, weight=1, uniform="source_search")
+        self.source_search_frame.rowconfigure(index=1, weight=1, uniform="source_search")
 
-        self.source_search_textbox = TextBox(self.source_search_frame, tk.LEFT, tk.W)
+        self.source_search_textbox = TextBox(
+            frame=self.source_search_frame,
+            row=0,
+            column=0,
+            sticky=tk.S
+            )
         self.source_search_button = tk.Button(
-            self.source_search_frame,
+            master=self.source_search_frame,
             text="Search",
             command=lambda: self.search_source()
             )
-        self.source_search_button.pack(padx=2, pady=2, side=tk.LEFT, anchor=tk.W)
+        self.source_search_button.grid(padx=2, pady=2, row=1, column=0, sticky=tk.N)
 
         # Fill Add Source section
-        self.source_newitem_frame = tk.LabelFrame(self.source_frame, text="Add Source")
-        self.source_newitem_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES, side=tk.LEFT)
+        self.source_newitem_frame = tk.LabelFrame(master=self.source_frame, text="Add Source")
+        self.source_newitem_frame.grid(row=0, column=1, sticky=tk.NSEW)
+        self.source_newitem_frame.columnconfigure(index=0, weight=1)
+        self.source_newitem_frame.columnconfigure(index=1, weight=1)
+        self.source_newitem_frame.columnconfigure(index=2, weight=1)
+        self.source_newitem_frame.columnconfigure(index=3, weight=1)
+        self.source_newitem_frame.rowconfigure(index=0, weight=1, uniform="source_add")
+        self.source_newitem_frame.rowconfigure(index=1, weight=1, uniform="source_add")
 
-        self.source_name_label = tk.Label(self.source_newitem_frame, text="Name")
-        self.source_name_label.pack(side=tk.TOP, anchor=tk.W)
-        self.source_name_textbox = TextBox(self.source_newitem_frame, tk.TOP, tk.W)
 
-        self.source_website_label = tk.Label(self.source_newitem_frame, text="Website")
-        self.source_website_label.pack(side=tk.TOP,anchor=tk.W)
-        self.source_website_textbox = TextBox(self.source_newitem_frame, tk.TOP, tk.W)
+        self.source_name_label = tk.Label(master=self.source_newitem_frame, text="Name")
+        self.source_name_label.grid(row=0, column=0, sticky=tk.SE)
+        self.source_name_textbox = TextBox(
+            frame=self.source_newitem_frame,
+            row=0,
+            column=1,
+            sticky=tk.SW
+            )
+
+        self.source_website_label = tk.Label(master=self.source_newitem_frame, text="Website")
+        self.source_website_label.grid(row=0, column=2, sticky=tk.SE)
+        self.source_website_textbox = TextBox(
+            frame=self.source_newitem_frame,
+            row=0,
+            column=3,
+            sticky=tk.SW
+            )
 
         self.source_submit_button = tk.Button(
-            self.source_newitem_frame,
+            master=self.source_newitem_frame,
             text="Submit",
             command=lambda: self.add_source()
             )
-        self.source_submit_button.pack(padx=2, pady=2, side=tk.TOP, anchor=tk.W)
+        self.source_submit_button.grid(
+            padx=2,
+            pady=2,
+            row=1,
+            column=0,
+            columnspan=4,
+            sticky=tk.N
+            )
 
-        self.tabs.add(self.source_frame, text="Sources")
+        self.tabs.add(child=self.source_frame, text="Sources")
         #--------------------------------------------------------------------------------------------------------------
 
     def refresh_tables(self):
@@ -218,18 +377,23 @@ class Window:
         Pulls the latest data from the database and repopulates the three
         tables and the two model dropdowns.
         """
-        self.updated_model_table = dbqueries.get_all_models(self.connection)
-        self.updated_artist_table = dbqueries.get_all_artists(self.connection)
-        self.updated_source_table = dbqueries.get_all_sources(self.connection)
+        logger.debug("Updating model list")
+        self.updated_model_table = dbqueries.get_all_models(connection=self.connection)
+        logger.debug("Updating artist list")
+        self.updated_artist_table = dbqueries.get_all_artists(connection=self.connection)
+        logger.debug("Updating source list")
+        self.updated_source_table = dbqueries.get_all_sources(connection=self.connection)
 
-        self.model_table.refresh_table(self.updated_model_table)
-        self.artist_table.refresh_table(self.updated_artist_table)
-        self.sources_table.refresh_table(self.updated_source_table)
+        self.model_table.refresh_table(input_obj=self.updated_model_table)
+        self.artist_table.refresh_table(input_obj=self.updated_artist_table)
+        self.sources_table.refresh_table(input_obj=self.updated_source_table)
 
-        self.refreshed_artists = dbqueries.get_all_artists(self.connection)
-        self.model_artist_dropdown.refresh_options(self.refreshed_artists)
-        self.refreshed_sources = dbqueries.get_all_sources(self.connection)
-        self.model_source_dropdown.refresh_options(self.refreshed_sources)
+        logger.debug("Updating artist dropdown")
+        self.refreshed_artists = dbqueries.get_all_artists(connection=self.connection)
+        self.model_artist_dropdown.refresh_options(input=self.refreshed_artists)
+        logger.debug("Updating source dropdown")
+        self.refreshed_sources = dbqueries.get_all_sources(connection=self.connection)
+        self.model_source_dropdown.refresh_options(input=self.refreshed_sources)
 
     def add_model(self):
         """Adds a new model to the database.
@@ -243,8 +407,31 @@ class Window:
         self.new_model_entry.append(self.model_name_textbox.get_text())
         self.model_name_textbox.clear_text()
         self.new_model_entry.append(self.model_set_textbox.get_text())
-        self.new_model_entry.append(self.model_artist_dropdown.get_selection())
-        self.new_model_entry.append(self.model_source_dropdown.get_selection())
+
+        self._artist = self.model_artist_dropdown.get_selection()
+        if self._artist:
+            self.new_model_entry.append(self._artist)
+        else:
+            tkm.showwarning(
+                title="Missing Artist",
+                message="Please select an artist from the dropdown. If you "
+                "need to enter a new artist, please do so from the Artist tab "
+                "first."
+                )
+            return
+
+        self._source = self.model_source_dropdown.get_selection()
+        if self._source:
+            self.new_model_entry.append(self._source)
+        else:
+            tkm.showwarning(
+                title="Missing Source",
+                message="Please select a source from the dropdown. If you "
+                "need to enter a new source, please do so from the Source tab "
+                "first."
+                )
+            return
+
         self.new_model_entry.append(self.model_source_note_textbox.get_text())
         self.new_model_entry.append(self.model_supports_chkbox.get_selection())
         self.new_model_entry.append(self.model_format_textbox.get_text())
@@ -253,7 +440,8 @@ class Window:
         self.new_model_entry.append(self.model_printed_chkbox.get_selection())
 
         self.new_model = inv.Model(self.new_model_entry)
-        dbqueries.add_model(self.connection, self.new_model)
+        logger.info("Adding model to the database")
+        dbqueries.add_model(connection=self.connection, model=self.new_model)
         self.refresh_tables()
 
     def add_artist(self):
@@ -275,7 +463,8 @@ class Window:
         self.artist_folder_textbox.clear_text()
 
         self.new_artist = inv.Artist(self.new_artist_entry)
-        dbqueries.add_artist(self.connection, self.new_artist)
+        logger.info("Adding artist to the database")
+        dbqueries.add_artist(connection=self.connection, artist=self.new_artist)
         self.refresh_tables()
 
     def add_source(self):
@@ -293,7 +482,8 @@ class Window:
         self.source_website_textbox.clear_text()
 
         self.new_source = inv.Source(self.new_source_entry)
-        dbqueries.add_source(self.connection, self.new_source)
+        logger.info("Adding source to the database")
+        dbqueries.add_source(connection=self.connection, source=self.new_source)
         self.refresh_tables()
 
     def search_models(self):
@@ -310,13 +500,24 @@ class Window:
         self.model_search_textbox.clear_text()
         self.model_search_field = self.model_search_selected.get()
 
-        self.model_results = dbqueries.search_model(
-            self.connection,
-            self.model_search_field,
-            self.model_search_term
-            )
-        self.model_table.refresh_table(self.model_results)
-        
+        if self.model_search_field:
+            logger.info("Searching models")
+            logger.debug(f"{self.model_search_term} in {self.model_search_field}")
+            self.model_results = dbqueries.search_model(
+                connection=self.connection,
+                field=self.model_search_field,
+                search_text=self.model_search_term
+                )
+            self.model_table.refresh_table(input_obj=self.model_results)
+        else:
+            logger.warning("Missing search field")
+            tkm.showwarning(
+                title="Missing Field",
+                message="The search field is missing. "
+                    "Please select a search field from the dropdown box and "
+                    "try again."
+                )
+
     def search_artist(self):
         """Searches the database for artists matching a search term.
 
@@ -330,8 +531,12 @@ class Window:
         self.artist_search_term = self.artist_search_textbox.get_text()
         self.artist_search_textbox.clear_text()
 
-        self.artist_results = dbqueries.search_artist(self.connection, self.artist_search_term)
-        self.artist_table.refresh_table(self.artist_results)
+        logger.info("Searching artists")
+        self.artist_results = dbqueries.search_artist(
+            connection=self.connection,
+            search_text=self.artist_search_term
+            )
+        self.artist_table.refresh_table(input_obj=self.artist_results)
 
     def search_source(self):
         """Searches the database for sources matching a search term.
@@ -346,8 +551,20 @@ class Window:
         self.source_search_term = self.source_search_textbox.get_text()
         self.source_search_textbox.clear_text()
 
-        self.search_results = dbqueries.search_source(self.connection, self.source_search_term)
-        self.sources_table.refresh_table(self.search_results)
+        logger.info("Searching sources")
+        self.search_results = dbqueries.search_source(
+            connection=self.connection,
+            search_text=self.source_search_term
+            )
+        self.sources_table.refresh_table(input_obj=self.search_results)
+
+def focus_next_widget(event):
+    """Focuses the next widget in focus order"""
+    event.widget.tk_focusNext().focus()
+    # Break is here to prevent the rebound key from performing its original
+    # function
+    return("break")
+
 
 class Table:
     """Creates a table from the passed objects in the specified frame.
@@ -370,14 +587,14 @@ class Table:
         """
         self.frame = frame
         self.input_obj = input_obj
-        self.scroll = tk.Scrollbar(self.frame)
+        self.scroll = tk.Scrollbar(master=self.frame)
         self.scroll.pack(side=tk.RIGHT, fill=tk.Y)
 
-        self.table = ttk.Treeview(frame, yscroll=self.scroll.set)
+        self.table = ttk.Treeview(master=frame, yscroll=self.scroll.set)
         self.table.pack(padx=2, pady=2, expand=True, fill=tk.BOTH)
         self.scroll.config(command=self.table.yview)
 
-        self.add_rows(self.input_obj)
+        self.add_rows(input_obj=self.input_obj)
 
     def add_rows(self, input_obj):
         """Adds rows to the table from a supplied object.
@@ -404,11 +621,15 @@ class Table:
 
         self.table['columns'] = self.columns
 
-        self.table.column('#0', width=0, stretch=tk.NO)
-        self.table.heading('#0', text="", anchor=tk.W)
+        self.table.column(column='#0', width=0, stretch=tk.NO)
+        self.table.heading(column='#0', text="", anchor=tk.W)
         for self.heading in self.column_names:
-            self.table.column(self.heading, anchor=tk.W, width=80)
-            self.table.heading(self.heading, text=self.heading.capitalize(), anchor=tk.W)
+            self.table.column(column=self.heading, anchor=tk.W, width=80)
+            self.table.heading(
+                column=self.heading,
+                text=self.heading.capitalize(),
+                anchor=tk.W
+                )
 
         # Checking to see if self.input_obj is a list or an individual object
         # before proceeding.
@@ -416,7 +637,7 @@ class Table:
             for self.row in self.input_obj:
                 self.table.insert('', tk.END, values=(self.row.to_list()))
         except (IndexError, TypeError):
-            self.table.insert('', tk.END, values=(self.input_obj.to_list()))
+            self.table.insert(parent='', index=tk.END, values=(self.input_obj.to_list()))
 
     def clear_table(self):
         """Clears the data from the table."""
@@ -434,31 +655,38 @@ class Table:
         """
         self.input_obj = input_obj
         self.clear_table()
-        self.add_rows(self.input_obj)
+        self.add_rows(input_obj=self.input_obj)
 
 
 class TextBox:
     """ Creates a text entry box.
 
-    Creates a text entry box in the specified frame with the specified side and
-    anchor.
+    Creates a text entry box in the specified frame with the specified grid
+    options.
     """
-    def __init__(self, frame, side, anchor):
+    def __init__(self, frame, row, column, sticky):
         """Inits the new text entry box.
-
-        Sets the text box's size side and anchor position.
 
         Args:
             frame: The frame that the text box will be created in.
-            side: Accepts a tkinter side
-            anchor: Accepts a tkinter anchor location
+            row: Grid row the widget is in.
+            column: Grid column the widget is in.
+            sticky: where in the column/row the widget is attached.
         """
         self.frame = frame
-        self.side = side
-        self.anchor = anchor
+        self.row = row
+        self.column = column
+        self.sticky = sticky
 
-        self.text_box = tk.Text(self.frame, height=1, width=30)
-        self.text_box.pack(padx=2, pady=2, side=self.side, anchor=self.anchor)
+        self.text_box = tk.Text(master=self.frame, height=1, width=30)
+        self.text_box.grid(
+            padx=2,
+            pady=2,
+            row=self.row,
+            column=self.column,
+            sticky=self.sticky
+            )
+        self.text_box.bind(sequence='<Tab>', func=focus_next_widget)
 
     def get_text(self):
         """Retrieves the text from the text box.
@@ -466,35 +694,39 @@ class TextBox:
         Returns:
             A string containing the text entered in the text box.
         """
-        self.input = self.text_box.get(1.0, tk.END+'-1c')
+        self.input = self.text_box.get(index1=1.0, index2=tk.END+'-1c')
         return self.input
 
     def clear_text(self):
         """Removes the text from the text box."""
-        self.text_box.delete(1.0, tk.END+'-1c')
+        self.text_box.delete(index1=1.0, index2=tk.END+'-1c')
 
 
 class DropdownBox:
     """ Creates a dropdown box.
 
-    Creates a dropdown box in the specified frame with the specified side and
-    anchor.
+    Creates a dropdown box in the specified frame with the specified grid
+    options.
     """
-    def __init__(self, frame, input_obj, side, anchor):
+    def __init__(self, frame, input_obj, row, column, sticky):
         """Inits the new text entry box.
 
         Sets the text box's size, side, and anchor position.
 
         Args:
             frame: The frame that the text box will be created in.
-            side: Accepts a tkinter side
-            anchor: Accepts a tkinter anchor location
+            input_obj: The object used to populate the options.
+            row: Grid row the widget is in.
+            column: Grid column the widget is in.
+            sticky: where in the column/row the widget is attached.
         """
         self.frame = frame
-        self.side = side
-        self.anchor = anchor
+        self.row = row
+        self.column = column
+        self.sticky = sticky
         self.input_obj = input_obj
         self.var = tk.StringVar()
+        self.var.set("Please Select")
         self.options = []
 
         try:
@@ -503,8 +735,14 @@ class DropdownBox:
         except (IndexError, TypeError):
             self.options.append(self.input_obj.name)
 
-        self.dropdown = tk.OptionMenu(self.frame, self.var, None, *self.options)
-        self.dropdown.pack(padx=2, pady=2, side=self.side, anchor=self.anchor)
+        self.dropdown = tk.OptionMenu(self.frame, self.var, *self.options)
+        self.dropdown.grid(
+            padx=2,
+            pady=2,
+            row=self.row,
+            column=self.column,
+            sticky=self.sticky
+            )
 
     def get_selection(self):
         """Gets the selected item.
@@ -514,7 +752,11 @@ class DropdownBox:
         Returns:
             A string containing the user's selection.
         """
-        return self.var.get()
+        self.value = self.var.get()
+        if self.value == "Please Select":
+            return None
+        else:
+            return self.var.get()
 
     def reset_selection(self):
         """Resets the dropdown box back to the default selection."""
@@ -541,10 +783,10 @@ class DropdownBox:
 class CheckBox:
     """ Creates a check box.
 
-    Creates a dropdown box in the specified frame with the specified side and
-    anchor.
+    Creates a dropdown box in the specified frame with the specified grid
+    options.
     """
-    def __init__(self, frame, text, side, anchor):
+    def __init__(self, frame, text, row, column, sticky):
         """Inits the new  checkbox.
 
         Sets the checkbox's size, side, and anchor position.
@@ -552,12 +794,14 @@ class CheckBox:
         Args:
             frame: The frame that the text box will be created in.
             text: The text for the builtin label.
-            side: Accepts a tkinter side.
-            anchor: Accepts a tkinter anchor location.
+            row: Grid row the widget is in
+            column: Grid column the widget is in
+            sticky: where in the column/row the widget is attached
         """
         self.frame = frame
-        self.side = side
-        self.anchor = anchor
+        self.row = row
+        self.column = column
+        self.sticky = sticky
         self.text = text
         self.var = tk.BooleanVar()
 
@@ -568,7 +812,13 @@ class CheckBox:
             offvalue=tk.FALSE,
             variable=self.var
             )
-        self.checkbox.pack(padx=2, pady=2, side=self.side, anchor=self.anchor)
+        self.checkbox.grid(
+            padx=2,
+            pady=2,
+            row=self.row,
+            column=self.column,
+            sticky=self.sticky
+            )
 
     def get_selection(self):
         """Gets the selected item.
