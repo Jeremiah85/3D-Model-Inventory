@@ -80,10 +80,6 @@ Windows:
 > model_inv.exe
 ```
 
-```
-$ ./model_inv
-```
-
 ## Status
 
 This is a hobby project and I am releasing it on the off chance someone else

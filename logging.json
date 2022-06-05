@@ -2,7 +2,7 @@
     "version": 1,
     "root": {
         "handlers": ["default"],
-        "level": "DEBUG",
+        "level": "WARNING",
         "propagate": false
     },
     "formatters": { 
