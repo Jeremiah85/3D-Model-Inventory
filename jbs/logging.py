@@ -21,8 +21,8 @@ def get_config(config_file):
 
 scriptpath = os.path.dirname(os.path.realpath(sys.argv[0])) + os.sep
 
-default_logfile_config = scriptpath + 'logs' + os.sep + 'run.log'
-log_config = scriptpath + "logging.json"
+default_logfile_config = f'{scriptpath}logs{os.sep}run.log'
+log_config = f'{scriptpath}logging.json'
 
 logging_config = get_config(log_config)
 if logging_config['handlers']['default']['filename'] == 'get_from_variable':

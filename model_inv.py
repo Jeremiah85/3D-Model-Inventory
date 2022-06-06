@@ -3,7 +3,6 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 import logging
-
 import os
 import sys
 
@@ -14,11 +13,11 @@ import jbs.gui as gui
 
 scriptpath = os.path.dirname(os.path.realpath(sys.argv[0])) + os.sep
 
-default_database = scriptpath + "3D_Models.db"
-sql_schema_new = scriptpath + 'sql' + os.sep +'empty_database.sql'
-sql_schema_update = scriptpath + 'sql' + os.sep +'update_database.sql'
-sql_update_version = scriptpath + 'sql' + os.sep +'schema_version.json'
-default_config = scriptpath + "config.json"
+default_database = f'{scriptpath}3D_Models.db'
+sql_schema_new = f'{scriptpath}sql{os.sep}empty_database.sql'
+sql_schema_update = f'{scriptpath}sql{os.sep}update_database.sql'
+sql_update_version = f'{scriptpath}sql{os.sep}schema_version.json'
+default_config = f'{scriptpath}config.json'
 
 
 def main():
@@ -44,7 +43,7 @@ def main():
         db.modify_database_schema(connection=connection, sql_file=sql_schema_new)
         logger.info("Database has been created")
 
-# Check if a database update is needed
+    # Check if a database update is needed
     file_version = config.get_update_version(update_version_file=sql_update_version)
     logger.debug(f"Newest schema is {file_version}")
     db_version = db.check_database_schema(connection=connection)
