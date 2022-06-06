@@ -28,6 +28,7 @@ class Window:
         add, and display section. The database connection is used to populate
         various UI elements.
         """
+        self.factory = inv.ObjectFactory()
         self.connection = connection
         self.root = tk.Tk()
         self.root.title("3D Models")
@@ -439,7 +440,8 @@ class Window:
         self.new_model_entry.append('')
         self.new_model_entry.append(self.model_printed_chkbox.get_selection())
 
-        self.new_model = inv.Model(self.new_model_entry)
+        self.new_model = self.factory.createModel(self.new_model_entry)
+
         logger.info("Adding model to the database")
         dbqueries.add_model(connection=self.connection, model=self.new_model)
         self.refresh_tables()
@@ -462,7 +464,7 @@ class Window:
         self.new_source_entry.append(self.artist_folder_textbox.get_text())
         self.artist_folder_textbox.clear_text()
 
-        self.new_artist = inv.Artist(self.new_artist_entry)
+        self.new_artist = self.factory.createArtist(self.new_artist_entry)
         logger.info("Adding artist to the database")
         dbqueries.add_artist(connection=self.connection, artist=self.new_artist)
         self.refresh_tables()
@@ -481,7 +483,7 @@ class Window:
         self.new_source_entry.append(self.source_website_textbox.get_text())
         self.source_website_textbox.clear_text()
 
-        self.new_source = inv.Source(self.new_source_entry)
+        self.new_source = self.factory.createSource(self.new_source_entry)
         logger.info("Adding source to the database")
         dbqueries.add_source(connection=self.connection, source=self.new_source)
         self.refresh_tables()
@@ -635,9 +637,9 @@ class Table:
         # before proceeding.
         try:
             for self.row in self.input_obj:
-                self.table.insert('', tk.END, values=(self.row.to_list()))
+                self.table.insert('', tk.END, values=(self.row.astuple()))
         except (IndexError, TypeError):
-            self.table.insert(parent='', index=tk.END, values=(self.input_obj.to_list()))
+            self.table.insert(parent='', index=tk.END, values=(self.input_obj.astuple()))
 
     def clear_table(self):
         """Clears the data from the table."""

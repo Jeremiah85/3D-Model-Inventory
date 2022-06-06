@@ -24,6 +24,7 @@ def get_all_models(connection):
     Returns:
         A list of all model objects in the database.
     """
+    factory = inv.ObjectFactory()
     try:
         cur = connection.cursor()
         cur.execute(
@@ -40,7 +41,7 @@ def get_all_models(connection):
         if results:
             models = []
             for model in results:
-                models.append(inv.Model(model))
+                models.append(factory.createModel(model))
 
             return models
 
@@ -59,7 +60,7 @@ def get_all_models(connection):
                 'empty',
                 False
                 ]
-            models = inv.Model(model)
+            models = factory.createModel(model)
 
             return models
 
@@ -80,6 +81,7 @@ def get_all_artists(connection):
     Returns:
         A list of all artist objects in the database.
     """
+    factory = inv.ObjectFactory()
     try:
         cur = connection.cursor()
         cur.execute(
@@ -93,7 +95,7 @@ def get_all_artists(connection):
         if results:
             artists = []
             for artist in results:
-                artists.append(inv.Artist(artist))
+                artists.append(factory.createArtist(artist))
 
             return artists
 
@@ -102,7 +104,7 @@ def get_all_artists(connection):
         else:
             logger.info("No results, creating dummy artist object instead")
             artist = ['empty', 'empty', 'empty', 'empty']
-            artists = inv.Artist(artist)
+            artists = factory.createArtist(artist)
 
             return artists
 
@@ -123,6 +125,7 @@ def get_all_sources(connection):
     Returns:
         A list of all source objects in the database.
     """
+    factory = inv.ObjectFactory()
     try:
         cur = connection.cursor()
         cur.execute(
@@ -136,7 +139,7 @@ def get_all_sources(connection):
         if results:
             sources = []
             for source in results:
-                sources.append(inv.Source(source))
+                sources.append(factory.createSource(source))
 
             return sources
 
@@ -145,7 +148,7 @@ def get_all_sources(connection):
         else:
             logger.info("No results, creating dummy source object instead")
             source = ['empty', 'empty']
-            sources = inv.Source(source)
+            sources = factory.createSource(source)
 
             return sources
 
@@ -169,6 +172,7 @@ def search_model(connection, field, search_text):
     Returns:
         A list of model objects matching the user's query.
     """
+    factory = inv.ObjectFactory()
     search_term = {'keyword': '%' + search_text + '%'}
 
     try:
@@ -188,7 +192,7 @@ def search_model(connection, field, search_text):
         if results:
             models = []
             for model in results:
-                models.append(inv.Model(model))
+                models.append(factory.createModel(model))
 
             return models
 
@@ -207,7 +211,7 @@ def search_model(connection, field, search_text):
                 'Not Found',
                 False
                 ]
-            models = inv.Model(model)
+            models = factory.createModel(model)
 
             return models
         
@@ -229,6 +233,7 @@ def search_artist(connection, search_text):
     Returns:
         A list of artist objects matching the user's query.
     """
+    factory = inv.ObjectFactory()
     search_term = {'keyword': '%' + search_text + '%'}
 
     try:
@@ -247,7 +252,7 @@ def search_artist(connection, search_text):
         if results:
             artists = []
             for artist in results:
-                artists.append(inv.Artist(artist))
+                artists.append(factory.createArtist(artist))
 
             return artists
 
@@ -256,7 +261,7 @@ def search_artist(connection, search_text):
         else:
             logger.info("No results, creating dummy artist object instead")
             artist = ['Not Found', 'Not Found', 'Not Found', 'Not Found']
-            artists = inv.Artist(artist)
+            artists = factory.createArtist(artist)
 
             return artists
         
@@ -278,6 +283,7 @@ def search_source(connection, search_text):
     Returns:
         A list of source objects matching the user's query.
     """
+    factory = inv.ObjectFactory()
     search_term = {'keyword': '%' + search_text + '%'}
 
     try:
@@ -294,7 +300,7 @@ def search_source(connection, search_text):
         if results:
             sources = []
             for source in results:
-                sources.append(inv.Source(source))
+                sources.append(factory.createSource(source))
 
             return sources
 
@@ -303,7 +309,7 @@ def search_source(connection, search_text):
         else:
             logger.info("No results, creating dummy source object instead")
             source = ['Not Found', 'Not Found']
-            sources = inv.Source(source)
+            sources = factory.createSource(source)
 
             return sources
         
