@@ -734,6 +734,7 @@ class DropdownBox:
                 self.options.append(self.item.name)
         except (IndexError, TypeError):
             self.options.append(self.input_obj.name)
+        self.options.sort(key=str.lower)
 
         self.dropdown = tk.OptionMenu(self.frame, self.var, *self.options)
         self.dropdown.grid(
