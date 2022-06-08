@@ -291,7 +291,8 @@ def search_source(connection, search_text):
         cur.execute(
             'SELECT Source_Name, Source_Website '
             'FROM tblSource '
-            'WHERE Source_Name LIKE :keyword OR Source_Website LIKE :keyword;', search_term
+            'WHERE Source_Name LIKE :keyword OR Source_Website LIKE :keyword;',
+            search_term
             )
         results = cur.fetchall()
 
@@ -358,8 +359,25 @@ def add_model(connection, model):
         cur = connection.cursor()
         logger.info("Adding model to the database")
         cur.execute(
-            'INSERT INTO tblModel (Model_Name, Artist, Set_Name, Source, Source_Note, Supports, Format, Printed) '
-            'VALUES (:model, :artist, :set, :source, :source_note, :supports, :format, :printed);', vars(model)
+            'INSERT INTO tblModel ('
+                'Model_Name, '
+                'Artist, '
+                'Set_Name, '
+                'Source, '
+                'Source_Note, '
+                'Supports, '
+                'Format, '
+                'Printed) '
+            'VALUES ('
+                ':model, '
+                ':artist, '
+                ':set, '
+                ':source, '
+                ':source_note, '
+                ':supports, '
+                ':format, '
+                ':printed);', 
+            vars(model)
             )
         connection.commit()
 
@@ -382,8 +400,17 @@ def add_artist(connection, artist):
         cur = connection.cursor()
         logger.info("Adding artist to the database")
         cur.execute(
-            'INSERT INTO tblArtist (Artist_Name, Artist_Website, Artist_Email, Artist_Folder) '
-            'VALUES (:name, :website, :email, :folder);', vars(artist)
+            'INSERT INTO tblArtist ('
+                'Artist_Name, '
+                'Artist_Website, '
+                'Artist_Email, '
+                'Artist_Folder) '
+                'VALUES ('
+                ':name, '
+                ':website, '
+                ':email, '
+                ':folder);', 
+            vars(artist)
             )
         connection.commit()
     

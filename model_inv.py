@@ -6,6 +6,8 @@ import logging
 import os
 import sys
 
+# jbs.logging is imported to create the root logger before the other modules
+# are imported otherwise they get a different root logger.
 import jbs.logging
 import jbs.config as config
 import jbs.database.database_utils as db
@@ -40,18 +42,26 @@ def main():
         logger.info("No database, Creating New")
         connection = db.connect_database(database=default_database)
         logger.debug(default_database)
-        db.modify_database_schema(connection=connection, sql_file=sql_schema_new)
+        db.modify_database_schema(
+            connection=connection,
+            sql_file=sql_schema_new
+            )
         logger.info("Database has been created")
 
     # Check if a database update is needed
-    file_version = config.get_update_version(update_version_file=sql_update_version)
+    file_version = config.get_update_version(
+        update_version_file=sql_update_version
+        )
     logger.debug(f"Newest schema is {file_version}")
     db_version = db.check_database_schema(connection=connection)
     logger.debug(f"Database schema is {db_version}")
 
     if file_version > db_version:
         logger.debug("Schema update is needed")
-        db.modify_database_schema(connection=connection, sql_file=sql_schema_update)
+        db.modify_database_schema(
+            connection=connection,
+            sql_file=sql_schema_update
+            )
         logger.info("Schema update has been applied")
     else:
         pass

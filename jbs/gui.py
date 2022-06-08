@@ -36,7 +36,7 @@ class Window:
         self.tabs = ttk.Notebook(master=self.root)
         self.tabs.pack(fill=tk.BOTH, expand=tk.YES)
 
-        # Create and populate Model tab -------------------------------------------------------------------------------
+        # Create and populate Model tab ---------------------------------------
         self.model_frame = tk.Frame(master=self.tabs)
         self.model_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES)
         self.model_frame.columnconfigure(index=0, weight=1)
@@ -45,20 +45,46 @@ class Window:
         self.model_frame.rowconfigure(index=1, weight=5, uniform="model")
 
         # Fill results table
-        self.model_display_frame = tk.LabelFrame(master=self.model_frame, text="Models")
-        self.model_display_frame.grid(row=1, column=0, columnspan=2, sticky=tk.NSEW)
+        self.model_display_frame = tk.LabelFrame(
+            master=self.model_frame,
+            text="Models"
+            )
+        self.model_display_frame.grid(
+            row=1,
+            column=0,
+            columnspan=2,
+            sticky=tk.NSEW
+            )
 
         logger.info("Populating model table")
         self.models = dbqueries.get_all_models(connection=self.connection)
-        self.model_table = Table(frame=self.model_display_frame, input_obj=self.models)
+        self.model_table = Table(
+            frame=self.model_display_frame,
+            input_obj=self.models
+            )
 
         # Fill Model search section
-        self.model_search_frame = tk.LabelFrame(master=self.model_frame, text="Search Models")
+        self.model_search_frame = tk.LabelFrame(
+            master=self.model_frame,
+            text="Search Models"
+            )
         self.model_search_frame.grid(row=0, column=0, sticky=tk.NSEW)
         self.model_search_frame.columnconfigure(index=0, weight=1)
-        self.model_search_frame.rowconfigure(index=0, weight=1, uniform="model_search")
-        self.model_search_frame.rowconfigure(index=1, weight=1, uniform="model_search")
-        self.model_search_frame.rowconfigure(index=2, weight=1, uniform="model_search")
+        self.model_search_frame.rowconfigure(
+            index=0,
+            weight=1,
+            uniform="model_search"
+            )
+        self.model_search_frame.rowconfigure(
+            index=1,
+            weight=1,
+            uniform="model_search"
+            )
+        self.model_search_frame.rowconfigure(
+            index=2,
+            weight=1,
+            uniform="model_search"
+            )
 
         self.model_search_options = ["Model_Name", "Set_Name", "Source_Note"]
         self.model_search_textbox = TextBox(
@@ -81,7 +107,13 @@ class Window:
             text="Search",
             command=lambda: self.search_models()
             )
-        self.model_search_button.grid(padx=2, pady=2, row=2, column=0, sticky=tk.N)
+        self.model_search_button.grid(
+            padx=2,
+            pady=2,
+            row=2,
+            column=0,
+            sticky=tk.N
+            )
 
         def search_model_return(event):
             self.search_models()
@@ -90,7 +122,10 @@ class Window:
             self.widget.bind(sequence='<Return>', func=search_model_return)
 
         # Fill add model section
-        self.model_newitem_frame = tk.LabelFrame(master=self.model_frame, text="Add Model")
+        self.model_newitem_frame = tk.LabelFrame(
+            master=self.model_frame,
+            text="Add Model"
+            )
         self.model_newitem_frame.grid(row=0, column=1, sticky=tk.NSEW)
         self.model_newitem_frame.columnconfigure(index=0, weight=1)
         self.model_newitem_frame.columnconfigure(index=1, weight=1)
@@ -100,11 +135,26 @@ class Window:
         self.model_newitem_frame.columnconfigure(index=5, weight=1)
         self.model_newitem_frame.columnconfigure(index=6, weight=1)
         self.model_newitem_frame.columnconfigure(index=7, weight=1)
-        self.model_newitem_frame.rowconfigure(index=0, weight=1, uniform="model_add")
-        self.model_newitem_frame.rowconfigure(index=1, weight=1, uniform="model_add")
-        self.model_newitem_frame.rowconfigure(index=2, weight=1, uniform="model_add")
+        self.model_newitem_frame.rowconfigure(
+            index=0,
+            weight=1,
+            uniform="model_add"
+            )
+        self.model_newitem_frame.rowconfigure(
+            index=1,
+            weight=1,
+            uniform="model_add"
+            )
+        self.model_newitem_frame.rowconfigure(
+            index=2,
+            weight=1,
+            uniform="model_add"
+            )
 
-        self.model_name_label = tk.Label(master=self.model_newitem_frame, text="Name")
+        self.model_name_label = tk.Label(
+            master=self.model_newitem_frame,
+            text="Name"
+            )
         self.model_name_label.grid(row=0, column=0, sticky=tk.SE)
         self.model_name_textbox = TextBox(
             frame=self.model_newitem_frame,
@@ -113,7 +163,10 @@ class Window:
             sticky=tk.SW
             )
 
-        self.model_set_label = tk.Label(master=self.model_newitem_frame, text="Set")
+        self.model_set_label = tk.Label(
+            master=self.model_newitem_frame,
+            text="Set"
+            )
         self.model_set_label.grid(row=1, column=0, sticky=tk.NE)
         self.model_set_textbox = TextBox(
             frame=self.model_newitem_frame,
@@ -122,10 +175,17 @@ class Window:
             sticky=tk.NW
             )
 
-        self.model_artist_label = tk.Label(master=self.model_newitem_frame, text="Artist")
+        self.model_artist_label = tk.Label(
+            master=self.model_newitem_frame,
+            text="Artist"
+            )
         self.model_artist_label.grid(row=0, column=2, sticky=tk.SE)
         logger.info("Populating artist dropdown for adding model")
-        self.artist_selection_obj = dbqueries.get_all_artists(connection=self.connection)
+
+        self.artist_selection_obj = dbqueries.get_all_artists(
+            connection=self.connection
+            )
+
         self.model_artist_dropdown = DropdownBox(
             frame=self.model_newitem_frame,
             input_obj=self.artist_selection_obj,
@@ -134,10 +194,17 @@ class Window:
             sticky=tk.SW
             )
 
-        self.model_source_label = tk.Label(master=self.model_newitem_frame, text="Source")
+        self.model_source_label = tk.Label(
+            master=self.model_newitem_frame,
+            text="Source"
+            )
         self.model_source_label.grid(row=1, column=2, sticky=tk.NE)
         logger.info("Populating source dropdown for adding model")
-        self.source_selection_obj = dbqueries.get_all_sources(connection=self.connection)
+
+        self.source_selection_obj = dbqueries.get_all_sources(
+            connection=self.connection
+            )
+
         self.model_source_dropdown = DropdownBox(
             frame=self.model_newitem_frame,
             input_obj=self.source_selection_obj,
@@ -146,7 +213,10 @@ class Window:
             sticky=tk.NW
             )
 
-        self.model_source_note_label = tk.Label(master=self.model_newitem_frame, text="Source Note")
+        self.model_source_note_label = tk.Label(
+            master=self.model_newitem_frame,
+            text="Source Note"
+            )
         self.model_source_note_label.grid(row=0, column=4, sticky=tk.SE)
         self.model_source_note_textbox = TextBox(
             frame=self.model_newitem_frame,
@@ -163,7 +233,10 @@ class Window:
             sticky=tk.N
             )
 
-        self.model_format_label = tk.Label(master=self.model_newitem_frame, text="Format")
+        self.model_format_label = tk.Label(
+            master=self.model_newitem_frame,
+            text="Format"
+            )
         self.model_format_label.grid(row=0, column=6, sticky=tk.SE)
         self.model_format_textbox = TextBox(
             frame=self.model_newitem_frame,
@@ -201,9 +274,9 @@ class Window:
             self.widget.bind(sequence='<Return>', func=add_model_return)
 
         self.tabs.add(child=self.model_frame, text="Models")
-        #--------------------------------------------------------------------------------------------------------------
+        #----------------------------------------------------------------------
 
-        # Create and populate Artist tab ------------------------------------------------------------------------------
+        # Create and populate Artist tab --------------------------------------
         self.artist_frame = tk.Frame(master=self.tabs)
         self.artist_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES)
         self.artist_frame.columnconfigure(index=0, weight=1)
@@ -212,19 +285,41 @@ class Window:
         self.artist_frame.rowconfigure(index=1, weight=5, uniform="artist")
 
         # Fill results table
-        self.artist_display_frame = tk.LabelFrame(master=self.artist_frame, text="Artists")
-        self.artist_display_frame.grid(row=1, column=0, columnspan=2, sticky=tk.NSEW)
+        self.artist_display_frame = tk.LabelFrame(
+            master=self.artist_frame,
+            text="Artists"
+            )
+        self.artist_display_frame.grid(
+            row=1,
+            column=0,
+            columnspan=2,
+            sticky=tk.NSEW
+            )
 
         logger.info("Populating artist table")
         self.artists = dbqueries.get_all_artists(connection=self.connection)
-        self.artist_table = Table(frame=self.artist_display_frame, input_obj=self.artists)
+        self.artist_table = Table(
+            frame=self.artist_display_frame,
+            input_obj=self.artists
+            )
 
         # Fill Artist search section
-        self.artist_search_frame = tk.LabelFrame(master=self.artist_frame, text="Search Artists")
+        self.artist_search_frame = tk.LabelFrame(
+            master=self.artist_frame,
+            text="Search Artists"
+            )
         self.artist_search_frame.grid(row=0, column=0, sticky=tk.NSEW)
         self.artist_search_frame.columnconfigure(index=0, weight=1)
-        self.artist_search_frame.rowconfigure(index=0, weight=1, uniform="artist_search")
-        self.artist_search_frame.rowconfigure(index=1, weight=1, uniform="artist_search")
+        self.artist_search_frame.rowconfigure(
+            index=0,
+            weight=1,
+            uniform="artist_search"
+            )
+        self.artist_search_frame.rowconfigure(
+            index=1,
+            weight=1,
+            uniform="artist_search"
+            )
 
         self.artist_search_textbox = TextBox(
             frame=self.artist_search_frame,
@@ -236,7 +331,13 @@ class Window:
             master=self.artist_search_frame,
             text="Search",
             command=lambda: self.search_artist())
-        self.artist_search_button.grid(padx=2, pady=2, row=1, column=0, sticky=tk.N)
+        self.artist_search_button.grid(
+            padx=2,
+            pady=2,
+            row=1,
+            column=0,
+            sticky=tk.N
+            )
 
         def search_artist_return(event):
             self.search_artist()
@@ -245,17 +346,35 @@ class Window:
             self.widget.bind(sequence='<Return>', func=search_artist_return)
 
         # Fill Add Artist section
-        self.artist_newitem_frame = tk.LabelFrame(master=self.artist_frame, text="Add Artist")
+        self.artist_newitem_frame = tk.LabelFrame(
+            master=self.artist_frame,
+            text="Add Artist"
+            )
         self.artist_newitem_frame.grid(row=0, column=1, sticky=tk.NSEW)
         self.artist_newitem_frame.columnconfigure(index=0, weight=1)
         self.artist_newitem_frame.columnconfigure(index=1, weight=1)
         self.artist_newitem_frame.columnconfigure(index=2, weight=1)
         self.artist_newitem_frame.columnconfigure(index=3, weight=1)
-        self.artist_newitem_frame.rowconfigure(index=0, weight=1, uniform="artist_add")
-        self.artist_newitem_frame.rowconfigure(index=1, weight=1, uniform="artist_add")
-        self.artist_newitem_frame.rowconfigure(index=2, weight=1, uniform="artist_add")
+        self.artist_newitem_frame.rowconfigure(
+            index=0,
+            weight=1,
+            uniform="artist_add"
+            )
+        self.artist_newitem_frame.rowconfigure(
+            index=1,
+            weight=1,
+            uniform="artist_add"
+            )
+        self.artist_newitem_frame.rowconfigure(
+            index=2,
+            weight=1,
+            uniform="artist_add"
+            )
 
-        self.artist_name_label = tk.Label(master=self.artist_newitem_frame, text="Name")
+        self.artist_name_label = tk.Label(
+            master=self.artist_newitem_frame,
+            text="Name"
+            )
         self.artist_name_label.grid(row=0, column=0, sticky=tk.SE)
         self.artist_name_textbox = TextBox(
             frame=self.artist_newitem_frame,
@@ -264,7 +383,10 @@ class Window:
             sticky=tk.SW
             )
 
-        self.artist_website_label = tk.Label(master=self.artist_newitem_frame, text="Website")
+        self.artist_website_label = tk.Label(
+            master=self.artist_newitem_frame,
+            text="Website"
+            )
         self.artist_website_label.grid(row=0, column=2, sticky=tk.SE)
         self.artist_website_textbox = TextBox(
             frame=self.artist_newitem_frame,
@@ -273,7 +395,10 @@ class Window:
             sticky=tk.SW
             )
 
-        self.artist_email_label = tk.Label(master=self.artist_newitem_frame, text="Email")
+        self.artist_email_label = tk.Label(
+            master=self.artist_newitem_frame,
+            text="Email"
+            )
         self.artist_email_label.grid(row=1, column=0, sticky=tk.NE)
         self.artist_email_textbox = TextBox(
             frame=self.artist_newitem_frame,
@@ -282,7 +407,10 @@ class Window:
             sticky=tk.NW
             )
 
-        self.artist_folder_label = tk.Label(master=self.artist_newitem_frame, text="Folder")
+        self.artist_folder_label = tk.Label(
+            master=self.artist_newitem_frame,
+            text="Folder"
+            )
         self.artist_folder_label.grid(row=1, column=2, sticky=tk.NE)
         self.artist_folder_textbox = TextBox(
             frame=self.artist_newitem_frame,
@@ -312,9 +440,8 @@ class Window:
             self.widget.bind(sequence='<Return>', func=add_artist_return)
 
         self.tabs.add(child=self.artist_frame, text="Artists")
-        #---------------------------------------------------------------------------------------------------------------
-
-        # Create and populate Source tab -------------------------------------------------------------------------------
+        #----------------------------------------------------------------------
+        # Create and populate Source tab --------------------------------------
         self.source_frame = tk.Frame(master=self.tabs)
         self.source_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES)
         self.source_frame.columnconfigure(index=0, weight=1)
@@ -323,19 +450,41 @@ class Window:
         self.source_frame.rowconfigure(index=1, weight=5, uniform="source")
 
         # Fill results table
-        self.source_display_frame = tk.LabelFrame(master=self.source_frame, text="Sources")
-        self.source_display_frame.grid(row=1, column=0, columnspan=2, sticky=tk.NSEW)
+        self.source_display_frame = tk.LabelFrame(
+            master=self.source_frame,
+            text="Sources"
+            )
+        self.source_display_frame.grid(
+            row=1,
+            column=0,
+            columnspan=2,
+            sticky=tk.NSEW
+            )
 
         logger.info("Populating source table")
         self.sources = dbqueries.get_all_sources(connection=self.connection)
-        self.sources_table = Table(frame=self.source_display_frame, input_obj=self.sources)
+        self.sources_table = Table(
+            frame=self.source_display_frame,
+            input_obj=self.sources
+            )
 
         # Fill Source Search section
-        self.source_search_frame = tk.LabelFrame(master=self.source_frame, text="Search Sources")
+        self.source_search_frame = tk.LabelFrame(
+            master=self.source_frame,
+            text="Search Sources"
+            )
         self.source_search_frame.grid(row=0, column=0, sticky=tk.NSEW)
         self.source_search_frame.columnconfigure(index=0, weight=1)
-        self.source_search_frame.rowconfigure(index=0, weight=1, uniform="source_search")
-        self.source_search_frame.rowconfigure(index=1, weight=1, uniform="source_search")
+        self.source_search_frame.rowconfigure(
+            index=0,
+            weight=1,
+            uniform="source_search"
+            )
+        self.source_search_frame.rowconfigure(
+            index=1,
+            weight=1,
+            uniform="source_search"
+            )
 
         self.source_search_textbox = TextBox(
             frame=self.source_search_frame,
@@ -355,20 +504,38 @@ class Window:
         for self.widget in list(self.source_search_frame.children.values()):
             self.widget.bind(sequence='<Return>', func=search_source_return)
 
-        self.source_search_button.grid(padx=2, pady=2, row=1, column=0, sticky=tk.N)
+        self.source_search_button.grid(
+            padx=2,
+            pady=2,
+            row=1,
+            column=0,
+            sticky=tk.N
+            )
 
         # Fill Add Source section
-        self.source_newitem_frame = tk.LabelFrame(master=self.source_frame, text="Add Source")
+        self.source_newitem_frame = tk.LabelFrame(
+            master=self.source_frame,
+            text="Add Source"
+            )
         self.source_newitem_frame.grid(row=0, column=1, sticky=tk.NSEW)
         self.source_newitem_frame.columnconfigure(index=0, weight=1)
         self.source_newitem_frame.columnconfigure(index=1, weight=1)
         self.source_newitem_frame.columnconfigure(index=2, weight=1)
         self.source_newitem_frame.columnconfigure(index=3, weight=1)
-        self.source_newitem_frame.rowconfigure(index=0, weight=1, uniform="source_add")
-        self.source_newitem_frame.rowconfigure(index=1, weight=1, uniform="source_add")
+        self.source_newitem_frame.rowconfigure(index=0,
+            weight=1,
+            uniform="source_add"
+            )
+        self.source_newitem_frame.rowconfigure(index=1,
+            weight=1,
+            uniform="source_add"
+            )
 
 
-        self.source_name_label = tk.Label(master=self.source_newitem_frame, text="Name")
+        self.source_name_label = tk.Label(
+            master=self.source_newitem_frame,
+            text="Name"
+            )
         self.source_name_label.grid(row=0, column=0, sticky=tk.SE)
         self.source_name_textbox = TextBox(
             frame=self.source_newitem_frame,
@@ -377,7 +544,10 @@ class Window:
             sticky=tk.SW
             )
 
-        self.source_website_label = tk.Label(master=self.source_newitem_frame, text="Website")
+        self.source_website_label = tk.Label(
+            master=self.source_newitem_frame,
+            text="Website"
+            )
         self.source_website_label.grid(row=0, column=2, sticky=tk.SE)
         self.source_website_textbox = TextBox(
             frame=self.source_newitem_frame,
@@ -407,7 +577,7 @@ class Window:
             self.widget.bind(sequence='<Return>', func=add_source_return)
 
         self.tabs.add(child=self.source_frame, text="Sources")
-        #--------------------------------------------------------------------------------------------------------------
+        #----------------------------------------------------------------------
 
     def refresh_tables(self):
         """Replaces the tables and dropdowns with new data from the database.
@@ -416,21 +586,35 @@ class Window:
         tables and the two model dropdowns.
         """
         logger.debug("Updating model list")
-        self.updated_model_table = dbqueries.get_all_models(connection=self.connection)
+        self.updated_model_table = dbqueries.get_all_models(
+            connection=self.connection
+            )
+
         logger.debug("Updating artist list")
-        self.updated_artist_table = dbqueries.get_all_artists(connection=self.connection)
+        self.updated_artist_table = dbqueries.get_all_artists(
+            connection=self.connection
+            )
+
         logger.debug("Updating source list")
-        self.updated_source_table = dbqueries.get_all_sources(connection=self.connection)
+        self.updated_source_table = dbqueries.get_all_sources(
+            connection=self.connection
+            )
 
         self.model_table.refresh_table(input_obj=self.updated_model_table)
         self.artist_table.refresh_table(input_obj=self.updated_artist_table)
         self.sources_table.refresh_table(input_obj=self.updated_source_table)
 
         logger.debug("Updating artist dropdown")
-        self.refreshed_artists = dbqueries.get_all_artists(connection=self.connection)
+        self.refreshed_artists = dbqueries.get_all_artists(
+            connection=self.connection
+            )
+
         self.model_artist_dropdown.refresh_options(input=self.refreshed_artists)
         logger.debug("Updating source dropdown")
-        self.refreshed_sources = dbqueries.get_all_sources(connection=self.connection)
+        self.refreshed_sources = dbqueries.get_all_sources(
+            connection=self.connection
+            )
+
         self.model_source_dropdown.refresh_options(input=self.refreshed_sources)
 
     def add_model(self):
@@ -676,7 +860,11 @@ class Table:
             for self.row in self.input_obj:
                 self.table.insert('', tk.END, values=(self.row.astuple()))
         except (IndexError, TypeError):
-            self.table.insert(parent='', index=tk.END, values=(self.input_obj.astuple()))
+            self.table.insert(
+                parent='',
+                index=tk.END,
+                values=(self.input_obj.astuple())
+                )
 
     def clear_table(self):
         """Clears the data from the table."""

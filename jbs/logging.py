@@ -8,6 +8,10 @@ import logging.config
 import os
 import sys
 
+# This Module exists to create and configure the root logger before the other
+# modules are loaded because otherwise modules were descending from a different
+# root
+
 def get_config(config_file):
     """Gets the contents of a specified JSON file
 
