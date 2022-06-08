@@ -457,11 +457,11 @@ class Window:
         self.new_artist_entry = []
         self.new_artist_entry.append(self.artist_name_textbox.get_text())
         self.artist_name_textbox.clear_text()
-        self.new_source_entry.append(self.artist_website_textbox.get_text())
+        self.new_artist_entry.append(self.artist_website_textbox.get_text())
         self.artist_website_textbox.clear_text()
-        self.new_source_entry.append(self.artist_email_textbox.get_text())
+        self.new_artist_entry.append(self.artist_email_textbox.get_text())
         self.artist_email_textbox.clear_text()
-        self.new_source_entry.append(self.artist_folder_textbox.get_text())
+        self.new_artist_entry.append(self.artist_folder_textbox.get_text())
         self.artist_folder_textbox.clear_text()
 
         self.new_artist = self.factory.createArtist(self.new_artist_entry)
