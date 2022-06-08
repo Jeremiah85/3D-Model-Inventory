@@ -83,6 +83,12 @@ class Window:
             )
         self.model_search_button.grid(padx=2, pady=2, row=2, column=0, sticky=tk.N)
 
+        def search_model_return(event):
+            self.search_models()
+
+        for self.widget in list(self.model_search_frame.children.values()):
+            self.widget.bind(sequence='<Return>', func=search_model_return)
+
         # Fill add model section
         self.model_newitem_frame = tk.LabelFrame(master=self.model_frame, text="Add Model")
         self.model_newitem_frame.grid(row=0, column=1, sticky=tk.NSEW)
@@ -188,6 +194,12 @@ class Window:
             sticky=tk.N
             )
 
+        def add_model_return(event):
+            self.add_model()
+
+        for self.widget in list(self.model_newitem_frame.children.values()):
+            self.widget.bind(sequence='<Return>', func=add_model_return)
+
         self.tabs.add(child=self.model_frame, text="Models")
         #--------------------------------------------------------------------------------------------------------------
 
@@ -225,6 +237,12 @@ class Window:
             text="Search",
             command=lambda: self.search_artist())
         self.artist_search_button.grid(padx=2, pady=2, row=1, column=0, sticky=tk.N)
+
+        def search_artist_return(event):
+            self.search_artist()
+
+        for self.widget in list(self.artist_search_frame.children.values()):
+            self.widget.bind(sequence='<Return>', func=search_artist_return)
 
         # Fill Add Artist section
         self.artist_newitem_frame = tk.LabelFrame(master=self.artist_frame, text="Add Artist")
@@ -287,6 +305,12 @@ class Window:
             sticky=tk.N
             )
 
+        def add_artist_return(event):
+            self.add_artist()
+
+        for self.widget in list(self.artist_newitem_frame.children.values()):
+            self.widget.bind(sequence='<Return>', func=add_artist_return)
+
         self.tabs.add(child=self.artist_frame, text="Artists")
         #---------------------------------------------------------------------------------------------------------------
 
@@ -324,6 +348,13 @@ class Window:
             text="Search",
             command=lambda: self.search_source()
             )
+
+        def search_source_return(event):
+            self.search_source()
+
+        for self.widget in list(self.source_search_frame.children.values()):
+            self.widget.bind(sequence='<Return>', func=search_source_return)
+
         self.source_search_button.grid(padx=2, pady=2, row=1, column=0, sticky=tk.N)
 
         # Fill Add Source section
@@ -368,6 +399,12 @@ class Window:
             columnspan=4,
             sticky=tk.N
             )
+
+        def add_source_return(event):
+            self.add_source()
+
+        for self.widget in list(self.source_newitem_frame.children.values()):
+            self.widget.bind(sequence='<Return>', func=add_source_return)
 
         self.tabs.add(child=self.source_frame, text="Sources")
         #--------------------------------------------------------------------------------------------------------------
