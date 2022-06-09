@@ -42,26 +42,10 @@ def get_all_models(connection: sqlite3.Connection) -> list[inv.Model] | inv.Mode
             models = []
             for model in results:
                 models.append(factory.createModel(model))
-
-        # If there is nothing in the database a dummy object is created so 
-        # that gui objects can display without issue.
         else:
-            logger.info("No results, creating dummy model object instead")
-            empty_model = [
-                'empty',
-                'empty',
-                'empty',
-                'empty',
-                'empty',
-                False,
-                'empty',
-                'empty',
-                False
-                ]
-            models = factory.createModel(empty_model)
-            
-        return models
+            models = results
 
+        return models
     except sqlite3.Error as e:
         logger.error(e)
         sys.exit(1)
@@ -94,16 +78,10 @@ def get_all_artists(connection: sqlite3.Connection) -> list[inv.Artist] | inv.Ar
             artists = []
             for artist in results:
                 artists.append(factory.createArtist(artist))
-
-        # If there is nothing in the database a dummy object is created so that
-        # gui objects can display without issue.
         else:
-            logger.info("No results, creating dummy artist object instead")
-            artist = ['empty', 'empty', 'empty', 'empty']
-            artists = factory.createArtist(artist)
+            artists = results
 
         return artists
-
     except sqlite3.Error as e:
         logger.error(e)
         sys.exit(1)
@@ -136,16 +114,10 @@ def get_all_sources(connection: sqlite3.Connection) -> list[inv.Source] | inv.So
             sources = []
             for source in results:
                 sources.append(factory.createSource(source))
-
-        # If there is nothing in the database a dummy object is created so that
-        # gui objects can display without issue.
         else:
-            logger.info("No results, creating dummy source object instead")
-            source = ['empty', 'empty']
-            sources = factory.createSource(source)
+            sources = results
 
         return sources
-
     except sqlite3.Error as e:
         logger.error(e)
         sys.exit(1)
@@ -191,26 +163,10 @@ def search_model(
             models = []
             for model in results:
                 models.append(factory.createModel(model))
-
-        # If there is nothing in the database a dummy object is created so that
-        # gui objects can display without issue.
         else:
-            logger.info("No results, creating dummy model object instead")
-            model = [
-                'Not Found',
-                'Not Found',
-                'Not Found',
-                'Not Found',
-                'Not Found',
-                False,
-                'Not Found',
-                'Not Found',
-                False
-                ]
-            models = factory.createModel(model)
+            models = results
 
         return models
-
     except sqlite3.Error as e:
         logger.error(e)
         sys.exit(1)
@@ -252,16 +208,10 @@ def search_artist(
             artists = []
             for artist in results:
                 artists.append(factory.createArtist(artist))
-
-        # If there is nothing in the database a dummy object is created so that
-        # gui objects can display without issue.
         else:
-            logger.info("No results, creating dummy artist object instead")
-            artist = ['Not Found', 'Not Found', 'Not Found', 'Not Found']
-            artists = factory.createArtist(artist)
+            artists = results
 
         return artists
-        
     except sqlite3.Error as e:
         logger.error(e)
         sys.exit(1)
@@ -302,16 +252,10 @@ def search_source(
             sources = []
             for source in results:
                 sources.append(factory.createSource(source))
-
-        # If there is nothing in the database a dummy object is created so that
-        # gui objects can display without issue.
         else:
-            logger.info("No results, creating dummy source object instead")
-            source = ['Not Found', 'Not Found']
-            sources = factory.createSource(source)
+            sources = results
 
         return sources
-        
     except sqlite3.Error as e:
         logger.error(e)
         sys.exit(1)
@@ -378,7 +322,6 @@ def add_model(connection: sqlite3.Connection, model: inv.Model) -> None:
             vars(model)
             )
         connection.commit()
-
     except sqlite3.Error as e:
         logger.error(e)
         sys.exit(1)
@@ -411,7 +354,6 @@ def add_artist(connection: sqlite3.Connection, artist: inv.Artist) -> None:
             vars(artist)
             )
         connection.commit()
-    
     except sqlite3.Error as e:
         logger.error(e)
         sys.exit(1)
@@ -435,7 +377,6 @@ def add_source(connection: sqlite3.Connection, source: inv.Source) -> None:
             'VALUES (:name, :website);', vars(source)
             )
         connection.commit()
-    
     except sqlite3.Error as e:
         logger.error(e)
         sys.exit(1)
@@ -464,7 +405,6 @@ def get_artist_id(connection: sqlite3.Connection, artist_name: str) -> int:
 
         logger.debug(f"{artist_name} equals {results[0]}")
         return results[0]
-
     except sqlite3.Error as e:
         logger.error(e)
         sys.exit(1)
@@ -493,7 +433,6 @@ def get_source_id(connection: sqlite3.Connection, source_name: str) -> int:
 
         logger.debug(f"{source_name} equals {results[0]}")
         return results[0]
-
     except sqlite3.Error as e:
         logger.error(e)
         sys.exit(1)

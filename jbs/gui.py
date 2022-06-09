@@ -731,7 +731,10 @@ class Window:
                 field=self.model_search_field,
                 search_text=self.model_search_term
                 )
-            self.model_table.refresh_table(input_obj=self.model_results)
+            try:
+                self.model_table.refresh_table(input_obj=self.model_results)
+            except TypeError:
+                logger.warning("No Models Found")
         else:
             logger.warning("Missing search field")
             tkm.showwarning(
@@ -759,7 +762,10 @@ class Window:
             connection=self.connection,
             search_text=self.artist_search_term
             )
-        self.artist_table.refresh_table(input_obj=self.artist_results)
+        try:
+            self.artist_table.refresh_table(input_obj=self.artist_results)
+        except TypeError:
+            logger.warning("No Artists Found")
 
     def search_source(self):
         """Searches the database for sources matching a search term.
@@ -779,7 +785,10 @@ class Window:
             connection=self.connection,
             search_text=self.source_search_term
             )
-        self.sources_table.refresh_table(input_obj=self.search_results)
+        try:
+            self.sources_table.refresh_table(input_obj=self.search_results)
+        except TypeError:
+            logger.warning("No Sources Found")
 
 def focus_next_widget(event):
     """Focuses the next widget in focus order"""
@@ -817,7 +826,10 @@ class Table:
         self.table.pack(padx=2, pady=2, expand=True, fill=tk.BOTH)
         self.scroll.config(command=self.table.yview)
 
-        self.add_rows(input_obj=self.input_obj)
+        try:
+            self.add_rows(input_obj=self.input_obj)
+        except TypeError:
+            logger.warning("No entries found")
 
     def add_rows(self, input_obj):
         """Adds rows to the table from a supplied object.
@@ -859,7 +871,7 @@ class Table:
         try:
             for self.row in self.input_obj:
                 self.table.insert('', tk.END, values=(self.row.astuple()))
-        except (TypeError):
+        except TypeError:
             self.table.insert(
                 parent='',
                 index=tk.END,
@@ -882,7 +894,10 @@ class Table:
         """
         self.input_obj = input_obj
         self.clear_table()
-        self.add_rows(input_obj=self.input_obj)
+        try:
+            self.add_rows(input_obj=self.input_obj)
+        except TypeError:
+            logger.warning("No rows to update")
 
 
 class TextBox:
@@ -956,12 +971,15 @@ class DropdownBox:
         self.var.set("Please Select")
         self.options = []
 
-        try:
-            for self.item in self.input_obj:
-                self.options.append(self.item.name)
-        except (IndexError, TypeError):
-            self.options.append(self.input_obj.name)
-        self.options.sort(key=str.lower)
+        if self.input_obj:
+            try:
+                for self.item in self.input_obj:
+                    self.options.append(self.item.name)
+            except (IndexError, TypeError):
+                self.options.append(self.input_obj.name)
+            self.options.sort(key=str.lower)
+        else:
+            self.options.append("Empty")
 
         self.dropdown = tk.OptionMenu(self.frame, self.var, *self.options)
         self.dropdown.grid(
