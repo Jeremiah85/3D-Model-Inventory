@@ -12,7 +12,7 @@ import sys
 # modules are loaded because otherwise modules were descending from a different
 # root
 
-def get_config(config_file):
+def get_config(config_file: str) -> dict:
     """Gets the contents of a specified JSON file
 
     Args:

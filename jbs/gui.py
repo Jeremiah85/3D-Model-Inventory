@@ -101,7 +101,7 @@ class Window:
             self.model_search_selected,
             *self.model_search_options
             )
-        self.model_search_combobox.grid(row=1, column=0, sticky=None)
+        self.model_search_combobox.grid(row=1, column=0)
         self.model_search_button = tk.Button(
             master=self.model_search_frame,
             text="Search",
@@ -813,7 +813,7 @@ class Table:
         self.scroll = tk.Scrollbar(master=self.frame)
         self.scroll.pack(side=tk.RIGHT, fill=tk.Y)
 
-        self.table = ttk.Treeview(master=frame, yscroll=self.scroll.set)
+        self.table = ttk.Treeview(master=frame, yscrollcommand=self.scroll.set)
         self.table.pack(padx=2, pady=2, expand=True, fill=tk.BOTH)
         self.scroll.config(command=self.table.yview)
 
@@ -859,7 +859,7 @@ class Table:
         try:
             for self.row in self.input_obj:
                 self.table.insert('', tk.END, values=(self.row.astuple()))
-        except (IndexError, TypeError):
+        except (TypeError):
             self.table.insert(
                 parent='',
                 index=tk.END,
@@ -985,10 +985,6 @@ class DropdownBox:
             return None
         else:
             return self.var.get()
-
-    def reset_selection(self):
-        """Resets the dropdown box back to the default selection."""
-        self.var.set(self.default)
 
     def refresh_options(self, input):
         """Replaces the data in the dropdown.

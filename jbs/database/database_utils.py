@@ -9,7 +9,7 @@ import sys
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.NOTSET)
 
-def check_database_schema(connection):
+def check_database_schema(connection: sqlite3.Connection) -> int:
     """Gets the database schema of the current database
 
     Args:
@@ -34,7 +34,7 @@ def check_database_schema(connection):
         sys.exit(1)
 
 
-def modify_database_schema(connection, sql_file):
+def modify_database_schema(connection: sqlite3.Connection, sql_file: str) -> None:
     """Takes a sql file and runs it against a database.
 
     This method updates a database with the contents of a sql file.
@@ -56,7 +56,7 @@ def modify_database_schema(connection, sql_file):
         sys.exit(1)
 
 
-def connect_database(database):
+def connect_database(database: str) -> sqlite3.Connection: 
     """Connects to a specified sqlite database.
 
     Args:
@@ -76,7 +76,7 @@ def connect_database(database):
         sys.exit(1)
 
 
-def close_database(connection):
+def close_database(connection: sqlite3.Connection) -> None:
     """Closes the database connection.
 
     Args:

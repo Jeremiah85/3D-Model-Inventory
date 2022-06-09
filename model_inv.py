@@ -22,7 +22,7 @@ sql_update_version = f'{scriptpath}sql{os.sep}schema_version.json'
 default_config = f'{scriptpath}config.json'
 
 
-def main():
+def main() -> None:
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.NOTSET)
 

@@ -8,7 +8,7 @@ import logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.NOTSET)
 
-def get_config(config_file):
+def get_config(config_file: str) -> dict:
     """Gets the contents of a specified JSON file
 
     Args:
@@ -27,7 +27,7 @@ def get_config(config_file):
     return config
 
 
-def get_update_version(update_version_file):
+def get_update_version(update_version_file: str) -> int:
     """gets the schema update version from a specified JSON file
 
     Args:

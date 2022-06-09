@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.NOTSET)
 
 
-def get_all_models(connection):
+def get_all_models(connection: sqlite3.Connection) -> list[inv.Model] | inv.Model:
     """Returns a list of all model objects from the database.
 
     Queries the database and retrieves all of the models then converts that
@@ -43,13 +43,11 @@ def get_all_models(connection):
             for model in results:
                 models.append(factory.createModel(model))
 
-            return models
-
-        # If there is nothing in the database a dummy object is created so that
-        # gui objects can display without issue.
+        # If there is nothing in the database a dummy object is created so 
+        # that gui objects can display without issue.
         else:
             logger.info("No results, creating dummy model object instead")
-            model = [
+            empty_model = [
                 'empty',
                 'empty',
                 'empty',
@@ -60,16 +58,16 @@ def get_all_models(connection):
                 'empty',
                 False
                 ]
-            models = factory.createModel(model)
-
-            return models
+            models = factory.createModel(empty_model)
+            
+        return models
 
     except sqlite3.Error as e:
         logger.error(e)
         sys.exit(1)
 
 
-def get_all_artists(connection):
+def get_all_artists(connection: sqlite3.Connection) -> list[inv.Artist] | inv.Artist:
     """Returns a list of all artist objects from the database.
 
     Queries the database and retrieves all of the artists then converts that
@@ -97,8 +95,6 @@ def get_all_artists(connection):
             for artist in results:
                 artists.append(factory.createArtist(artist))
 
-            return artists
-
         # If there is nothing in the database a dummy object is created so that
         # gui objects can display without issue.
         else:
@@ -106,14 +102,14 @@ def get_all_artists(connection):
             artist = ['empty', 'empty', 'empty', 'empty']
             artists = factory.createArtist(artist)
 
-            return artists
+        return artists
 
     except sqlite3.Error as e:
         logger.error(e)
         sys.exit(1)
 
 
-def get_all_sources(connection):
+def get_all_sources(connection: sqlite3.Connection) -> list[inv.Source] | inv.Source:
     """Returns a list of all source objects from the database.
 
     Queries the database and retrieves all of the sources then converts that
@@ -141,8 +137,6 @@ def get_all_sources(connection):
             for source in results:
                 sources.append(factory.createSource(source))
 
-            return sources
-
         # If there is nothing in the database a dummy object is created so that
         # gui objects can display without issue.
         else:
@@ -150,14 +144,18 @@ def get_all_sources(connection):
             source = ['empty', 'empty']
             sources = factory.createSource(source)
 
-            return sources
+        return sources
 
     except sqlite3.Error as e:
         logger.error(e)
         sys.exit(1)
 
 
-def search_model(connection, field, search_text):
+def search_model(
+    connection: sqlite3.Connection,
+    field: str,
+    search_text: str
+    ) -> list[inv.Model] | inv.Model:
     """Retrieves all model objects matching a user query.
 
     Connects to the database and searches a user supplied field for a user
@@ -194,8 +192,6 @@ def search_model(connection, field, search_text):
             for model in results:
                 models.append(factory.createModel(model))
 
-            return models
-
         # If there is nothing in the database a dummy object is created so that
         # gui objects can display without issue.
         else:
@@ -213,14 +209,17 @@ def search_model(connection, field, search_text):
                 ]
             models = factory.createModel(model)
 
-            return models
-        
+        return models
+
     except sqlite3.Error as e:
         logger.error(e)
         sys.exit(1)
 
 
-def search_artist(connection, search_text):
+def search_artist(
+    connection: sqlite3.Connection,
+    search_text: str
+    ) -> list[inv.Artist] | inv.Artist:
     """Retrieves all artist objects matching a user query.
 
     Connects to the database and searches for a user supplied string and
@@ -254,8 +253,6 @@ def search_artist(connection, search_text):
             for artist in results:
                 artists.append(factory.createArtist(artist))
 
-            return artists
-
         # If there is nothing in the database a dummy object is created so that
         # gui objects can display without issue.
         else:
@@ -263,14 +260,17 @@ def search_artist(connection, search_text):
             artist = ['Not Found', 'Not Found', 'Not Found', 'Not Found']
             artists = factory.createArtist(artist)
 
-            return artists
+        return artists
         
     except sqlite3.Error as e:
         logger.error(e)
         sys.exit(1)
 
 
-def search_source(connection, search_text):
+def search_source(
+    connection: sqlite3.Connection,
+    search_text: str
+    ) -> list[inv.Source] | inv.Source:
     """Retrieves all source objects matching a user query.
 
     Connects to the database and searches for a user supplied string and
@@ -303,8 +303,6 @@ def search_source(connection, search_text):
             for source in results:
                 sources.append(factory.createSource(source))
 
-            return sources
-
         # If there is nothing in the database a dummy object is created so that
         # gui objects can display without issue.
         else:
@@ -312,14 +310,14 @@ def search_source(connection, search_text):
             source = ['Not Found', 'Not Found']
             sources = factory.createSource(source)
 
-            return sources
+        return sources
         
     except sqlite3.Error as e:
         logger.error(e)
         sys.exit(1)
 
 
-def add_model(connection, model):
+def add_model(connection: sqlite3.Connection, model: inv.Model) -> None:
     """Adds a supplied model object to the database
 
     Takes a model object and extracts the attributes to insert them into the
@@ -386,7 +384,7 @@ def add_model(connection, model):
         sys.exit(1)
 
 
-def add_artist(connection, artist):
+def add_artist(connection: sqlite3.Connection, artist: inv.Artist) -> None:
     """Adds a supplied artist object to the database
 
     Takes a artist object and extracts the attributes to insert them into the
@@ -419,7 +417,7 @@ def add_artist(connection, artist):
         sys.exit(1)
 
 
-def add_source(connection, source):
+def add_source(connection: sqlite3.Connection, source: inv.Source) -> None:
     """Adds a supplied source object to the database
 
     Takes a source object and extracts the attributes to insert them into the
@@ -443,7 +441,7 @@ def add_source(connection, source):
         sys.exit(1)
 
 
-def get_artist_id(connection, artist_name):
+def get_artist_id(connection: sqlite3.Connection, artist_name: str) -> int:
     """Gets the ID for a supplied artist name.
 
     Takes a artist name and gets its ID from the database.
@@ -472,7 +470,7 @@ def get_artist_id(connection, artist_name):
         sys.exit(1)
 
 
-def get_source_id(connection, source_name):
+def get_source_id(connection: sqlite3.Connection, source_name: str) -> int:
     """Gets the ID for a supplied source name.
 
     Takes a source name and gets its ID from the database.

@@ -4,6 +4,7 @@
 
 import dataclasses
 import logging
+from typing import Any
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.NOTSET)
@@ -26,15 +27,15 @@ class Model:
     """
     model: str
     set: str
-    artist: str
-    source: str
+    artist: Any
+    source: Any
     source_note: str
-    supports: bool
+    supports: bool | int
     format: str
     folder: str
-    printed: str
+    printed: bool | int
 
-    def astuple(self):
+    def astuple(self) -> tuple:
         return dataclasses.astuple(self)
 
 
@@ -53,7 +54,7 @@ class Artist:
     email: str
     folder: str
 
-    def astuple(self):
+    def astuple(self) -> tuple:
         return dataclasses.astuple(self)
 
 
@@ -68,7 +69,7 @@ class Source:
     name: str
     website: str
 
-    def astuple(self):
+    def astuple(self) -> tuple:
         return dataclasses.astuple(self)
 
 
@@ -76,7 +77,7 @@ class ObjectFactory:
     def __init__(self):
         pass
 
-    def createModel(self, args):
+    def createModel(self, args: Any) -> Model:
         self._instance = Model(
             model = args[0],
             set = args[1],
@@ -91,7 +92,7 @@ class ObjectFactory:
 
         return self._instance
 
-    def createArtist(self, args):
+    def createArtist(self, args: Any) -> Artist:
         self._instance = Artist(
             name = args[0],
             website = args[1],
@@ -101,7 +102,7 @@ class ObjectFactory:
 
         return self._instance
 
-    def createSource(self, args):
+    def createSource(self, args: Any) -> Source:
         self._instance = Source(
             name = args[0],
             website = args[1]
