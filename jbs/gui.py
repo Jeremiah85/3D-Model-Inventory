@@ -45,7 +45,7 @@ class Window:
         self.model_frame.rowconfigure(index=1, weight=5, uniform="model")
 
         # Fill results table
-        self.model_display_frame = tk.LabelFrame(
+        self.model_display_frame = ttk.LabelFrame(
             master=self.model_frame,
             text="Models"
             )
@@ -64,7 +64,7 @@ class Window:
             )
 
         # Fill Model search section
-        self.model_search_frame = tk.LabelFrame(
+        self.model_search_frame = ttk.LabelFrame(
             master=self.model_frame,
             text="Search Models"
             )
@@ -94,15 +94,15 @@ class Window:
             sticky=tk.S
             )
         self.model_search_selected = tk.StringVar()
-        self.model_search_selected.set(self.model_search_options[0])
 
-        self.model_search_combobox = tk.OptionMenu(
+        self.model_search_combobox = ttk.OptionMenu(
             self.model_search_frame,
             self.model_search_selected,
+            self.model_search_options[0],
             *self.model_search_options
             )
         self.model_search_combobox.grid(row=1, column=0)
-        self.model_search_button = tk.Button(
+        self.model_search_button = ttk.Button(
             master=self.model_search_frame,
             text="Search",
             command=lambda: self.search_models()
@@ -122,7 +122,7 @@ class Window:
             self.widget.bind(sequence='<Return>', func=search_model_return)
 
         # Fill add model section
-        self.model_newitem_frame = tk.LabelFrame(
+        self.model_newitem_frame = ttk.LabelFrame(
             master=self.model_frame,
             text="Add Model"
             )
@@ -253,7 +253,7 @@ class Window:
             sticky=tk.N
             )
 
-        self.model_submit_button = tk.Button(
+        self.model_submit_button = ttk.Button(
             master=self.model_newitem_frame,
             text="Submit",
             command=lambda: self.add_model()
@@ -284,7 +284,7 @@ class Window:
         self.artist_frame.rowconfigure(index=1, weight=5, uniform="artist")
 
         # Fill results table
-        self.artist_display_frame = tk.LabelFrame(
+        self.artist_display_frame = ttk.LabelFrame(
             master=self.artist_frame,
             text="Artists"
             )
@@ -303,7 +303,7 @@ class Window:
             )
 
         # Fill Artist search section
-        self.artist_search_frame = tk.LabelFrame(
+        self.artist_search_frame = ttk.LabelFrame(
             master=self.artist_frame,
             text="Search Artists"
             )
@@ -326,7 +326,7 @@ class Window:
             column=0,
             sticky=tk.S
             )
-        self.artist_search_button = tk.Button(
+        self.artist_search_button = ttk.Button(
             master=self.artist_search_frame,
             text="Search",
             command=lambda: self.search_artist())
@@ -345,7 +345,7 @@ class Window:
             self.widget.bind(sequence='<Return>', func=search_artist_return)
 
         # Fill Add Artist section
-        self.artist_newitem_frame = tk.LabelFrame(
+        self.artist_newitem_frame = ttk.LabelFrame(
             master=self.artist_frame,
             text="Add Artist"
             )
@@ -418,7 +418,7 @@ class Window:
             sticky=tk.NW
             )
 
-        self.artist_submit_button = tk.Button(
+        self.artist_submit_button = ttk.Button(
             master=self.artist_newitem_frame,
             text="Submit",
             command=lambda: self.add_artist()
@@ -449,7 +449,7 @@ class Window:
         self.source_frame.rowconfigure(index=1, weight=5, uniform="source")
 
         # Fill results table
-        self.source_display_frame = tk.LabelFrame(
+        self.source_display_frame = ttk.LabelFrame(
             master=self.source_frame,
             text="Sources"
             )
@@ -468,7 +468,7 @@ class Window:
             )
 
         # Fill Source Search section
-        self.source_search_frame = tk.LabelFrame(
+        self.source_search_frame = ttk.LabelFrame(
             master=self.source_frame,
             text="Search Sources"
             )
@@ -491,7 +491,7 @@ class Window:
             column=0,
             sticky=tk.S
             )
-        self.source_search_button = tk.Button(
+        self.source_search_button = ttk.Button(
             master=self.source_search_frame,
             text="Search",
             command=lambda: self.search_source()
@@ -512,7 +512,7 @@ class Window:
             )
 
         # Fill Add Source section
-        self.source_newitem_frame = tk.LabelFrame(
+        self.source_newitem_frame = ttk.LabelFrame(
             master=self.source_frame,
             text="Add Source"
             )
@@ -555,7 +555,7 @@ class Window:
             sticky=tk.SW
             )
 
-        self.source_submit_button = tk.Button(
+        self.source_submit_button = ttk.Button(
             master=self.source_newitem_frame,
             text="Submit",
             command=lambda: self.add_source()
@@ -817,7 +817,7 @@ class Table:
         """
         self.frame = frame
         self.input_obj = input_obj
-        self.scroll = tk.Scrollbar(master=self.frame)
+        self.scroll = ttk.Scrollbar(master=self.frame)
         self.scroll.pack(side=tk.RIGHT, fill=tk.Y)
 
         self.table = ttk.Treeview(master=frame, yscrollcommand=self.scroll.set)
@@ -918,7 +918,7 @@ class TextBox:
         self.column = column
         self.sticky = sticky
 
-        self.text_box = tk.Text(master=self.frame, height=1, width=30)
+        self.text_box = ttk.Entry(master=self.frame, width=30)
         self.text_box.grid(
             padx=2,
             pady=2,
@@ -934,12 +934,12 @@ class TextBox:
         Returns:
             A string containing the text entered in the text box.
         """
-        self.input = self.text_box.get(index1=1.0, index2=tk.END+'-1c')
+        self.input = self.text_box.get()
         return self.input
 
     def clear_text(self):
         """Removes the text from the text box."""
-        self.text_box.delete(index1=1.0, index2=tk.END+'-1c')
+        self.text_box.delete(0, tk.END)
 
 
 class DropdownBox:
@@ -966,7 +966,6 @@ class DropdownBox:
         self.sticky = sticky
         self.input_obj = input_obj
         self.var = tk.StringVar()
-        self.var.set("Please Select")
         self.options = []
 
         if self.input_obj:
@@ -979,7 +978,7 @@ class DropdownBox:
         else:
             self.options.append("Empty")
 
-        self.dropdown = tk.OptionMenu(self.frame, self.var, *self.options)
+        self.dropdown = ttk.OptionMenu(self.frame, self.var, "Please Select", *self.options)
         self.dropdown.grid(
             padx=2,
             pady=2,
@@ -1045,7 +1044,7 @@ class CheckBox:
         self.text = text
         self.var = tk.BooleanVar()
 
-        self.checkbox = tk.Checkbutton(
+        self.checkbox = ttk.Checkbutton(
             self.frame, 
             text=self.text,
             onvalue=tk.TRUE,
@@ -1072,4 +1071,4 @@ class CheckBox:
 
     def clear_selection(self):
         """Reset the checkbox to the initial state of False"""
-        self.checkbox.deselect()
+        self.checkbox.state(['!selected'])
