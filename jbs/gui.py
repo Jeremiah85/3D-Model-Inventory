@@ -861,7 +861,8 @@ class Table:
             self.table.heading(
                 column=self.heading,
                 text=self.heading.capitalize(),
-                anchor=tk.W
+                anchor=tk.W,
+                command=lambda col=self.heading: self.sort_table(col, 0)
                 )
 
         # Checking to see if self.input_obj is a list or an individual object
@@ -896,6 +897,28 @@ class Table:
             self.add_rows(input_obj=self.input_obj)
         except TypeError:
             logger.warning("No rows to update")
+
+    def sort_table(self, column: str, descending: int) -> None:
+        """Sorts the table by the selected column.
+
+        Args:
+            column: The column to sort by
+            descending: Whether to sort descending or not
+        """
+        data = []
+        for child in self.table.get_children(''):
+            temp = [self.table.set(item=child, column=column), child]
+            temp[0] = temp[0].lower()
+            data.append(temp)
+
+        data.sort(reverse=descending)
+        for indx, item in enumerate(data):
+            self.table.move(item[1], '', indx)
+
+        self.table.heading(
+            column=column,
+            command=lambda col=column: self.sort_table(col, int(not descending))
+            )
 
 
 class TextBox:
