@@ -16,8 +16,8 @@ def get_config(config_file: os.PathLike) -> dict:
         config_file: A path to a JSON config file 
 
     Returns:
-        dictionary: a dictionary containing the key:value pairs from the 
-        config file
+        dictionary: a dictionary containing the key:value pairs from
+        the config file
     """
     with open(file=config_file, mode='r') as config_temp:
         config = json.load(config_temp)
@@ -35,7 +35,7 @@ def get_update_version(update_version_file: os.PathLike) -> int:
         update_version_file: A path to the schema update verion file.
 
     Returns:
-        integer: an integer with the version of the most up to date schema
+        integer: an integer with the version of the up to date schema
     """
     with open(file=update_version_file, mode='r') as version_temp:
         schema_version = json.load(version_temp)

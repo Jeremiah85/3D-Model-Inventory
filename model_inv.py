@@ -5,8 +5,8 @@
 import logging
 import pathlib
 
-# jbs.logging is imported to create the root logger before the other modules
-# are imported otherwise they get a different root logger.
+# jbs.logging is imported to create the root logger before the other 
+# modules are imported otherwise they get a different root logger.
 import jbs.logging
 import jbs.config as config
 import jbs.database.database_utils as db
@@ -26,8 +26,9 @@ def main() -> None:
     logger.setLevel(logging.NOTSET)
 
     logger.info("Starting Application")
-    # Determine how to connect to the database. Either default location, 
-    # location specified in the config file, or create a new database
+    # Determine how to connect to the database. Either default 
+    # location, location specified in the config file, or create 
+    # a new database.
     if default_database.exists():
         logger.info("Using default database")
         logger.debug(default_database)

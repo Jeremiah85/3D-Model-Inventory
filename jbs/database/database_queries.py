@@ -15,8 +15,8 @@ logger.setLevel(logging.NOTSET)
 def get_all_models(connection: sqlite3.Connection) -> list[inv.Model] | inv.Model:
     """Returns a list of all model objects from the database.
 
-    Queries the database and retrieves all of the models then converts that
-    list to a list of model objects.
+    Queries the database and retrieves all of the models then converts
+    that list to a list of model objects.
 
     Args:
         connection: A sqlite database connection.
@@ -54,8 +54,8 @@ def get_all_models(connection: sqlite3.Connection) -> list[inv.Model] | inv.Mode
 def get_all_artists(connection: sqlite3.Connection) -> list[inv.Artist] | inv.Artist:
     """Returns a list of all artist objects from the database.
 
-    Queries the database and retrieves all of the artists then converts that
-    list to a list of artist objects.
+    Queries the database and retrieves the artists then converts
+    that list to a list of artist objects.
 
     Args:
         connection: A sqlite database connection.
@@ -90,8 +90,8 @@ def get_all_artists(connection: sqlite3.Connection) -> list[inv.Artist] | inv.Ar
 def get_all_sources(connection: sqlite3.Connection) -> list[inv.Source] | inv.Source:
     """Returns a list of all source objects from the database.
 
-    Queries the database and retrieves all of the sources then converts that
-    list to a list of source objects.
+    Queries the database and retrieves the sources then converts
+    that list to a list of source objects.
 
     Args:
         connection: A sqlite database connection.
@@ -130,9 +130,9 @@ def search_model(
     ) -> list[inv.Model] | inv.Model:
     """Retrieves all model objects matching a user query.
 
-    Connects to the database and searches a user supplied field for a user
-    supplied string and returns a list of matching items as a list of model
-    objects.
+    Connects to the database and searches a user supplied field for
+    a user supplied string and returns a list of matching items as 
+    a list of model objects.
 
     Args:
         connection: A sqlite database connection.
@@ -178,8 +178,8 @@ def search_artist(
     ) -> list[inv.Artist] | inv.Artist:
     """Retrieves all artist objects matching a user query.
 
-    Connects to the database and searches for a user supplied string and
-    returns a list of matching items as a list of artist objects.
+    Connects to the database and searches for a user supplied string
+    and returns a list of matching items as a list of artist objects.
 
     Args:
         connection: A sqlite database connection.
@@ -223,8 +223,9 @@ def search_source(
     ) -> list[inv.Source] | inv.Source:
     """Retrieves all source objects matching a user query.
 
-    Connects to the database and searches for a user supplied string and
-    returns a list of matching items as a list of source objects.
+    Connects to the database and searches for a user supplied
+    string and returns a list of matching items as a list of
+    source objects.
 
     Args:
         connection: A sqlite database connection.
@@ -264,8 +265,8 @@ def search_source(
 def add_model(connection: sqlite3.Connection, model: inv.Model) -> None:
     """Adds a supplied model object to the database
 
-    Takes a model object and extracts the attributes to insert them into the
-    database.
+    Takes a model object and extracts the attributes to insert them
+    into the database.
 
     Args:
         connection: A sqlite database connection.
@@ -330,8 +331,8 @@ def add_model(connection: sqlite3.Connection, model: inv.Model) -> None:
 def add_artist(connection: sqlite3.Connection, artist: inv.Artist) -> None:
     """Adds a supplied artist object to the database
 
-    Takes a artist object and extracts the attributes to insert them into the
-    database.
+    Takes a artist object and extracts the attributes to insert them
+    into the database.
 
     Args:
         connection: A sqlite database connection.
@@ -362,8 +363,8 @@ def add_artist(connection: sqlite3.Connection, artist: inv.Artist) -> None:
 def add_source(connection: sqlite3.Connection, source: inv.Source) -> None:
     """Adds a supplied source object to the database
 
-    Takes a source object and extracts the attributes to insert them into the
-    database.
+    Takes a source object and extracts the attributes to insert them
+    into the database.
 
     Args:
         connection: A sqlite database connection.

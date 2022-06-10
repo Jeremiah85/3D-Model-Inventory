@@ -17,16 +17,16 @@ logger.setLevel(logging.NOTSET)
 class Window:
     """Creates and populates the main program window.
 
-    An instance of this class creates the main program window along with it's
-    tabs, frames, and form widgets. This class receives a SQLite3 database
-    connection.
+    An instance of this class creates the main program window along 
+    with it's tabs, frames, and form widgets. This class receives a
+    SQLite3 database connection.
     """
     def __init__(self, connection):
         """Initializes the Window class.
 
-        Creates three tabs: Models, Artists, and Sources, each with a search,
-        add, and display section. The database connection is used to populate
-        various UI elements.
+        Creates three tabs: Models, Artists, and Sources, each with
+        a search, add, and display section. The database connection
+        is used to populate various UI elements.
         """
         self.factory = inv.ObjectFactory()
         self.connection = connection
@@ -36,7 +36,7 @@ class Window:
         self.tabs = ttk.Notebook(master=self.root)
         self.tabs.pack(fill=tk.BOTH, expand=tk.YES)
 
-        # Create and populate Model tab ---------------------------------------
+        # Create and populate Model tab
         self.model_frame = tk.Frame(master=self.tabs)
         self.model_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES)
         self.model_frame.columnconfigure(index=0, weight=1)
@@ -274,9 +274,8 @@ class Window:
             self.widget.bind(sequence='<Return>', func=add_model_return)
 
         self.tabs.add(child=self.model_frame, text="Models")
-        #----------------------------------------------------------------------
 
-        # Create and populate Artist tab --------------------------------------
+        # Create and populate Artist tab
         self.artist_frame = tk.Frame(master=self.tabs)
         self.artist_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES)
         self.artist_frame.columnconfigure(index=0, weight=1)
@@ -440,8 +439,8 @@ class Window:
             self.widget.bind(sequence='<Return>', func=add_artist_return)
 
         self.tabs.add(child=self.artist_frame, text="Artists")
-        #----------------------------------------------------------------------
-        # Create and populate Source tab --------------------------------------
+
+        # Create and populate Source tab
         self.source_frame = tk.Frame(master=self.tabs)
         self.source_frame.pack(padx=2, pady=2, fill=tk.BOTH, expand=tk.YES)
         self.source_frame.columnconfigure(index=0, weight=1)
@@ -577,7 +576,6 @@ class Window:
             self.widget.bind(sequence='<Return>', func=add_source_return)
 
         self.tabs.add(child=self.source_frame, text="Sources")
-        #----------------------------------------------------------------------
 
     def refresh_tables(self):
         """Replaces the tables and dropdowns with new data from the database.
@@ -620,10 +618,10 @@ class Window:
     def add_model(self):
         """Adds a new model to the database.
 
-        Gathers the data that the user entered into the add model form and 
-        creates a model object to be inserted into the database. 
-        After inserting the model, it refreshes the tables and dropdowns so 
-        that they reflect the new data.
+        Gathers the data that the user entered into the add model form
+        and creates a model object to be inserted into the database. 
+        After inserting the model, it refreshes the tables and
+        dropdowns so that they reflect the new data.
         """
         self.new_model_entry = []
         self.new_model_entry.append(self.model_name_textbox.get_text())
@@ -670,10 +668,10 @@ class Window:
     def add_artist(self):
         """Adds a new artist to the database.
 
-        Gathers the data that the user entered into the add artist form and 
-        creates an artist object to be inserted into the database. 
-        After inserting the artist, it refreshes the tables and dropdowns so 
-        that they reflect the new data.
+        Gathers the data that the user entered into the add artist form
+        and creates an artist object to be inserted into the database. 
+        After inserting the artist, it refreshes the tables and 
+        dropdowns so that they reflect the new data.
         """
         self.new_artist_entry = []
         self.new_artist_entry.append(self.artist_name_textbox.get_text())
@@ -693,10 +691,10 @@ class Window:
     def add_source(self):
         """Adds a new source to the database.
 
-        Gathers the data that the user entered into the add source form and 
-        creates a source object to be inserted into the database. 
-        After inserting the source, it refreshes the tables and dropdown so 
-        that they reflect the new data.
+        Gathers the data that the user entered into the add source
+        form and creates a source object to be inserted into the
+        database. After inserting the source, it refreshes the tables
+        and dropdown so that they reflect the new data.
         """
         self.new_source_entry = []
         self.new_source_entry.append(self.source_name_textbox.get_text())
@@ -712,9 +710,9 @@ class Window:
     def search_models(self):
         """Searches the database for models matching a search term.
 
-        Gathers the user's search term and selected field to search and returns
-        the matching rows as a model object then refreshes the model table so 
-        that it will reflect the newly entered data.
+        Gathers the user's search term and selected field to search
+        and returns the matching rows as a model object then refreshes
+        the model table so that it will reflect the newly entered data.
 
         Returns:
             A list of model objects matching the query
@@ -747,9 +745,9 @@ class Window:
     def search_artist(self):
         """Searches the database for artists matching a search term.
 
-        Gathers the user's search term and returns the matching rows as an
-        artist object then refreshes the artist table so that it will reflect
-        the newly entered data.
+        Gathers the user's search term and returns the matching rows
+        as an artist object then refreshes the artist table so that 
+        it will reflect the newly entered data.
 
         Returns:
             A list of artist objects matching the query
@@ -770,9 +768,9 @@ class Window:
     def search_source(self):
         """Searches the database for sources matching a search term.
 
-        Gathers the user's search term and returns the matching rows as a
-        source object then refreshes the sources table so that it will reflect
-        the newly entered data.
+        Gathers the user's search term and returns the matching rows
+        as a source object then refreshes the sources table so that 
+        it will reflect the newly entered data.
 
         Returns:
             A list of source objects matching the query
@@ -801,17 +799,17 @@ def focus_next_widget(event):
 class Table:
     """Creates a table from the passed objects in the specified frame.
 
-    This class takes a list of one or more input objects and uses that data to
-    create a table in the specified frame. The object's attribute names become
-    the header names and each object is added as a row to the new table. 
-    Methods are also provided to clear the table and to refresh the table with
-    new data.
+    This class takes a list of one or more input objects and uses that
+    data to create a table in the specified frame. The object's 
+    attribute names become the header names and each object is added 
+    as a row to the new table. Methods are also provided to clear the
+    table and to refresh the table with new data.
     """
     def __init__(self, frame, input_obj):
         """Creates an empty table.
 
-        Creates an empty table in the specified frame using data from an input
-        object. 
+        Creates an empty table in the specified frame using data from
+        an input object. 
 
         Args:
             frame: The frame that the table should be created in.
@@ -834,8 +832,8 @@ class Table:
     def add_rows(self, input_obj):
         """Adds rows to the table from a supplied object.
 
-        Takes an list of objects and uses its attributes to create the headers
-        and enters one object per row in the table.
+        Takes an list of objects and uses its attributes to create the
+        headers and enters one object per row in the table.
 
         Args:
             input_obj: A list of model, artist, or source objects.
@@ -886,8 +884,8 @@ class Table:
     def refresh_table(self, input_obj):
         """Replaces the data in the table.
 
-        Takes the data from the input object and repopulates the table with
-        that data.
+        Takes the data from the input object and repopulates the table
+        with that data.
 
         Args:
             input_obj: A list of model, artist, or source objects.
@@ -903,8 +901,8 @@ class Table:
 class TextBox:
     """ Creates a text entry box.
 
-    Creates a text entry box in the specified frame with the specified grid
-    options.
+    Creates a text entry box in the specified frame with the specified
+    grid options.
     """
     def __init__(self, frame, row, column, sticky):
         """Inits the new text entry box.
@@ -947,8 +945,8 @@ class TextBox:
 class DropdownBox:
     """ Creates a dropdown box.
 
-    Creates a dropdown box in the specified frame with the specified grid
-    options.
+    Creates a dropdown box in the specified frame with the specified
+    grid options.
     """
     def __init__(self, frame, input_obj, row, column, sticky):
         """Inits the new text entry box.
@@ -1007,8 +1005,8 @@ class DropdownBox:
     def refresh_options(self, input):
         """Replaces the data in the dropdown.
 
-        Takes the data from the input object and repopulates the dropdown with
-        that data.
+        Takes the data from the input object and repopulates the
+        dropdown with that data.
 
         Args:
             input: A list of artist or source objects.
@@ -1025,8 +1023,8 @@ class DropdownBox:
 class CheckBox:
     """ Creates a check box.
 
-    Creates a dropdown box in the specified frame with the specified grid
-    options.
+    Creates a dropdown box in the specified frame with the specified
+    grid options.
     """
     def __init__(self, frame, text, row, column, sticky):
         """Inits the new  checkbox.

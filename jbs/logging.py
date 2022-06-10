@@ -8,19 +8,19 @@ import logging.config
 import os
 import pathlib
 
-# This Module exists to create and configure the root logger before the other
-# modules are loaded because otherwise modules were descending from a different
-# root
+# This Module exists to create and configure the root logger before
+# the other modules are loaded because otherwise modules were 
+# descending from a different root
 
 def get_config(config_file: os.PathLike) -> dict:
     """Gets the contents of a specified JSON file
 
     Args:
-        config_file: A string containing a path to a JSON config file 
+        config_file: A path to a JSON config file 
 
     Returns:
-        dictionary: a dictionary containing the key:value pairs from the 
-        config file
+        dictionary: a dictionary containing the key:value pairs from
+        the config file
     """
     with open(file=config_file, mode='r') as config_temp:
         config = json.load(config_temp)

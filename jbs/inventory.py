@@ -15,15 +15,15 @@ class Model:
     """A object representing a 3D model.
 
     Attributes:
-        model: The model's name. String
-        set: The model's set. String
-        artist: The model's artist. String
-        source: The model's source. String
-        source_note: And note about the model's source. String
-        supports: Whether the model is supported. Boolean
-        format: What formats the model is in. String
-        folder: What base folder the model is in. String 
-        printed: Whether the model has been printed. Boolean
+        model: The model's name.
+        set: The model's set.
+        artist: The model's artist.
+        source: The model's source.
+        source_note: And note about the model's source.
+        supports: Whether the model is supported.
+        format: What formats the model is in.
+        folder: What base folder the model is in.
+        printed: Whether the model has been printed.
     """
     model: str
     set: str
@@ -44,10 +44,10 @@ class Artist:
     """A object representing an artist.
 
     Attributes:
-        name: The artist's name. String
-        website: The artist's website. String
-        email: The artists's email. String
-        folder: What base folder the artist's models are in. String 
+        name: The artist's name.
+        website: The artist's website.
+        email: The artists's email.
+        folder: What base folder the artist's models are in.
     """
     name: str
     website: str
@@ -63,8 +63,8 @@ class Source:
     """A object representing a source.
 
     Attributes:
-        name: The source's name. String
-        website: The source's website. String
+        name: The source's name.
+        website: The source's website.
     """
     name: str
     website: str
