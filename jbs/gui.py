@@ -151,7 +151,7 @@ class Window:
             uniform="model_add"
             )
 
-        self.model_name_label = tk.Label(
+        self.model_name_label = ttk.Label(
             master=self.model_newitem_frame,
             text="Name"
             )
@@ -163,7 +163,7 @@ class Window:
             sticky=tk.SW
             )
 
-        self.model_set_label = tk.Label(
+        self.model_set_label = ttk.Label(
             master=self.model_newitem_frame,
             text="Set"
             )
@@ -175,7 +175,7 @@ class Window:
             sticky=tk.NW
             )
 
-        self.model_artist_label = tk.Label(
+        self.model_artist_label = ttk.Label(
             master=self.model_newitem_frame,
             text="Artist"
             )
@@ -194,7 +194,7 @@ class Window:
             sticky=tk.SW
             )
 
-        self.model_source_label = tk.Label(
+        self.model_source_label = ttk.Label(
             master=self.model_newitem_frame,
             text="Source"
             )
@@ -213,7 +213,7 @@ class Window:
             sticky=tk.NW
             )
 
-        self.model_source_note_label = tk.Label(
+        self.model_source_note_label = ttk.Label(
             master=self.model_newitem_frame,
             text="Source Note"
             )
@@ -233,7 +233,7 @@ class Window:
             sticky=tk.N
             )
 
-        self.model_format_label = tk.Label(
+        self.model_format_label = ttk.Label(
             master=self.model_newitem_frame,
             text="Format"
             )
@@ -370,7 +370,7 @@ class Window:
             uniform="artist_add"
             )
 
-        self.artist_name_label = tk.Label(
+        self.artist_name_label = ttk.Label(
             master=self.artist_newitem_frame,
             text="Name"
             )
@@ -382,7 +382,7 @@ class Window:
             sticky=tk.SW
             )
 
-        self.artist_website_label = tk.Label(
+        self.artist_website_label = ttk.Label(
             master=self.artist_newitem_frame,
             text="Website"
             )
@@ -394,7 +394,7 @@ class Window:
             sticky=tk.SW
             )
 
-        self.artist_email_label = tk.Label(
+        self.artist_email_label = ttk.Label(
             master=self.artist_newitem_frame,
             text="Email"
             )
@@ -406,7 +406,7 @@ class Window:
             sticky=tk.NW
             )
 
-        self.artist_folder_label = tk.Label(
+        self.artist_folder_label = ttk.Label(
             master=self.artist_newitem_frame,
             text="Folder"
             )
@@ -531,7 +531,7 @@ class Window:
             )
 
 
-        self.source_name_label = tk.Label(
+        self.source_name_label = ttk.Label(
             master=self.source_newitem_frame,
             text="Name"
             )
@@ -543,7 +543,7 @@ class Window:
             sticky=tk.SW
             )
 
-        self.source_website_label = tk.Label(
+        self.source_website_label = ttk.Label(
             master=self.source_newitem_frame,
             text="Website"
             )
@@ -978,7 +978,12 @@ class DropdownBox:
         else:
             self.options.append("Empty")
 
-        self.dropdown = ttk.OptionMenu(self.frame, self.var, "Please Select", *self.options)
+        self.dropdown = ttk.OptionMenu(
+            self.frame,
+            self.var,
+            "Please Select",
+            *self.options
+            )
         self.dropdown.grid(
             padx=2,
             pady=2,
