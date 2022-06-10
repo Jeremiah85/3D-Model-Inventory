@@ -6,13 +6,13 @@ import json
 import logging
 import logging.config
 import os
-import sys
+import pathlib
 
 # This Module exists to create and configure the root logger before the other
 # modules are loaded because otherwise modules were descending from a different
 # root
 
-def get_config(config_file: str) -> dict:
+def get_config(config_file: os.PathLike) -> dict:
     """Gets the contents of a specified JSON file
 
     Args:
@@ -27,10 +27,10 @@ def get_config(config_file: str) -> dict:
 
     return config
 
-scriptpath = os.path.dirname(os.path.realpath(sys.argv[0])) + os.sep
+scriptpath = pathlib.Path(__file__).resolve().parent.parent
 
-default_logfile_config = f'{scriptpath}logs{os.sep}run.log'
-log_config = f'{scriptpath}logging.json'
+default_logfile_config = scriptpath.joinpath('logs', 'run.log')
+log_config = scriptpath.joinpath('logging.json')
 
 logging_config = get_config(log_config)
 if logging_config['handlers']['default']['filename'] == 'get_from_variable':

@@ -4,15 +4,16 @@
 
 import json
 import logging
+import os
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.NOTSET)
 
-def get_config(config_file: str) -> dict:
+def get_config(config_file: os.PathLike) -> dict:
     """Gets the contents of a specified JSON file
 
     Args:
-        config_file: A string containing a path to a JSON config file 
+        config_file: A path to a JSON config file 
 
     Returns:
         dictionary: a dictionary containing the key:value pairs from the 
@@ -27,12 +28,11 @@ def get_config(config_file: str) -> dict:
     return config
 
 
-def get_update_version(update_version_file: str) -> int:
+def get_update_version(update_version_file: os.PathLike) -> int:
     """gets the schema update version from a specified JSON file
 
     Args:
-        update_version_file: A string containing a path to the schema update
-        verion file.
+        update_version_file: A path to the schema update verion file.
 
     Returns:
         integer: an integer with the version of the most up to date schema

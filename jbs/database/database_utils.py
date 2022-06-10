@@ -3,6 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 import logging
+import os
 import sqlite3
 import sys
 
@@ -34,7 +35,10 @@ def check_database_schema(connection: sqlite3.Connection) -> int:
         sys.exit(1)
 
 
-def modify_database_schema(connection: sqlite3.Connection, sql_file: str) -> None:
+def modify_database_schema(
+    connection: sqlite3.Connection,
+    sql_file: os.PathLike
+    ) -> None:
     """Takes a sql file and runs it against a database.
 
     This method updates a database with the contents of a sql file.
@@ -56,7 +60,7 @@ def modify_database_schema(connection: sqlite3.Connection, sql_file: str) -> Non
         sys.exit(1)
 
 
-def connect_database(database: str) -> sqlite3.Connection: 
+def connect_database(database: os.PathLike) -> sqlite3.Connection: 
     """Connects to a specified sqlite database.
 
     Args:
