@@ -43,6 +43,7 @@ class Window:
         self.model_frame.columnconfigure(index=1, weight=5)
         self.model_frame.rowconfigure(index=0, weight=1, uniform="model")
         self.model_frame.rowconfigure(index=1, weight=5, uniform="model")
+        self.model_frame.rowconfigure(index=2, weight=1)
 
         # Fill results table
         self.model_display_frame = ttk.LabelFrame(
@@ -273,6 +274,28 @@ class Window:
         for self.widget in list(self.model_newitem_frame.children.values()):
             self.widget.bind(sequence='<Return>', func=add_model_return)
 
+        # Model Table commands
+        self.model_tablecommand_frame = ttk.LabelFrame(
+            master=self.model_frame,
+            text="Table Commands"
+            )
+        self.model_tablecommand_frame.grid(
+            row=2,
+            column=0,
+            sticky=tk.NSEW,
+            columnspan=2
+            )
+        self.model_tablecommand_frame.columnconfigure(
+            index=0,
+            weight=1,
+            uniform="model_tablecommand"
+            )
+        self.model_tablecommand_frame.columnconfigure(
+            index=1,
+            weight=1,
+            uniform="model_tablecommand"
+            )
+
         self.tabs.add(child=self.model_frame, text="Models")
 
         # Create and populate Artist tab
@@ -282,6 +305,7 @@ class Window:
         self.artist_frame.columnconfigure(index=1, weight=5)
         self.artist_frame.rowconfigure(index=0, weight=1, uniform="artist")
         self.artist_frame.rowconfigure(index=1, weight=5, uniform="artist")
+        self.artist_frame.rowconfigure(index=2, weight=1)
 
         # Fill results table
         self.artist_display_frame = ttk.LabelFrame(
@@ -438,6 +462,28 @@ class Window:
         for self.widget in list(self.artist_newitem_frame.children.values()):
             self.widget.bind(sequence='<Return>', func=add_artist_return)
 
+        # Artist table commands
+        self.artist_tablecommand_frame = ttk.LabelFrame(
+            master=self.artist_frame,
+            text="Table Commands"
+            )
+        self.artist_tablecommand_frame.grid(
+            row=2,
+            column=0,
+            sticky=tk.NSEW,
+            columnspan=2
+            )
+        self.artist_tablecommand_frame.columnconfigure(
+            index=0,
+            weight=1,
+            uniform="artist_tablecommand"
+            )
+        self.artist_tablecommand_frame.columnconfigure(
+            index=1,
+            weight=1,
+            uniform="artist_tablecommand"
+            )
+
         self.tabs.add(child=self.artist_frame, text="Artists")
 
         # Create and populate Source tab
@@ -447,6 +493,7 @@ class Window:
         self.source_frame.columnconfigure(index=1, weight=5)
         self.source_frame.rowconfigure(index=0, weight=1, uniform="source")
         self.source_frame.rowconfigure(index=1, weight=5, uniform="source")
+        self.source_frame.rowconfigure(index=2, weight=1)
 
         # Fill results table
         self.source_display_frame = ttk.LabelFrame(
@@ -574,6 +621,28 @@ class Window:
 
         for self.widget in list(self.source_newitem_frame.children.values()):
             self.widget.bind(sequence='<Return>', func=add_source_return)
+
+        # Source table commands
+        self.source_tablecommand_frame = ttk.LabelFrame(
+            master=self.source_frame,
+            text="Table Commands"
+            )
+        self.source_tablecommand_frame.grid(
+            row=2,
+            column=0,
+            sticky=tk.NSEW,
+            columnspan=2
+            )
+        self.source_tablecommand_frame.columnconfigure(
+            index=0,
+            weight=1,
+            uniform="source_tablecommand"
+            )
+        self.source_tablecommand_frame.columnconfigure(
+            index=1,
+            weight=1,
+            uniform="source_tablecommand"
+            )
 
         self.tabs.add(child=self.source_frame, text="Sources")
 
@@ -862,7 +931,7 @@ class Table:
                 column=self.heading,
                 text=self.heading.capitalize(),
                 anchor=tk.W,
-                command=lambda col=self.heading: self.sort_table(col, 0)
+                command=lambda col=self.heading: self.sort_table(col, False)
                 )
 
         # Checking to see if self.input_obj is a list or an individual object
@@ -898,7 +967,7 @@ class Table:
         except TypeError:
             logger.warning("No rows to update")
 
-    def sort_table(self, column: str, descending: int) -> None:
+    def sort_table(self, column: str, descending: bool) -> None:
         """Sorts the table by the selected column.
 
         Args:
@@ -917,7 +986,7 @@ class Table:
 
         self.table.heading(
             column=column,
-            command=lambda col=column: self.sort_table(col, int(not descending))
+            command=lambda col=column: self.sort_table(col, bool(not descending))
             )
 
 
