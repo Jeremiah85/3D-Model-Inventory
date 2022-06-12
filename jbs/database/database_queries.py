@@ -28,7 +28,7 @@ def get_all_models(connection: sqlite3.Connection) -> list[inv.Model] | inv.Mode
     try:
         cur = connection.cursor()
         cur.execute(
-            'SELECT Model_Name, Set_Name, Artist_Name, Source_Name, '
+            'SELECT Model_ID, Model_Name, Set_Name, Artist_Name, Source_Name, '
                 'Source_Note, Supports, Format, Artist_Folder, Printed '
             'FROM tblModel AS m '
             'INNER JOIN tblArtist AS a ON m.Artist = a.Artist_ID '
@@ -67,7 +67,11 @@ def get_all_artists(connection: sqlite3.Connection) -> list[inv.Artist] | inv.Ar
     try:
         cur = connection.cursor()
         cur.execute(
-            'SELECT Artist_Name, Artist_Website, Artist_Email, Artist_Folder '
+            'SELECT Artist_ID, '
+                'Artist_Name, '
+                'Artist_Website, '
+                'Artist_Email, '
+                'Artist_Folder '
             'FROM tblArtist;'
             )
         results = cur.fetchall()
@@ -103,7 +107,7 @@ def get_all_sources(connection: sqlite3.Connection) -> list[inv.Source] | inv.So
     try:
         cur = connection.cursor()
         cur.execute(
-            'SELECT Source_Name, Source_Website '
+            'SELECT Source_ID, Source_Name, Source_Website '
             'FROM tblSource;'
             )
         results = cur.fetchall()
@@ -148,7 +152,7 @@ def search_model(
     try:
         cur = connection.cursor()
         cur.execute(
-            'SELECT Model_Name, Set_Name, Artist_Name, Source_Name, '
+            'SELECT Model_ID, Model_Name, Set_Name, Artist_Name, Source_Name, '
                 'Source_Note, Supports, Format, Artist_Folder, Printed '
             'FROM tblModel AS m '
             'INNER JOIN tblArtist AS a ON m.Artist = a.Artist_ID '
@@ -171,6 +175,53 @@ def search_model(
         logger.error(e)
         sys.exit(1)
 
+def search_associated_models(
+    connection: sqlite3.Connection,
+    field: str,
+    search_id: int
+    ) -> list[inv.Model] | inv.Model:
+    """Retrieves all model objects matching a user query.
+
+    Connects to the database and searches a user supplied field for
+    a user supplied string and returns a list of matching items as 
+    a list of model objects.
+
+    Args:
+        connection: A sqlite database connection.
+        field: The field in the model table to search.
+        search_text: the text to search for.
+
+    Returns:
+        A list of model objects matching the user's query.
+    """
+    factory = inv.ObjectFactory()
+    search_term = {'id': search_id}
+
+    try:
+        cur = connection.cursor()
+        cur.execute(
+            'SELECT Model_ID, Model_Name, Set_Name, Artist_Name, Source_Name, '
+                'Source_Note, Supports, Format, Artist_Folder, Printed '
+            'FROM tblModel AS m '
+            'INNER JOIN tblArtist AS a ON m.Artist = a.Artist_ID '
+            'INNER JOIN tblSource AS s ON m.Source = s.Source_ID '
+            f'WHERE m.{field} = :id;', search_term
+            )
+        results = cur.fetchall()
+
+        logger.debug(f"Query returned {len(results)} models")
+
+        if results:
+            models = []
+            for model in results:
+                models.append(factory.createModel(model))
+        else:
+            models = results
+
+        return models
+    except sqlite3.Error as e:
+        logger.error(e)
+        sys.exit(1)
 
 def search_artist(
     connection: sqlite3.Connection,
@@ -194,7 +245,11 @@ def search_artist(
     try:
         cur = connection.cursor()
         cur.execute(
-            'SELECT Artist_Name, Artist_Website, Artist_Email, Artist_Folder '
+            'SELECT Artist_ID, '
+                'Artist_Name, '
+                'Artist_Website, '
+                'Artist_Email, '
+                'Artist_Folder '
             'FROM tblArtist '
             'WHERE Artist_Name LIKE :keyword '
             'OR Artist_Website LIKE :keyword '
@@ -240,7 +295,7 @@ def search_source(
     try:
         cur = connection.cursor()
         cur.execute(
-            'SELECT Source_Name, Source_Website '
+            'SELECT Source_ID, Source_Name, Source_Website '
             'FROM tblSource '
             'WHERE Source_Name LIKE :keyword OR Source_Website LIKE :keyword;',
             search_term
@@ -434,6 +489,69 @@ def get_source_id(connection: sqlite3.Connection, source_name: str) -> int:
 
         logger.debug(f"{source_name} equals {results[0]}")
         return results[0]
+    except sqlite3.Error as e:
+        logger.error(e)
+        sys.exit(1)
+
+def delete_model(connection: sqlite3.Connection, model_id: int) -> None:
+    """Deletes a model from the database
+
+    Takes a model ID and deletes the model from the database.
+
+    Args:
+        connection: A sqlite database connection.
+        model_id: The ID of the model to delete.
+    """
+    try:
+        cur = connection.cursor()
+        logger.info("Deleting model from the database")
+        cur.execute(
+            'DELETE FROM tblModel '
+            'WHERE Model_ID = :model_id;', {'model_id': model_id}
+            )
+        connection.commit()
+    except sqlite3.Error as e:
+        logger.error(e)
+        sys.exit(1)
+
+def delete_artist(connection: sqlite3.Connection, artist_id: int) -> None:
+    """Deletes an artist from the database
+
+    Takes an artist ID and deletes the artist from the database.
+
+    Args:
+        connection: A sqlite database connection.
+        artist_id: The ID of the artist to delete.
+    """
+    try:
+        cur = connection.cursor()
+        logger.info("Deleting artist from the database")
+        cur.execute(
+            'DELETE FROM tblArtist '
+            'WHERE Artist_ID = :artist_id;', {'artist_id': artist_id}
+            )
+        connection.commit()
+    except sqlite3.Error as e:
+        logger.error(e)
+        sys.exit(1)
+
+def delete_source(connection: sqlite3.Connection, source_id: int) -> None:
+    """Deletes a source from the database
+
+    Takes a source ID and deletes the source from the database.
+
+    Args:
+        connection: A sqlite database connection.
+        source_id: The ID of the source to delete.
+    """
+    try:
+        cur = connection.cursor()
+        logger.info("Deleting source from the database")
+        cur.execute(
+            'DELETE FROM tblSource '
+            'WHERE Source_ID = :source_id;', {'source_id': source_id}
+            )
+        connection.commit()
     except sqlite3.Error as e:
         logger.error(e)
         sys.exit(1)
