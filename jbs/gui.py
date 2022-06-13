@@ -2,8 +2,11 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
+import csv
 import logging
+import pathlib
 import tkinter as tk
+import tkinter.filedialog as tkf
 import tkinter.messagebox as tkm
 import tkinter.ttk as ttk
 
@@ -309,7 +312,20 @@ class Window:
             )
         self.delete_model_button.grid(
             column=0,
-            row=2,
+            row=0,
+            sticky=tk.NW,
+            padx=5,
+            pady=5
+            )
+
+        self.export_models_button = ttk.Button(
+            master=self.model_tablecommand_frame,
+            text="Export",
+            command=lambda: self.export_table(table=self.model_table)
+            )
+        self.export_models_button.grid(
+            column=1,
+            row=0,
             sticky=tk.NW,
             padx=5,
             pady=5
@@ -1019,6 +1035,28 @@ class Window:
                         )
             self.refresh_tables()
 
+    def export_table(self, table) -> None:
+        self.selected_table = table
+        self.exported_rows = self.selected_table.get_all_rows()
+        self.default_export = pathlib.Path.home().joinpath('export.csv')
+        self.export_location = tkf.asksaveasfilename(
+            title="Save File",
+            initialdir=self.default_export,
+            initialfile='export.csv',
+            filetypes=(("Comma Separated Values", "*.csv"),)
+            )
+        self.export_file = pathlib.Path(self.export_location)
+        with open(file=self.export_file, mode='w', newline='') as self.export:
+            self.export_writer = csv.writer(
+                self.export,
+                delimiter=',',
+                quotechar='"',
+                quoting=csv.QUOTE_MINIMAL
+                )
+            self.export_writer.writerow(self.selected_table.columns)
+            for self.exported_row in self.exported_rows:
+                self.export_writer.writerow(self.exported_row)
+
 
 def focus_next_widget(event):
     """Focuses the next widget in focus order"""
@@ -1104,14 +1142,12 @@ class Table:
                 self.table.insert(
                     parent='',
                     index=tk.END,
-                    iid=self.row.id,
                     values=(self.row.astuple())
                     )
         except TypeError:
             self.table.insert(
                 parent='',
                 index=tk.END,
-                iid=self.input_obj.id,
                 values=(self.input_obj.astuple())
                 )
 
@@ -1160,10 +1196,18 @@ class Table:
 
     def get_selected_rows(self) -> tuple:
         """Returns the selected row."""
-        self.selected = (self.table.item(self.selected)['values'] for self.selected in self.table.selection())
+        self.selected = (
+            self.table.item(self.selected)['values'] 
+            for self.selected in self.table.selection()
+            )
         return tuple(self.selected)
 
-
+    def get_all_rows(self) -> tuple:
+        self.rows = (
+            self.table.item(self.child)['values']
+            for self.child in self.table.get_children()
+            )
+        return tuple(self.rows)
 
 class TextBox:
     """ Creates a text entry box.
