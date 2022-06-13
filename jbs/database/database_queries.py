@@ -459,8 +459,11 @@ def get_artist_id(connection: sqlite3.Connection, artist_name: str) -> int:
             )
         results = cur.fetchone()
 
-        logger.debug(f"{artist_name} equals {results[0]}")
-        return results[0]
+        try:
+            logger.debug(f"{artist_name} equals {results[0]}")
+            return results[0]
+        except TypeError:
+            return 0
     except sqlite3.Error as e:
         logger.error(e)
         sys.exit(1)
@@ -487,8 +490,11 @@ def get_source_id(connection: sqlite3.Connection, source_name: str) -> int:
             )
         results = cur.fetchone()
 
-        logger.debug(f"{source_name} equals {results[0]}")
-        return results[0]
+        try:
+            logger.debug(f"{source_name} equals {results[0]}")
+            return results[0]
+        except TypeError:
+            return 0
     except sqlite3.Error as e:
         logger.error(e)
         sys.exit(1)

@@ -87,7 +87,13 @@ class Window:
             uniform="model_search"
             )
 
-        self.model_search_options = ["Model_Name", "Set_Name", "Source_Note"]
+        self.model_search_options = [
+            "Model_Name",
+            "Set_Name",
+            "Source_Note",
+            "Artist",
+            "Source"
+            ]
         self.model_search_textbox = TextBox(
             frame=self.model_search_frame,
             row=0,
@@ -837,16 +843,47 @@ class Window:
 
         if self.model_search_field:
             logger.info("Searching models")
-            logger.debug(f"{self.model_search_term} in {self.model_search_field}")
-            self.model_results = dbqueries.search_model(
-                connection=self.connection,
-                field=self.model_search_field,
-                search_text=self.model_search_term
+            logger.debug(
+                f"{self.model_search_term} in {self.model_search_field}"
                 )
-            try:
-                self.model_table.refresh_table(input_obj=self.model_results)
-            except TypeError:
-                logger.warning("No Models Found")
+            if self.model_search_field == "Artist":
+                self.search_artist_id = dbqueries.get_artist_id(
+                    connection=self.connection,
+                    artist_name=self.model_search_term
+                    )
+                self.model_results = dbqueries.search_associated_models(
+                    connection=self.connection,
+                    field="Artist",
+                    search_id=self.search_artist_id
+                    )
+                try:
+                    self.model_table.refresh_table(input_obj=self.model_results)
+                except TypeError:
+                    logger.warning("No Models Found")
+            elif self.model_search_field == "Source":
+                self.search_source_id = dbqueries.get_source_id(
+                    connection=self.connection,
+                    source_name=self.model_search_term
+                    )
+                self.model_results = dbqueries.search_associated_models(
+                    connection=self.connection,
+                    field="Source",
+                    search_id=self.search_source_id
+                    )
+                try:
+                    self.model_table.refresh_table(input_obj=self.model_results)
+                except TypeError:
+                    logger.warning("No Models Found")
+            else:
+                self.model_results = dbqueries.search_model(
+                    connection=self.connection,
+                    field=self.model_search_field,
+                    search_text=self.model_search_term
+                    )
+                try:
+                    self.model_table.refresh_table(input_obj=self.model_results)
+                except TypeError:
+                    logger.warning("No Models Found")
         else:
             logger.warning("Missing search field")
             tkm.showwarning(
