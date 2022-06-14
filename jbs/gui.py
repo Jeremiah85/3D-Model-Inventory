@@ -527,7 +527,21 @@ class Window:
 
         self.artist_delete_button.grid(
             column=0,
-            row=2,
+            row=0,
+            sticky=tk.NW,
+            padx=5,
+            pady=5
+            )
+
+        self.artist_export_button = ttk.Button(
+            master=self.artist_tablecommand_frame,
+            text="Export",
+            command=lambda: self.export_table(table=self.artist_table)
+            )
+
+        self.artist_export_button.grid(
+            column=1,
+            row=0,
             sticky=tk.NW,
             padx=5,
             pady=5
@@ -700,7 +714,20 @@ class Window:
             )
         self.source_tablecommand_delete_button.grid(
             column=0,
-            row=2,
+            row=0,
+            sticky=tk.NW,
+            padx=5,
+            pady=5
+            )
+
+        self.source_export_button = ttk.Button(
+            master=self.source_tablecommand_frame,
+            text="Export",
+            command=lambda: self.export_table(self.sources_table)
+            )
+        self.source_export_button.grid(
+            column=1,
+            row=0,
             sticky=tk.NW,
             padx=5,
             pady=5
@@ -1045,17 +1072,18 @@ class Window:
             initialfile='export.csv',
             filetypes=(("Comma Separated Values", "*.csv"),)
             )
-        self.export_file = pathlib.Path(self.export_location)
-        with open(file=self.export_file, mode='w', newline='') as self.export:
-            self.export_writer = csv.writer(
-                self.export,
-                delimiter=',',
-                quotechar='"',
-                quoting=csv.QUOTE_MINIMAL
-                )
-            self.export_writer.writerow(self.selected_table.columns)
-            for self.exported_row in self.exported_rows:
-                self.export_writer.writerow(self.exported_row)
+        if self.export_location:
+            self.export_file = pathlib.Path(self.export_location)
+            with open(file=self.export_file, mode='w', newline='') as self.export:
+                self.export_writer = csv.writer(
+                    self.export,
+                    delimiter=',',
+                    quotechar='"',
+                    quoting=csv.QUOTE_MINIMAL
+                    )
+                self.export_writer.writerow(self.selected_table.columns)
+                for self.exported_row in self.exported_rows:
+                    self.export_writer.writerow(self.exported_row)
 
 
 def focus_next_widget(event):
