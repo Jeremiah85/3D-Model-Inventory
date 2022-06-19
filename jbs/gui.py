@@ -2,8 +2,11 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
+import csv
 import logging
+import pathlib
 import tkinter as tk
+import tkinter.filedialog as tkf
 import tkinter.messagebox as tkm
 import tkinter.ttk as ttk
 
@@ -43,6 +46,7 @@ class Window:
         self.model_frame.columnconfigure(index=1, weight=5)
         self.model_frame.rowconfigure(index=0, weight=1, uniform="model")
         self.model_frame.rowconfigure(index=1, weight=5, uniform="model")
+        self.model_frame.rowconfigure(index=2, weight=1)
 
         # Fill results table
         self.model_display_frame = ttk.LabelFrame(
@@ -86,7 +90,13 @@ class Window:
             uniform="model_search"
             )
 
-        self.model_search_options = ["Model_Name", "Set_Name", "Source_Note"]
+        self.model_search_options = [
+            "Model_Name",
+            "Set_Name",
+            "Source_Note",
+            "Artist",
+            "Source"
+            ]
         self.model_search_textbox = TextBox(
             frame=self.model_search_frame,
             row=0,
@@ -273,6 +283,54 @@ class Window:
         for self.widget in list(self.model_newitem_frame.children.values()):
             self.widget.bind(sequence='<Return>', func=add_model_return)
 
+        # Model Table commands
+        self.model_tablecommand_frame = ttk.LabelFrame(
+            master=self.model_frame,
+            text="Table Commands"
+            )
+        self.model_tablecommand_frame.grid(
+            row=2,
+            column=0,
+            sticky=tk.NSEW,
+            columnspan=2
+            )
+        self.model_tablecommand_frame.columnconfigure(
+            index=0,
+            weight=1,
+            uniform="model_tablecommand"
+            )
+        self.model_tablecommand_frame.columnconfigure(
+            index=1,
+            weight=1,
+            uniform="model_tablecommand"
+            )
+        
+        self.delete_model_button = ttk.Button(
+            master=self.model_tablecommand_frame,
+            text="Delete",
+            command=lambda: self.delete_model()
+            )
+        self.delete_model_button.grid(
+            column=0,
+            row=0,
+            sticky=tk.NW,
+            padx=5,
+            pady=5
+            )
+
+        self.export_models_button = ttk.Button(
+            master=self.model_tablecommand_frame,
+            text="Export",
+            command=lambda: self.export_table(table=self.model_table)
+            )
+        self.export_models_button.grid(
+            column=1,
+            row=0,
+            sticky=tk.NW,
+            padx=5,
+            pady=5
+            )
+
         self.tabs.add(child=self.model_frame, text="Models")
 
         # Create and populate Artist tab
@@ -282,6 +340,7 @@ class Window:
         self.artist_frame.columnconfigure(index=1, weight=5)
         self.artist_frame.rowconfigure(index=0, weight=1, uniform="artist")
         self.artist_frame.rowconfigure(index=1, weight=5, uniform="artist")
+        self.artist_frame.rowconfigure(index=2, weight=1)
 
         # Fill results table
         self.artist_display_frame = ttk.LabelFrame(
@@ -438,6 +497,56 @@ class Window:
         for self.widget in list(self.artist_newitem_frame.children.values()):
             self.widget.bind(sequence='<Return>', func=add_artist_return)
 
+        # Artist table commands
+        self.artist_tablecommand_frame = ttk.LabelFrame(
+            master=self.artist_frame,
+            text="Table Commands"
+            )
+        self.artist_tablecommand_frame.grid(
+            row=2,
+            column=0,
+            sticky=tk.NSEW,
+            columnspan=2
+            )
+        self.artist_tablecommand_frame.columnconfigure(
+            index=0,
+            weight=1,
+            uniform="artist_tablecommand"
+            )
+        self.artist_tablecommand_frame.columnconfigure(
+            index=1,
+            weight=1,
+            uniform="artist_tablecommand"
+            )
+
+        self.artist_delete_button = ttk.Button(
+            master=self.artist_tablecommand_frame,
+            text="Delete",
+            command=lambda: self.delete_artist()
+            )
+
+        self.artist_delete_button.grid(
+            column=0,
+            row=0,
+            sticky=tk.NW,
+            padx=5,
+            pady=5
+            )
+
+        self.artist_export_button = ttk.Button(
+            master=self.artist_tablecommand_frame,
+            text="Export",
+            command=lambda: self.export_table(table=self.artist_table)
+            )
+
+        self.artist_export_button.grid(
+            column=1,
+            row=0,
+            sticky=tk.NW,
+            padx=5,
+            pady=5
+            )
+
         self.tabs.add(child=self.artist_frame, text="Artists")
 
         # Create and populate Source tab
@@ -447,6 +556,7 @@ class Window:
         self.source_frame.columnconfigure(index=1, weight=5)
         self.source_frame.rowconfigure(index=0, weight=1, uniform="source")
         self.source_frame.rowconfigure(index=1, weight=5, uniform="source")
+        self.source_frame.rowconfigure(index=2, weight=1)
 
         # Fill results table
         self.source_display_frame = ttk.LabelFrame(
@@ -575,6 +685,54 @@ class Window:
         for self.widget in list(self.source_newitem_frame.children.values()):
             self.widget.bind(sequence='<Return>', func=add_source_return)
 
+        # Source table commands
+        self.source_tablecommand_frame = ttk.LabelFrame(
+            master=self.source_frame,
+            text="Table Commands"
+            )
+        self.source_tablecommand_frame.grid(
+            row=2,
+            column=0,
+            sticky=tk.NSEW,
+            columnspan=2
+            )
+        self.source_tablecommand_frame.columnconfigure(
+            index=0,
+            weight=1,
+            uniform="source_tablecommand"
+            )
+        self.source_tablecommand_frame.columnconfigure(
+            index=1,
+            weight=1,
+            uniform="source_tablecommand"
+            )
+
+        self.source_tablecommand_delete_button = ttk.Button(
+            master=self.source_tablecommand_frame,
+            text="Delete",
+            command=lambda: self.delete_source()
+            )
+        self.source_tablecommand_delete_button.grid(
+            column=0,
+            row=0,
+            sticky=tk.NW,
+            padx=5,
+            pady=5
+            )
+
+        self.source_export_button = ttk.Button(
+            master=self.source_tablecommand_frame,
+            text="Export",
+            command=lambda: self.export_table(self.sources_table)
+            )
+        self.source_export_button.grid(
+            column=1,
+            row=0,
+            sticky=tk.NW,
+            padx=5,
+            pady=5
+            )
+
         self.tabs.add(child=self.source_frame, text="Sources")
 
     def refresh_tables(self):
@@ -624,6 +782,9 @@ class Window:
         dropdowns so that they reflect the new data.
         """
         self.new_model_entry = []
+        # Adds a placeholder for the ID since it will be generated by
+        # the database
+        self.new_model_entry.append(0)
         self.new_model_entry.append(self.model_name_textbox.get_text())
         self.model_name_textbox.clear_text()
         self.new_model_entry.append(self.model_set_textbox.get_text())
@@ -674,6 +835,7 @@ class Window:
         dropdowns so that they reflect the new data.
         """
         self.new_artist_entry = []
+        self.new_artist_entry.append(0)
         self.new_artist_entry.append(self.artist_name_textbox.get_text())
         self.artist_name_textbox.clear_text()
         self.new_artist_entry.append(self.artist_website_textbox.get_text())
@@ -697,6 +859,7 @@ class Window:
         and dropdown so that they reflect the new data.
         """
         self.new_source_entry = []
+        self.new_source_entry.append(0)
         self.new_source_entry.append(self.source_name_textbox.get_text())
         self.source_name_textbox.clear_text()
         self.new_source_entry.append(self.source_website_textbox.get_text())
@@ -723,16 +886,47 @@ class Window:
 
         if self.model_search_field:
             logger.info("Searching models")
-            logger.debug(f"{self.model_search_term} in {self.model_search_field}")
-            self.model_results = dbqueries.search_model(
-                connection=self.connection,
-                field=self.model_search_field,
-                search_text=self.model_search_term
+            logger.debug(
+                f"{self.model_search_term} in {self.model_search_field}"
                 )
-            try:
-                self.model_table.refresh_table(input_obj=self.model_results)
-            except TypeError:
-                logger.warning("No Models Found")
+            if self.model_search_field == "Artist":
+                self.search_artist_id = dbqueries.get_artist_id(
+                    connection=self.connection,
+                    artist_name=self.model_search_term
+                    )
+                self.model_results = dbqueries.search_associated_models(
+                    connection=self.connection,
+                    field="Artist",
+                    search_id=self.search_artist_id
+                    )
+                try:
+                    self.model_table.refresh_table(input_obj=self.model_results)
+                except TypeError:
+                    logger.warning("No Models Found")
+            elif self.model_search_field == "Source":
+                self.search_source_id = dbqueries.get_source_id(
+                    connection=self.connection,
+                    source_name=self.model_search_term
+                    )
+                self.model_results = dbqueries.search_associated_models(
+                    connection=self.connection,
+                    field="Source",
+                    search_id=self.search_source_id
+                    )
+                try:
+                    self.model_table.refresh_table(input_obj=self.model_results)
+                except TypeError:
+                    logger.warning("No Models Found")
+            else:
+                self.model_results = dbqueries.search_model(
+                    connection=self.connection,
+                    field=self.model_search_field,
+                    search_text=self.model_search_term
+                    )
+                try:
+                    self.model_table.refresh_table(input_obj=self.model_results)
+                except TypeError:
+                    logger.warning("No Models Found")
         else:
             logger.warning("Missing search field")
             tkm.showwarning(
@@ -787,6 +981,110 @@ class Window:
             self.sources_table.refresh_table(input_obj=self.search_results)
         except TypeError:
             logger.warning("No Sources Found")
+
+    def delete_model(self) -> None:
+        """Deletes a model from the database."""
+        self.selected = self.model_table.get_selected_rows()
+        self.delete_choice = tkm.askyesno(
+            title="Delete Model", 
+            message=f"Do you want to delete {len(self.selected)} model(s)?"
+            )
+        if self.delete_choice:
+            for self.selected_model in self.selected:
+                logger.info(f"Deleting Model_ID: {self.selected_model[0]}")
+                dbqueries.delete_model(
+                    connection=self.connection,
+                    model_id=self.selected_model[0]
+                    )
+            self.refresh_tables()
+
+    def delete_artist(self) -> None:
+        """Deletes an artist from the database."""
+        self.selected = self.artist_table.get_selected_rows()
+        self.delete_choice = tkm.askyesno(
+            title="Delete Artist",
+            message=f"Do you want to delete {len(self.selected)} artist(s)?"
+            )
+        if self.delete_choice:
+            for self.selected_artist in self.selected:
+                self.associated_models = dbqueries.search_associated_models(
+                    connection=self.connection,
+                    field='Artist',
+                    search_id=self.selected_artist[0]
+                    )
+                if not len(self.associated_models):  # type: ignore
+                    logger.info(f"Deleting Artist_ID: {self.selected_artist[0]}")
+                    dbqueries.delete_artist(
+                        connection=self.connection,
+                        artist_id=self.selected_artist[0]
+                        )
+                else:
+                    self.associated_model_warning = tkm.showwarning(
+                        title="Associated Models", 
+                        message="This artist is associated with models. "
+                            "Please delete the associated models before "
+                            "deleting the artist."
+                    )
+                    logger.warning(
+                        f"Artist {self.selected_artist[0]} has associated models"
+                        )
+            self.refresh_tables()
+
+    def delete_source(self) -> None:
+        """Deletes a source from the database."""
+        self.selected = self.sources_table.get_selected_rows()
+        self.delete_choice = tkm.askyesno(
+            title="Delete Source",
+            message=f"Do you want to delete {len(self.selected)} source(s)?"
+            )
+        if self.delete_choice:
+            for self.selected_source in self.selected:
+                self.associated_models = dbqueries.search_associated_models(
+                    connection=self.connection,
+                    field='Source',
+                    search_id=self.selected_source[0]
+                    )
+                if not len(self.associated_models):  # type: ignore
+                    logger.info(f"Deleting Source_ID: {self.selected_source[0]}")
+                    dbqueries.delete_source(
+                        connection=self.connection,
+                        source_id=self.selected_source[0]
+                        )
+                else:
+                    self.associated_model_warning = tkm.showwarning(
+                        title="Associated Models", 
+                        message="This source is associated with models. "
+                            "Please delete the associated models before "
+                            "deleting the source."
+                    )
+                    logger.warning(
+                        f"Source {self.selected_source[0]} has associated models"
+                        )
+            self.refresh_tables()
+
+    def export_table(self, table) -> None:
+        self.selected_table = table
+        self.exported_rows = self.selected_table.get_all_rows()
+        self.default_export = pathlib.Path.home().joinpath('export.csv')
+        self.export_location = tkf.asksaveasfilename(
+            title="Save File",
+            initialdir=self.default_export,
+            initialfile='export.csv',
+            filetypes=(("Comma Separated Values", "*.csv"),)
+            )
+        if self.export_location:
+            self.export_file = pathlib.Path(self.export_location)
+            with open(file=self.export_file, mode='w', newline='') as self.export:
+                self.export_writer = csv.writer(
+                    self.export,
+                    delimiter=',',
+                    quotechar='"',
+                    quoting=csv.QUOTE_MINIMAL
+                    )
+                self.export_writer.writerow(self.selected_table.columns)
+                for self.exported_row in self.exported_rows:
+                    self.export_writer.writerow(self.exported_row)
+
 
 def focus_next_widget(event):
     """Focuses the next widget in focus order"""
@@ -862,14 +1160,18 @@ class Table:
                 column=self.heading,
                 text=self.heading.capitalize(),
                 anchor=tk.W,
-                command=lambda col=self.heading: self.sort_table(col, 0)
+                command=lambda col=self.heading: self.sort_table(col, False)
                 )
 
         # Checking to see if self.input_obj is a list or an individual object
         # before proceeding.
         try:
             for self.row in self.input_obj:
-                self.table.insert('', tk.END, values=(self.row.astuple()))
+                self.table.insert(
+                    parent='',
+                    index=tk.END,
+                    values=(self.row.astuple())
+                    )
         except TypeError:
             self.table.insert(
                 parent='',
@@ -898,7 +1200,7 @@ class Table:
         except TypeError:
             logger.warning("No rows to update")
 
-    def sort_table(self, column: str, descending: int) -> None:
+    def sort_table(self, column: str, descending: bool) -> None:
         """Sorts the table by the selected column.
 
         Args:
@@ -917,9 +1219,23 @@ class Table:
 
         self.table.heading(
             column=column,
-            command=lambda col=column: self.sort_table(col, int(not descending))
+            command=lambda col=column: self.sort_table(col, bool(not descending))
             )
 
+    def get_selected_rows(self) -> tuple:
+        """Returns the selected row."""
+        self.selected = (
+            self.table.item(self.selected)['values'] 
+            for self.selected in self.table.selection()
+            )
+        return tuple(self.selected)
+
+    def get_all_rows(self) -> tuple:
+        self.rows = (
+            self.table.item(self.child)['values']
+            for self.child in self.table.get_children()
+            )
+        return tuple(self.rows)
 
 class TextBox:
     """ Creates a text entry box.
